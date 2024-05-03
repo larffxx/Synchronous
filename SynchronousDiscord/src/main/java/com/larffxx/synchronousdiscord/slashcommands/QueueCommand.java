@@ -7,11 +7,14 @@ import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -30,7 +33,7 @@ public class QueueCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
         putTrackInQueue(musicManager);
-        event.reply("Queue of tracks").queue();
+        event.reply("Current queue").queue();
     }
 
 
@@ -48,13 +51,13 @@ public class QueueCommand extends Command {
 
     private void putTrackInQueue(GuildMusicManager musicManager) {
         List<AudioTrack> queue = new ArrayList<>(musicManager.getScheduler().getQueue());
-        EmbedBuilder eb = new EmbedBuilder().setTitle("Current queue");
+        EmbedBuilder eb = new EmbedBuilder();
         if (queue.isEmpty()) {
             eb.setDescription("Queue is empty");
-        }
-        for (int i = 0; i < queue.size(); i++) {
-            eb.addField(i + 1 + ":", queue.get(i).getInfo().title, false)
-                    .addField(i + 2 + ":", queue.get(i).getInfo().uri, false);
+        }else {
+            for (int i = 0; i < 10; i++) {
+                eb.addField(i + ":", queue.get(i).getInfo().title, false);
+            }
         }
         commandListener.getEmbedSender().send(eb);
     }
