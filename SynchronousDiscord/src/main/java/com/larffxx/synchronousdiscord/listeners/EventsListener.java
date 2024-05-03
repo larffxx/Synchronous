@@ -51,8 +51,9 @@ public class EventsListener implements EventListener {
                 }
             }
         }
-        if (eventPreProcessor.getCommand(EventPreProcessor.getFormatedString(event)) != null) {
-            Event<GenericEvent> ev = eventPreProcessor.getCommand(EventPreProcessor.getFormatedString(event));
+
+        if (eventPreProcessor.getCommand(event.getClass()) != null) {
+            Event<GenericEvent> ev = eventPreProcessor.getCommand(event.getClass());
             ev.execute(event);
         }
 

@@ -1,22 +1,35 @@
 package com.larffxx.synchronoustelegram.commands;
 
 import com.larffxx.synchronoustelegram.receivers.UpdateReceiver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class SendText implements Command<SendMessage> {
-    public SendText() {
+public class SendText implements Command{
+    private final UpdateReceiver updateReceiver;
+
+    public SendText(UpdateReceiver updateReceiver) {
+        this.updateReceiver = updateReceiver;
     }
 
-    public SendMessage execute(UpdateReceiver update) {
+    public void execute(UpdateReceiver update) {
         SendMessage sm = SendMessage.builder().chatId(String.valueOf(update.getChatId())).text("Text").build();
-        return sm;
+        try {
+            update.getTelegramClient().execute(sm);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
-    public SendMessage execute(Long id, String text) {
+    public void execute(Long id, String text) {
         SendMessage sm = SendMessage.builder().chatId(id).text(text).build();
-        return sm;
+        try {
+            updateReceiver.getTelegramClient().execute(sm);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getCommand() {

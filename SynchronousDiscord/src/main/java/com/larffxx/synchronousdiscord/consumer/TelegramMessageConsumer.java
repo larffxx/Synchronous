@@ -1,9 +1,9 @@
-package com.larffxx.synchronousdiscord.listeners;
+package com.larffxx.synchronousdiscord.consumer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.larffxx.synchronousdiscord.senders.MessageSenderFromKafkaSender;
+import com.larffxx.synchronousdiscord.senders.TelegramMessageRouteService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class KafkaListeners {
-    private final MessageSenderFromKafkaSender messageSenderFromKafkaSender;
+public class TelegramMessageConsumer {
+    private final TelegramMessageRouteService telegramMessageConsumer;
 
-    public KafkaListeners(MessageSenderFromKafkaSender messageSenderFromKafkaSender) {
-        this.messageSenderFromKafkaSender = messageSenderFromKafkaSender;
+    public TelegramMessageConsumer(TelegramMessageRouteService telegramMessageConsumer) {
+        this.telegramMessageConsumer = telegramMessageConsumer;
     }
 
     @KafkaListener(topics = "${tTopic}", groupId = "${groupId}")
@@ -30,6 +30,6 @@ public class KafkaListeners {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        messageSenderFromKafkaSender.send(data);
+        telegramMessageConsumer.send(data);
     }
 }

@@ -23,16 +23,16 @@ public class MessageReceiveEvent extends Event<MessageReceivedEvent> {
         getEventReceiver().setTextChannel(event.getChannel().asTextChannel());
         if (!event.getAuthor().isBot()) {
             if (event.getMessage().getAttachments().isEmpty()) {
-                commandListener.getSendKafkaMessage().send(event);
+                commandListener.getDiscordMessageProducer().send(event);
             } else {
-                commandListener.getSendKafkaMessage().send(event, event.getMessage().getAttachments().get(0).getUrl());
+                commandListener.getDiscordMessageProducer().send(event, event.getMessage().getAttachments().get(0).getUrl());
             }
         }
     }
 
     @Override
-    public String getEvent() {
-        return "messageReceivedEvent";
+    public Class getEvent() {
+        return MessageReceivedEvent.class;
     }
 
 }

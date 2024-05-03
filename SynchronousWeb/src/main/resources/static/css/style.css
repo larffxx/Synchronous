@@ -1,0 +1,323 @@
+.special-elite-regular {
+    font-family: "Special Elite", system-ui;
+    font-style: normal;
+  }
+a{
+    text-decoration: none;
+    color: #FFFFFF;
+    
+}
+h1{
+    font-size: 5vh;
+    font-weight: normal;
+}
+h2{
+    font-size: 2.5vh;
+    font-weight: normal;
+}
+h3{
+    font-size: 3vh;
+    font-weight: normal;
+}
+  
+body{
+    min-width: 200vh;
+    font-family: "Special elite";
+    color: #FFFFFF;
+    text-shadow: 0vh 0.4vh 0.4vh  #212121;
+    
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #212121;
+    background-image:url('/resourses/FON.svg'), url('/resourses/FON.svg'),url('/resourses/FON.svg');
+    background-position:0 0, 0vh 210vh, 0vh 440vh;
+    z-index: auto, 1;
+    background-size: 250vh, 270vh, 270vh;
+    background-repeat:no-repeat;
+}
+
+.for_u{
+    font-size: 2.5vh;
+    margin-left: 10vh ;
+    margin-top: 10.3vh;
+}
+.block{
+    background-color: #8C948C;
+    border-radius: 5%;
+    width: 10vh;
+    height: 10vh;
+    transform: rotate(60deg) ;
+    box-shadow: inset 0.5vh 0.5vh 0.3vh #00000040;
+    z-index: 1;
+    position: relative;
+}
+.oval{
+    background-color: #8C948C;
+    border-radius: 50px;
+    height: 7.7vh;
+    width: 26.5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.4vh;
+    font-weight: normal;
+    z-index: 1;
+    box-shadow: inset 0vh 0.4vh 0.4vh 0.2vh #00000040;
+}
+
+.clear_button{
+    background: none;
+    border: none;
+    
+}
+.try_now{
+    background: none;
+    border: none; 
+    font-size: 2.3vh;
+    font-family: "Special Elite";
+    color: #FFFFFF;
+    text-shadow: 0vh 0.4vh 0.4vh  #212121;
+}
+
+#header{
+    display: flex;
+    justify-content: center;
+    #logo{
+        margin-top: -3.5vh;
+        margin-left: -150vh;
+        height: 30vh;
+        width: 30vh;
+        position: absolute;
+        }
+        #Invite{
+            margin-left: 50vh;
+        }
+        
+        #under_login{
+         
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         margin-left: 40vh;
+         margin-top: 6.5vh;
+        }
+        
+        #login_button{
+            
+            transform: rotate(-60deg);
+            font-size: 2.3vh;
+            font-family: "Special Elite";
+            color: #FFFFFF;
+            text-shadow: 0vh 0.4vh 0.4vh  #212121;
+            
+        }
+
+}
+#main{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    #main_question{
+        text-align: center;
+        justify-content: center;
+        margin-top: 18vh;
+        #question{
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            }
+            #quest{
+                position: relative;
+                z-index: 2;
+            }
+            
+            #background_block1{
+            position: relative;
+            margin-top: -23vh;
+            margin-left: 61.5vh;
+            
+            }
+            
+            #background_block2{
+                margin-left: 123.5vh;
+                margin-top: 3.5vh;
+                position: relative;
+            
+            }
+            
+    }
+    #answer{
+        margin-top: 60vh;
+        #BOT_can{
+            #can_do{
+                position: relative;
+                z-index: 2;
+                text-align: center;
+                margin-top: 50vh;
+                }
+    
+                #background_block3{
+                    margin-left: 57.7vh;
+                    margin-top: -11vh;
+                }
+                #background_block4{
+                    margin-left: 137.7vh;
+                    margin-top: -9.5vh;
+                }
+        }
+        #Music{
+            margin-left: -117vh;
+            margin-top: 5vh;
+            position: relative;
+            z-index: 2;
+            #Music_and_Discord{
+                position: relative;
+                z-index: 2;
+            }
+            #MaD{
+                margin-top: 7vh;
+                position: relative;
+                z-index: 2;
+            }
+            #background_block5{
+                margin-left: 131vh;
+                margin-top: -24vh;
+            }
+            #background_block6{
+                margin-left: 187.7vh;
+                margin-top: 4vh;
+            }
+            #background_oval1{
+                margin-left: 145vh;
+                
+            }
+            
+        }
+        #With_teleg{
+            margin-left: 100vh;
+            margin-top: -20vh;
+            
+            #SoTaD{
+                position: relative;
+                z-index: 2;
+            }
+            #SoTaDdown{
+                margin-top: 7vh;
+                position: relative;
+                z-index: 2;
+            }
+            #background_block7{
+                margin-left: 12vh;
+                margin-top: -30vh;
+                
+            }
+            #background_block8{
+                margin-left: 87.5vh;
+                margin-top: 8.5vh;
+            }
+            #background_oval2{
+                margin-left: 39vh;
+                
+            }
+        }
+        #Custom_profiles{
+            margin-top: 0vh;
+            margin-left: -51vh;
+            #CustomProf{
+            position: relative;
+            z-index: 2;
+            }
+            #CustomProfunder{
+                position: relative;
+                z-index: 2;
+                margin-top: 7vh;
+            }
+            #background_block9{
+                margin-top: -23vh;
+                margin-left: 105vh;
+            }
+            #background_block10{
+                margin-top: 2vh;
+                margin-left: 160.5vh;
+            }
+            #background_oval3{
+                margin-left: 115vh;
+            }
+        }
+    }
+    #But_that_is_not_all{
+        margin-top: 24vh;
+        #But_is_not_all{
+          position: relative;
+          z-index: 2;  
+        }
+        #But_is_not_all_under{
+            margin-top: 7vh;
+            position: relative;
+            z-index: 2;
+        }
+        #background_block11{
+            margin-top: -27.3vh;
+            margin-left: 73vh;
+        }
+        #background_block12{
+            margin-top: 3vh;
+            margin-left: 132vh;
+        }
+        #background_oval4{
+            margin-top: 3vh;
+            margin-left: 82vh;
+        }
+    }
+    #Developers{
+        margin-top: 18vh;
+        margin-left: 3vh;
+        #Develop{
+            position: relative;
+            z-index: 2;
+        }
+        #Oksana{
+            position: relative;
+            z-index: 2;
+            margin-left: -65vh;
+            margin-top: 0vh;
+        }
+        #Yakov{
+            position: relative;
+            z-index: 2;
+            margin-left:-3vh ;
+            margin-top: 0vh;
+        }
+        #Anton{
+            position: relative;
+            z-index: 2;
+            margin-left: 49vh ;
+            margin-top: 0vh;
+        }
+        #background_block13{
+            margin-top: -30vh;
+            margin-left: 85vh
+        }
+        #background_block14{
+            margin-top: 11vh;
+            margin-left: 140vh
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#da{
+    margin-top: 1000vh;
+    font-size: 10vh;
+}

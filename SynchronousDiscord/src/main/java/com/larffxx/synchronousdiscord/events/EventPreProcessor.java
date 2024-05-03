@@ -4,18 +4,22 @@ import com.google.common.base.CaseFormat;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.events.GenericEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@AllArgsConstructor
-public class EventPreProcessor implements PreProcessor<Event<GenericEvent>> {
+@RequiredArgsConstructor
+public class EventPreProcessor {
     private final Collection<Event> events;
 
-    private Map<String, Event> eventMap;
+    private final Map<Class<?>, Event> eventMap = new HashMap<>();
+
 
     @PostConstruct
     public void mapEvents() {
@@ -23,18 +27,7 @@ public class EventPreProcessor implements PreProcessor<Event<GenericEvent>> {
             eventMap.put(event.getEvent(), event);
         }
     }
-
-    @Override
-    public Event getCommand(String event) {
+    public Event getCommand(Class event) {
         return eventMap.get(event);
-    }
-
-    public Event getCommand(GenericEvent genericEvent) {
-        return eventMap.get(genericEvent);
-    }
-
-    public static String getFormatedString(GenericEvent event) {
-        String[] cc = event.toString().split("(id=)");
-        return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, cc[0].replace("(", ""));
     }
 }

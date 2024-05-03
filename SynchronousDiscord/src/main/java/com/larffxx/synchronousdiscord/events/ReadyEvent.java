@@ -43,8 +43,8 @@ public class ReadyEvent extends Event<net.dv8tion.jda.api.events.session.ReadyEv
     }
 
     @Override
-    public String getEvent() {
-        return "readyEvent";
+    public Class getEvent() {
+        return net.dv8tion.jda.api.events.session.ReadyEvent.class;
     }
 
 }

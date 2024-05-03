@@ -7,5 +7,5 @@ import org.springframework.stereotype.Component;
 public interface EventInterface<T> {
     void execute(T event);
 
-    String getEvent();
+    Class getEvent();
 }

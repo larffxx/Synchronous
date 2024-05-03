@@ -23,7 +23,7 @@ public class JoinEvent extends Event<GuildJoinEvent> {
     }
 
     @Override
-    public String getEvent() {
-        return "joinEvent";
+    public Class getEvent() {
+        return GuildJoinEvent.class;
     }
 }

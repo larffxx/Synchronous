@@ -26,7 +26,7 @@ public class SlashCommandInteractionEvent extends Event<net.dv8tion.jda.api.even
     }
 
     @Override
-    public String getEvent() {
-        return "slashCommandInteractionEvent";
+    public Class getEvent() {
+        return net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent.class;
     }
 }

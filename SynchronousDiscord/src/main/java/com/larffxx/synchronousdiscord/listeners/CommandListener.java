@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.listeners;
 
 import com.larffxx.synchronousdiscord.senders.EmbedSender;
-import com.larffxx.synchronousdiscord.senders.SendKafkaMessage;
+import com.larffxx.synchronousdiscord.producer.DiscordMessageProducer;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +16,10 @@ public class CommandListener {
     @Value("${clientSecret}")
     private String clientSecret;
     private final EmbedSender embedSender;
-    private final SendKafkaMessage sendKafkaMessage;
+    private final DiscordMessageProducer discordMessageProducer;
 
-    public CommandListener(EmbedSender embedSender, SendKafkaMessage sendKafkaMessage) {
+    public CommandListener(EmbedSender embedSender, DiscordMessageProducer discordMessageProducer) {
         this.embedSender = embedSender;
-        this.sendKafkaMessage = sendKafkaMessage;
+        this.discordMessageProducer = discordMessageProducer;
     }
 }

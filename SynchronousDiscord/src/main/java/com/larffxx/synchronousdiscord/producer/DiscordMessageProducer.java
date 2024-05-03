@@ -1,7 +1,8 @@
-package com.larffxx.synchronousdiscord.senders;
+package com.larffxx.synchronousdiscord.producer;
 
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
+import com.larffxx.synchronousdiscord.senders.Sender;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -14,8 +15,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class SendKafkaMessage extends Sender<MessageReceivedEvent> {
-    public SendKafkaMessage(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver) {
+public class DiscordMessageProducer extends Sender<MessageReceivedEvent> {
+    public DiscordMessageProducer(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver) {
         super(kafkaTemplate, eventReceiver);
     }
 

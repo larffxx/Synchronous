@@ -4,8 +4,8 @@ import com.larffxx.synchronoustelegram.receivers.UpdateReceiver;
 import org.springframework.stereotype.Component;
 
 @Component
-public interface Command<T> {
-    T execute(UpdateReceiver updateReceiver);
+public interface Command {
+    void execute(UpdateReceiver updateReceiver);
 
     String getCommand();
 }

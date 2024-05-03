@@ -1,7 +1,6 @@
 package com.larffxx.synchronoustelegram.dao;
 
 import com.larffxx.synchronoustelegram.models.GuildProfile;
-import com.larffxx.synchronoustelegram.models.UsersConnect;
 import com.larffxx.synchronoustelegram.repo.GuildProfileRepository;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,7 +1,6 @@
 package com.larffxx.synchronousdiscord.senders;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
@@ -18,19 +17,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
-public class MessageSenderFromKafkaSender extends Sender<JsonNode> {
+public class TelegramMessageRouteService extends Sender<JsonNode> {
     private final ServersConnectDAO serversConnectDAO;
     private final CommandPreProcessor commandPreProcessor;
     private final UsersConnectDAO usersConnectDAO;
-    private final GuildProfileDAO guildProfileDAO;
     private final String USERNAME_PATTER = "@([a-zA-Z0-9\\._\\-]{3,})";
 
-    public MessageSenderFromKafkaSender(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, CommandPreProcessor commandPreProcessor, ServersConnectDAO serversConnectDAO, UsersConnectDAO usersConnectDAO, GuildProfileDAO guildProfileDAO) {
+    public TelegramMessageRouteService(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, CommandPreProcessor commandPreProcessor, ServersConnectDAO serversConnectDAO, UsersConnectDAO usersConnectDAO) {
         super(kafkaTemplate, eventReceiver);
         this.commandPreProcessor = commandPreProcessor;
         this.serversConnectDAO = serversConnectDAO;
         this.usersConnectDAO = usersConnectDAO;
-        this.guildProfileDAO = guildProfileDAO;
     }
 
     @Override
