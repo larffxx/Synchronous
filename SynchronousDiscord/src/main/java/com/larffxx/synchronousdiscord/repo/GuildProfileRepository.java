@@ -13,6 +13,9 @@ public interface GuildProfileRepository extends JpaRepository<GuildProfile, Long
 
     boolean existsByUsersConnect(UsersConnect usersConnect);
     GuildProfile getGuildProfileByUsersConnect(UsersConnect usersConnect);
+
+    GuildProfile getByName(String name);
+
     @Transactional
     @Modifying
     @Query("update GuildProfile u set u.name = ?1 where u.usersConnect = ?2")

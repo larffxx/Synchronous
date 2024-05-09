@@ -22,11 +22,11 @@ public class TelegramMessageConsumer {
         this.telegramMessageConsumer = telegramMessageConsumer;
     }
 
-    @KafkaListener(topics = "${tTopic}", groupId = "${groupId}")
-    public void listener(@Payload String user) {
+    @KafkaListener(topics = "${tMTopic}", groupId = "${groupId}")
+    public void listener(@Payload String message) {
         JsonNode data = null;
         try {
-            data = new ObjectMapper().readTree(user);
+            data = new ObjectMapper().readTree(message);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

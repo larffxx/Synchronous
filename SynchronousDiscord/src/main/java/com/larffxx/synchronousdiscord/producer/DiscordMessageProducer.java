@@ -1,5 +1,6 @@
 package com.larffxx.synchronousdiscord.producer;
 
+import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.senders.Sender;
@@ -16,8 +17,10 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class DiscordMessageProducer extends Sender<MessageReceivedEvent> {
-    public DiscordMessageProducer(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver) {
-        super(kafkaTemplate, eventReceiver);
+
+
+    public DiscordMessageProducer(KafkaTemplate<String, MessagePayload> kafkaTemplate, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, EventReceiver eventReceiver) {
+        super(kafkaTemplate, commandPayloadKafkaTemplate, eventReceiver);
     }
 
     @Override

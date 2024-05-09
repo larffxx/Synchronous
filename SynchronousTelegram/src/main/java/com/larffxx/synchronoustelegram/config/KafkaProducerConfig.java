@@ -1,5 +1,6 @@
 package com.larffxx.synchronoustelegram.config;
 
+import com.larffxx.synchronoustelegram.payload.CommandPayload;
 import com.larffxx.synchronoustelegram.payload.MessagePayload;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -31,9 +32,18 @@ public class KafkaProducerConfig {
     public ProducerFactory<String, MessagePayload> producerFactory(){
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
+    @Bean
+    public ProducerFactory<String, CommandPayload> commandPayloadProducerFactory(){
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
 
     @Bean
-    public KafkaTemplate<String, MessagePayload> kafkaTemplate(ProducerFactory<String, MessagePayload> producerFactory){
+    public KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate(ProducerFactory<String, MessagePayload> producerFactory){
         return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    public KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate(ProducerFactory<String, CommandPayload> commandPayloadProducerFactory){
+        return new KafkaTemplate<>(commandPayloadProducerFactory);
     }
 }

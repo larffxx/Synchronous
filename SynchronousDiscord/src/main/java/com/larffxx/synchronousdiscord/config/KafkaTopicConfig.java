@@ -8,12 +8,20 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaTopicConfig {
-    @Value("${dTopic}")
+    @Value("${dMTopic}")
     private String topic;
 
+    @Value("${dCTopic}")
+    private String dCommand;
+
     @Bean
-    public NewTopic synchronousTopic(){
+    public NewTopic dMessage(){
         return TopicBuilder.name(topic)
                 .build();
+    }
+
+    @Bean
+    public NewTopic dCommand(){
+        return TopicBuilder.name(dCommand).build();
     }
 }

@@ -1,5 +1,6 @@
 package com.larffxx.synchronousdiscord.config;
 
+import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,17 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, MessagePayload> kafkaTemplate(ProducerFactory<String, MessagePayload> producerFactory){
+    public ProducerFactory<String, CommandPayload> commandPayloadProducerFactory(){
+        return new DefaultKafkaProducerFactory<>(producerConfig());
+    }
+
+    @Bean
+    public KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate(ProducerFactory<String, MessagePayload> producerFactory){
         return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    public KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate(ProducerFactory<String, CommandPayload> commandPayloadProducerFactory){
+        return new KafkaTemplate<>(commandPayloadProducerFactory);
     }
 }

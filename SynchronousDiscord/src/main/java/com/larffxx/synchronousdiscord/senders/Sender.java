@@ -1,5 +1,6 @@
 package com.larffxx.synchronousdiscord.senders;
 
+import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
@@ -12,13 +13,17 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public abstract class Sender <T> {
-    @Value("${dTopic}")
+    @Value("${dMTopic}")
     private String topic;
+    @Value("${dCTopic}")
+    private String cTopic;
     private final KafkaTemplate<String, MessagePayload> kafkaTemplate;
+    private final KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate;
     private final EventReceiver eventReceiver;
 
-    public Sender(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver) {
+    public Sender(KafkaTemplate<String, MessagePayload> kafkaTemplate, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, EventReceiver eventReceiver) {
         this.kafkaTemplate = kafkaTemplate;
+        this.commandPayloadKafkaTemplate = commandPayloadKafkaTemplate;
         this.eventReceiver = eventReceiver;
     }
 

@@ -24,8 +24,8 @@ public class ServersConnectDAO {
         return serversConnectRepository.getConnectByDiscordGuild(discordGuild);
     }
 
-    public String getGuildByTelegramChat(String telegramChat){
-        return serversConnectRepository.getConnectByTelegramChannel(telegramChat).getDiscordGuild();
+    public ServersConnect getByTelegramChat(String telegramChat){
+        return serversConnectRepository.getConnectByTelegramChannel(telegramChat);
     }
 
     public boolean existsByDiscordGuildId(String guildId){

@@ -1,6 +1,8 @@
 package com.larffxx.synchronousdiscord.slashcommands;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
+import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
@@ -14,10 +16,12 @@ import org.springframework.stereotype.Component;
 @Setter
 public class ConnectCommand extends Command{
     private final ServersConnectDAO serversConnectDAO;
-    public ConnectCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, ServersConnectDAO serversConnectDAO) {
-        super(kafkaTemplate, eventReceiver);
+
+    public ConnectCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, ServersConnectDAO serversConnectDAO) {
+        super(kafkaTemplate, eventReceiver, commandPayloadKafkaTemplate);
         this.serversConnectDAO = serversConnectDAO;
     }
+
 
     @Override
     public void execute(SlashCommandInteractionEvent t) {
@@ -26,9 +30,13 @@ public class ConnectCommand extends Command{
     }
 
     @Override
-    public void execute(String commandName) {
-
+    public void execute(JsonNode data) {
+        getEventReceiver().getJda()
+                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild())
+                .getTextChannelsByName("telegram", true).get(0)
+                .sendMessage("Servers Connected").queue();
     }
+
 
     @Override
     public String getCommand() {

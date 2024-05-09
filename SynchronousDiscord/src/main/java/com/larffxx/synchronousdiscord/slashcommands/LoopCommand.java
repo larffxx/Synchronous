@@ -1,8 +1,11 @@
 package com.larffxx.synchronousdiscord.slashcommands;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
+import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
@@ -16,17 +19,21 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class LoopCommand extends Command {
+    private final ServersConnectDAO serversConnectDAO;
     private final CommandListener commandListener;
     private final ResultHandler resultHandler;
-    public LoopCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, CommandListener commandListener, ResultHandler resultHandler) {
-        super(kafkaTemplate, eventReceiver);
+
+    public LoopCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, CommandListener commandListener, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO) {
+        super(kafkaTemplate, eventReceiver, commandPayloadKafkaTemplate);
         this.commandListener = commandListener;
         this.resultHandler = resultHandler;
+        this.serversConnectDAO = serversConnectDAO;
     }
+
 
     @Override
     public void execute(SlashCommandInteractionEvent t) {
-        GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getTextChannel().getGuild());
+        GuildMusicManager musicManager = resultHandler.getMusicManager(t.getGuild());
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
             t.reply("No music playing").queue();
         }else {
@@ -37,8 +44,8 @@ public class LoopCommand extends Command {
     }
 
     @Override
-    public void execute(String commandName) {
-        GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getTextChannel().getGuild());
+    public void execute(JsonNode data) {
+        GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild()));
         EmbedBuilder eb = new EmbedBuilder();
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
             eb.setDescription("No music is playing");

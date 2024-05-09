@@ -40,4 +40,8 @@ public class GuildProfileDAO {
         guildProfileRepository.updateByUsersConnect(name, usersConnect);
     }
 
+    public GuildProfile getByName(String name){
+        return guildProfileRepository.getByName(name);
+    }
+
 }

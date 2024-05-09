@@ -8,10 +8,11 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class RegisterCommand implements Command {
+public class RegisterCommand extends Command {
     private final UsersConnectDAO usersConnectDAO;
 
-    public RegisterCommand(UsersConnectDAO usersConnectDAO) {
+    public RegisterCommand(UpdateReceiver updateReceiver, UsersConnectDAO usersConnectDAO) {
+        super(updateReceiver);
         this.usersConnectDAO = usersConnectDAO;
     }
 

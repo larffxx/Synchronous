@@ -8,11 +8,17 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaTopicConfig {
-    @Value("${tTopic}")
+    @Value("${tMTopic}")
     private String topic;
+    @Value("${tCTopic}")
+    private String tCommand;
 
     @Bean
-    public NewTopic synchronousTopic() {
+    public NewTopic tMessage() {
         return TopicBuilder.name(topic).build();
+    }
+    @Bean
+    public NewTopic tCommand(){
+        return TopicBuilder.name(tCommand).build();
     }
 }

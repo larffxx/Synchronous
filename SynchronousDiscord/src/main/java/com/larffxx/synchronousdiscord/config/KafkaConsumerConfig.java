@@ -1,5 +1,6 @@
 package com.larffxx.synchronousdiscord.config;
 
+import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,14 +32,26 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, MessagePayload> consumerFactory() {
+    public ConsumerFactory<String, MessagePayload> messagePayloadConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MessagePayload>> factory(ConsumerFactory<String, MessagePayload> consumerFactory) {
+    public ConsumerFactory<String, CommandPayload> commandPayloadConsumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfig());
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, CommandPayload>> concurrentMessageListenerContainerKafkaListenerContainerFactory(ConsumerFactory<String, CommandPayload> commandPayloadConsumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, CommandPayload> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(commandPayloadConsumerFactory);
+        return factory;
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MessagePayload>> messageListenerContainerKafkaListenerContainerFactory(ConsumerFactory<String, MessagePayload> messagePayloadConsumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, MessagePayload> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory);
+        factory.setConsumerFactory(messagePayloadConsumerFactory);
         return factory;
     }
 }

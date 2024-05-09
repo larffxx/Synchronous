@@ -7,7 +7,7 @@ import java.io.File;
 
 @Getter
 @Setter
-public class MessagePayload {
+public class MessagePayload{
     private Long chatId;
     private String name;
     private String message;

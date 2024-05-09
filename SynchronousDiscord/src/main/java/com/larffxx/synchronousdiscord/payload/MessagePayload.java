@@ -19,10 +19,4 @@ public class MessagePayload {
         this.message = message;
         this.chatId = chatId;
     }
-
-
-    @Override
-    public String toString() {
-        return "Name: " + name + " " + "Message: " + message;
-    }
 }
