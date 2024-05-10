@@ -62,7 +62,7 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
     @Override
     public void consume(Update update) {
         commandListener.saveToUpdateReceiver(update);
-        if (update.getMessage().getFrom().getIsBot()) {
+        if (!update.getMessage().getFrom().getIsBot()) {
             if (update.getMessage().hasText()) {
                 if (update.getMessage().getText().startsWith("/")) {
                     String[] s = update.getMessage().getText().split(" ");
