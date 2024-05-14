@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.larffxx.synchronousdiscord.senders.TelegramMessageRouteService;
+import com.larffxx.synchronousdiscord.routeservices.TelegramMessageRouteService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.kafka.annotation.KafkaListener;

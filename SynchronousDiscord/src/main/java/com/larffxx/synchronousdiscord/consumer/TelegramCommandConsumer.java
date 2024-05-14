@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
-import com.larffxx.synchronousdiscord.senders.TelegramCommandRouteService;
+import com.larffxx.synchronousdiscord.routeservices.TelegramCommandRouteService;
 import com.larffxx.synchronousdiscord.slashcommands.Command;
 import com.larffxx.synchronousdiscord.slashcommands.CommandPreProcessor;
 import lombok.Getter;
