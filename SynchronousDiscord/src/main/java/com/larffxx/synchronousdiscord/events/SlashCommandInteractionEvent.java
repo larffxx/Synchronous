@@ -6,7 +6,6 @@ import com.larffxx.synchronousdiscord.slashcommands.Command;
 import com.larffxx.synchronousdiscord.slashcommands.CommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

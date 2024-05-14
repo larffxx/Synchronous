@@ -1,31 +1,23 @@
 package com.larffxx.synchronousdiscord.slashcommands;
 
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
 @Setter
-public abstract class Command implements CommandInterface {
-    @Value("${dMTopic}")
-    private String topic;
-    @Value("${dCTopic}")
-    private String cTopic;
+public abstract class Command {
     private final EventReceiver eventReceiver;
-    private final KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate;
-    private final KafkaTemplate<String, MessagePayload> kafkaTemplate;
 
-    public Command(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
+    public Command(EventReceiver eventReceiver) {
         this.eventReceiver = eventReceiver;
-        this.commandPayloadKafkaTemplate = commandPayloadKafkaTemplate;
     }
 
+    public abstract void execute(SlashCommandInteractionEvent t);
+    public abstract void execute(JsonNode data);
+    public abstract String getCommand();
 }

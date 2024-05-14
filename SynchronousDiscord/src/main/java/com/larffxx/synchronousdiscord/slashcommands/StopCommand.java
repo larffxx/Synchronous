@@ -5,15 +5,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,8 +19,8 @@ public class StopCommand extends Command{
     private final ServersConnectDAO serversConnectDAO;
     private final ResultHandler resultHandler;
 
-    public StopCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO) {
-        super(kafkaTemplate, eventReceiver, commandPayloadKafkaTemplate);
+    public StopCommand(EventReceiver eventReceiver, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO) {
+        super(eventReceiver);
         this.resultHandler = resultHandler;
         this.serversConnectDAO = serversConnectDAO;
     }

@@ -4,12 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,8 +13,8 @@ public class RegisterCommand extends Command {
     private final UsersConnectDAO usersConnectDAO;
     private final ServersConnectDAO serversConnectDAO;
 
-    public RegisterCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO) {
-        super(kafkaTemplate, eventReceiver, commandPayloadKafkaTemplate);
+    public RegisterCommand(EventReceiver eventReceiver, UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO) {
+        super(eventReceiver);
         this.usersConnectDAO = usersConnectDAO;
         this.serversConnectDAO = serversConnectDAO;
     }

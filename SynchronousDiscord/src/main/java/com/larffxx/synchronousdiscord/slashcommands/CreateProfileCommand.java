@@ -4,15 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.model.Profile;
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.repo.UsersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,8 +19,8 @@ public class CreateProfileCommand extends Command {
     private final UsersConnectDAO usersConnectDAO;
     private final UsersConnectRepository usersConnectRepository;
 
-    public CreateProfileCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO, UsersConnectRepository usersConnectRepository) {
-        super(kafkaTemplate, eventReceiver, commandPayloadKafkaTemplate);
+    public CreateProfileCommand(EventReceiver eventReceiver, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO, UsersConnectRepository usersConnectRepository) {
+        super(eventReceiver);
         this.profileDAO = profileDAO;
         this.usersConnectDAO = usersConnectDAO;
         this.usersConnectRepository = usersConnectRepository;

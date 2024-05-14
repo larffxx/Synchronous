@@ -1,13 +1,9 @@
 package com.larffxx.synchronousdiscord.producer;
 
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
-import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.senders.Sender;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;

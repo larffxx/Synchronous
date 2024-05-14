@@ -3,15 +3,11 @@ package com.larffxx.synchronousdiscord.slashcommands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.lavaplayer.PlayerManager;
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 
@@ -21,8 +17,8 @@ public class PlayCommand extends Command {
     private final PlayerManager playerManager;
     private String link;
 
-    public PlayCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, PlayerManager playerManager, ServersConnectDAO serversConnectDAO) {
-        super(kafkaTemplate, eventReceiver, commandPayloadKafkaTemplate);
+    public PlayCommand(EventReceiver eventReceiver, PlayerManager playerManager, ServersConnectDAO serversConnectDAO) {
+        super(eventReceiver);
         this.playerManager = playerManager;
         this.serversConnectDAO = serversConnectDAO;
     }

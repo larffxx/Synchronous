@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,8 +15,8 @@ public class ProfileCommand extends Command {
     private final UsersConnectDAO usersConnectDAO;
     private final CommandListener commandListener;
 
-    public ProfileCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, CommandListener commandListener, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
-        super(kafkaTemplate, eventReceiver, commandPayloadKafkaTemplate);
+    public ProfileCommand(EventReceiver eventReceiver, CommandListener commandListener, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
+        super(eventReceiver);
         this.commandListener = commandListener;
         this.profileDAO = profileDAO;
         this.usersConnectDAO = usersConnectDAO;

@@ -3,12 +3,8 @@ package com.larffxx.synchronousdiscord.slashcommands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,8 +12,8 @@ public class EditProfileCommand extends Command{
     private final ProfileDAO profileDAO;
     private final UsersConnectDAO usersConnectDAO;
 
-    public EditProfileCommand(KafkaTemplate<String, MessagePayload> kafkaTemplate, EventReceiver eventReceiver, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
-        super(kafkaTemplate, eventReceiver, commandPayloadKafkaTemplate);
+    public EditProfileCommand(EventReceiver eventReceiver, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
+        super(eventReceiver);
         this.profileDAO = profileDAO;
         this.usersConnectDAO = usersConnectDAO;
     }

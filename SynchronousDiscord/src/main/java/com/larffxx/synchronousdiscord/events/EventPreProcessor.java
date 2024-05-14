@@ -1,5 +1,6 @@
 package com.larffxx.synchronousdiscord.events;
 
+import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -21,7 +22,6 @@ public class EventPreProcessor {
             eventMap.put(event.getEvent(), event);
         }
     }
-
     public Event getCommand(Class event) {
         return eventMap.get(event);
     }
