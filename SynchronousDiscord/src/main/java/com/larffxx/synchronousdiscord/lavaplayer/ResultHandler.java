@@ -55,7 +55,7 @@ public class ResultHandler implements AudioLoadResultHandler {
     public void playlistLoaded(AudioPlaylist playlist) {
         final List<AudioTrack> tracks = playlist.getTracks();
         EmbedBuilder playlistEb = new EmbedBuilder();
-        playlistEb.addField("Playlist", playlist.getTracks().get(0).getInfo().uri, false);
+        playlistEb.addField("Playlist", playlist.getName(), false);
         for (AudioTrack track : tracks) {
             getMusicManager(eventReceiver.getTextChannel().getGuild()).getScheduler().queue(track);
         }

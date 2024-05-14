@@ -9,12 +9,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmbedSender extends Sender<EmbedBuilder> {
-    public EmbedSender(KafkaTemplate<String, MessagePayload> kafkaTemplate, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, EventReceiver eventReceiver) {
-        super(kafkaTemplate, commandPayloadKafkaTemplate, eventReceiver);
+
+    public EmbedSender(EventReceiver eventReceiver) {
+        super(eventReceiver);
     }
 
     @Override
     public void send(EmbedBuilder eb) {
         getEventReceiver().getTextChannel().sendMessageEmbeds(eb.build()).queue();
+    }
+
+    @Override
+    public String getSender() {
+        return "embedSender";
     }
 }

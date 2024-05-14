@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -20,19 +22,21 @@ import java.util.stream.Collectors;
 @Component
 @Getter
 @Setter
-public class DiscordCommandProducer extends Sender<SlashCommandInteractionEvent> {
-    public DiscordCommandProducer(KafkaTemplate<String, MessagePayload> kafkaTemplate, KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, EventReceiver eventReceiver) {
-        super(kafkaTemplate, commandPayloadKafkaTemplate, eventReceiver);
+public class DiscordCommandProducer {
+    @Value("${dCTopic}")
+    private String cTopic;
+    private final KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate;
+    public DiscordCommandProducer(KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate) {
+        this.commandPayloadKafkaTemplate = commandPayloadKafkaTemplate;
     }
 
-    @Override
     public void send(SlashCommandInteractionEvent event) {
         CommandPayload commandPayload = new CommandPayload(event.getInteraction().getMember().getIdLong(), event.getInteraction().getMember().getEffectiveName(), event.getName(),
                 new ArrayList<>(event.getOptions().stream().map(OptionMapping::getAsString).collect(Collectors.toList())));
         Message command = MessageBuilder
                 .withPayload(commandPayload)
-                .setHeader(KafkaHeaders.TOPIC, getTopic())
+                .setHeader(KafkaHeaders.TOPIC, cTopic)
                 .build();
-        getKafkaTemplate().send(command);
+        commandPayloadKafkaTemplate.send(command);
     }
 }

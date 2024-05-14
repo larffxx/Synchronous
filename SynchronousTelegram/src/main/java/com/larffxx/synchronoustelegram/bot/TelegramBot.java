@@ -39,11 +39,12 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
     private TelegramClient telegramClient;
 
     @Autowired
-    public TelegramBot(CommandListener commandListener, UpdateReceiver updateReceiver, CommandPreProcessor commandPreProcessor, TelegramKafkaMessageProducer telegramKafkaMessageProducer) {
+    public TelegramBot(CommandListener commandListener, UpdateReceiver updateReceiver, CommandPreProcessor commandPreProcessor, TelegramKafkaMessageProducer telegramKafkaMessageProducer, TelegramKafkaCommandProducer telegramKafkaCommandProducer) {
         this.commandListener = commandListener;
         this.updateReceiver = updateReceiver;
         this.commandPreProcessor = commandPreProcessor;
         this.telegramKafkaMessageProducer = telegramKafkaMessageProducer;
+        this.telegramKafkaCommandProducer = telegramKafkaCommandProducer;
     }
 
 

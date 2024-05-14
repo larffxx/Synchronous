@@ -33,6 +33,10 @@ public class UsersConnectDAO {
         return usersConnectRepository.findByTelegramName(name);
     }
 
+    public void updateByDiscordId(String discordName, String discordId){
+        usersConnectRepository.updateByDiscordId(discordName, discordId);
+    }
+
     public void saveData(UsersConnect usersConnect){
         usersConnectRepository.save(usersConnect);
     }

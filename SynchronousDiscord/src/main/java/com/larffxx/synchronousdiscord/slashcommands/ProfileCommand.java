@@ -9,7 +9,6 @@ import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
@@ -45,7 +44,7 @@ public class ProfileCommand extends Command {
 
     @Override
     public void execute(JsonNode data) {
-        if(profileDAO.existsByUsersConnect(profileDAO.getUsersConnectDAO().getByTelegramName(data.findValue("name").asText()))){
+        if (profileDAO.existsByUsersConnect(profileDAO.getUsersConnectDAO().getByTelegramName(data.findValue("name").asText()))) {
             EmbedBuilder eb = new EmbedBuilder()
                     .setAuthor(data.findValue("name").asText())
                     .setTitle(data.findValue("name").asText() + ": profile")
@@ -53,11 +52,12 @@ public class ProfileCommand extends Command {
                     .setImage(profileDAO.getProfile(usersConnectDAO.getByTelegramName(data.findValue("name").asText()).getDiscordName()).getPhotoUrl())
                     .setUrl(profileDAO.getProfile(usersConnectDAO.getByTelegramName(data.findValue("name").asText()).getDiscordName()).getSocialUrl());
             commandListener.getEmbedSender().send(eb);
-        }else {
-            getEventReceiver().getJda()
-                    .getGuildById(usersConnectDAO.getByTelegramName(data.findValue("name").asText()).getServersConnect().getDiscordGuild())
-                    .getTextChannelsByName("telegram", true).get(0)
-                    .sendMessage("Create profile with /create command").queue();
+        } else {
+            EmbedBuilder eb = new EmbedBuilder()
+                    .setAuthor(data.findValue("name").asText())
+                    .setTitle("Error")
+                    .setDescription("Create profile with /create command");
+            commandListener.getEmbedSender().send(eb);
         }
     }
 
