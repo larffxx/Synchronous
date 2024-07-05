@@ -2,14 +2,11 @@ package com.larffxx.synchronousdiscord.senders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.utils.FileUpload;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -27,12 +24,12 @@ public class FileMessageSender extends Sender<JsonNode>{
     @Override
     public void send(JsonNode data) {
         if (!data.findValue("message").asText().equals("null") && !data.findValue("file").asText().equals("null")) {
-            getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild()).getTextChannelsByName("telegram", true).get(0)
+            getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()).getTextChannelsByName("telegram", true).get(0)
                     .sendMessage(data.findValue("name").asText() + ": " + data.findValue("message").asText())
                     .addFiles(FileUpload.fromData(new File(data.findPath("file").asText()), "photo.png"))
                     .setEmbeds(new EmbedBuilder().setImage("attachment://photo.png").build()).queue();
         } else {
-            getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild()).getTextChannelsByName("telegram", true).get(0)
+            getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()).getTextChannelsByName("telegram", true).get(0)
                     .sendMessage(data.findValue("name").asText() + ": ")
                     .addFiles(FileUpload.fromData(new File(data.findPath("file").asText()), "photo.png"))
                     .setEmbeds(new EmbedBuilder().setImage("attachment://photo.png").build()).queue();

@@ -1,28 +1,37 @@
 package com.larffxx.synchronoustelegram.commands;
 
 import com.larffxx.synchronoustelegram.receivers.UpdateReceiver;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.send.SendVenue;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+
 @Component
-public class SendPhotoMessage extends Command{
-    public SendPhotoMessage(UpdateReceiver updateReceiver) {
+@Getter
+@Setter
+public class PlayCommand extends Command{
+    public PlayCommand(UpdateReceiver updateReceiver) {
         super(updateReceiver);
     }
 
-    public void execute(UpdateReceiver update) {
-        SendPhoto sendPhoto = SendPhoto.builder().chatId(String.valueOf(update.getChatId()))
-                .photo(new InputFile()).caption("").parseMode("html").build();
+    @Override
+    public void execute(UpdateReceiver updateReceiver) {
+        SendMessage sm;
+        sm = SendMessage.builder().chatId(updateReceiver.getChatId()).text("Music added").build();
         try {
-            update.getTelegramClient().execute(sendPhoto);
+            updateReceiver.getTelegramClient().execute(sm);
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
     }
+
+    @Override
     public String getCommand() {
-        return "/sendPhoto";
+        return "/play";
     }
 }

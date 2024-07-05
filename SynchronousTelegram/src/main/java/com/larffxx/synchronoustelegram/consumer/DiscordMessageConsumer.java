@@ -39,7 +39,7 @@ public class DiscordMessageConsumer {
             JsonNode data = (new ObjectMapper()).readTree(message);
             String USERNAME_PATTER = "@([a-zA-Z0-9\\._\\-]{3,})";
             Matcher matcher = Pattern.compile(USERNAME_PATTER).matcher(data.findValue("message").asText());
-            updateReceiver.setChatId(serversConnectDAO.getChatByDiscordGuild(data.findValue("chatId").asText()).getTelegramChannel());
+            updateReceiver.setChatId(serversConnectDAO.getTelegramChatByDiscordGuild(data.findValue("guildId").asText()).getTelegramChannel());
             if (matcher.find()) {
                 String formattedMSG = data.findValue("message").asText().replace(matcher.group(),
                         "@" + guildProfileDAO.getByName(matcher.group().replace("@", "")).getUsersConnect().getTelegramName());

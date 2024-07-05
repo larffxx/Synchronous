@@ -37,7 +37,7 @@ public class StopCommand extends Command{
     @Override
     public void execute(JsonNode data) {
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild()));
+                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()));
         guildMusicManager.getScheduler().stopTrack();
     }
 

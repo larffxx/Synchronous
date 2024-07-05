@@ -14,9 +14,11 @@ import org.springframework.stereotype.Component;
 @Setter
 public class CommandListener {
     @Value("${clientId}")
-    private String clientId;
+    private String spotifyClientId;
     @Value("${clientSecret}")
-    private String clientSecret;
+    private String spotifyClientSecret;
+    @Value("${yandexToken}")
+    private String yandexAccessToken;
     private final EmbedSender embedSender;
     private final DiscordMessageProducer discordMessageProducer;
     private final DiscordCommandProducer discordCommandProducer;

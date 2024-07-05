@@ -1,9 +1,6 @@
 package com.larffxx.synchronousdiscord.producer;
 
 import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
-import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.senders.Sender;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -30,7 +27,7 @@ public class DiscordCommandProducer {
     }
 
     public void send(SlashCommandInteractionEvent event) {
-        CommandPayload commandPayload = new CommandPayload(event.getInteraction().getMember().getIdLong(), event.getInteraction().getMember().getEffectiveName(), event.getName(),
+        CommandPayload commandPayload = new CommandPayload(event.getInteraction().getGuild().getId(), event.getInteraction().getMember().getEffectiveName(), event.getName(),
                 new ArrayList<>(event.getOptions().stream().map(OptionMapping::getAsString).collect(Collectors.toList())));
         Message command = MessageBuilder
                 .withPayload(commandPayload)

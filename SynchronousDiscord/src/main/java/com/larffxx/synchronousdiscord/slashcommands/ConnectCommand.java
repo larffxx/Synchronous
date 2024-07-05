@@ -29,7 +29,7 @@ public class ConnectCommand extends Command{
     @Override
     public void execute(JsonNode data) {
         getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild())
+                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild())
                 .getTextChannelsByName("telegram", true).get(0)
                 .sendMessage("Servers Connected").queue();
     }

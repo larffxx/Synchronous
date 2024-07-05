@@ -21,7 +21,7 @@ public class TelegramCommandRouteService extends RouteService<Command>{
 
     public void send(JsonNode data) {
         getEventReceiver().setTextChannel(getEventReceiver().getJda()
-                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild())
+                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild())
                 .getTextChannelsByName("telegram",true).get(0));
         Command command = getPreProcessor().getCommand(data.findValue("command").asText());
         command.execute(data);

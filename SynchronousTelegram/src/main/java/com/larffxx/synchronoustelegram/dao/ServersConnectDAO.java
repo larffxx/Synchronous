@@ -28,8 +28,8 @@ public class ServersConnectDAO {
         return serversConnectRepository.existsByTelegramChannel(telegramChatName);
     }
 
-    public ServersConnect getChatByDiscordGuild(String telegramChat){
-        return serversConnectRepository.findByDiscordGuild(telegramChat);
+    public ServersConnect getTelegramChatByDiscordGuild(String discordGuild){
+        return serversConnectRepository.findByDiscordGuild(discordGuild);
     }
 
     public void updateTelegramChannel(String telegramChat, String telegramChannel){

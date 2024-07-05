@@ -10,6 +10,9 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.springframework.stereotype.Component;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 
 @Component
 public class PlayCommand extends Command {
@@ -28,6 +31,9 @@ public class PlayCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         if (!event.getUser().isBot()) {
             link = event.getOption("type").getAsString();
+            if (!isUrl(link)) {
+                link = "ytsearch:" + link;
+            }
             Guild guild = event.getGuild();
 
             VoiceChannel channel = event.getMember().getVoiceState().getChannel().asVoiceChannel();
@@ -42,9 +48,11 @@ public class PlayCommand extends Command {
 
     @Override
     public void execute(JsonNode data) {
-        String[] getLink = data.findValue("command").asText().split(" ");
-        link = getLink[1];
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild());
+        link = String.valueOf(data.findValues("options").get(0).get(0).asText());
+        if (!isUrl(link)) {
+            link = "ytsearch:" + link;
+        }
+        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild());
 
         VoiceChannel channel = guild.getVoiceChannelsByName("general", true).get(0);
         AudioManager manager = guild.getAudioManager();
@@ -52,8 +60,17 @@ public class PlayCommand extends Command {
         manager.openAudioConnection(channel);
 
         playerManager.loadAndPlay(getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild())
+                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild())
                 .getTextChannelsByName("telegram", true).get(0), link);
+    }
+
+    public boolean isUrl(String url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
     }
 
 

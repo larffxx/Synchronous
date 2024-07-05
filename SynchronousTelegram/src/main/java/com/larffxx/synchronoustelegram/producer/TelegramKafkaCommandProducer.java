@@ -25,9 +25,9 @@ public class TelegramKafkaCommandProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendKafkaMessage(Update update){
-        CommandPayload commandPayload = new CommandPayload(update.getMessage().getChatId(), update.getMessage().getFrom().getUserName(), update.getMessage().getText().replace("/", ""),
-                new ArrayList<>(List.of(update.getMessage().getText().split(" "))));
+    public void sendKafkaMessage(Update update) {
+        CommandPayload commandPayload = new CommandPayload(update.getMessage().getChatId().toString(), update.getMessage().getFrom().getUserName(), update.getMessage().getText().split(" ")[0].replace("/", ""),
+                new ArrayList<>(List.of(update.getMessage().getText().split(" ")[1])));
         Message message = MessageBuilder.withPayload(commandPayload).setHeader("kafka_topic", topic).build();
         kafkaTemplate.send(message);
     }

@@ -40,7 +40,7 @@ public class QueueCommand extends Command {
     @Override
     public void execute(JsonNode data) {
         GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild()));
+                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()));
         queueEmbedCreator(musicManager);
     }
 

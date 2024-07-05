@@ -5,7 +5,6 @@ import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.senders.Sender;
-import com.larffxx.synchronousdiscord.senders.SenderPreProcessor;
 import org.springframework.stereotype.Component;
 
 
@@ -19,7 +18,7 @@ public class TelegramMessageRouteService extends RouteService<Sender>{
 
     public void send(JsonNode data) {
         getEventReceiver().setTextChannel(getEventReceiver().getJda()
-                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild())
+                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild())
                 .getTextChannelsByName("telegram", true).get(0));
         if (data.findValue("file").asText().equals("null")) {
             Sender sender = getPreProcessor().getCommand("message");

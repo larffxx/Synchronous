@@ -42,7 +42,7 @@ public class LoopCommand extends Command {
 
     @Override
     public void execute(JsonNode data) {
-        GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild()));
+        GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()));
         EmbedBuilder eb = new EmbedBuilder();
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
             eb.setDescription("No music is playing");

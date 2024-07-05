@@ -4,7 +4,6 @@ import com.larffxx.synchronousdiscord.listeners.EventsListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;

@@ -18,7 +18,6 @@ repositories {
     }
     maven { url "https://jitpack.io" }
     maven {
-        name "arbjergDevSnapshots"
         url "https://maven.lavalink.dev/snapshots"
     }
     maven {
@@ -40,9 +39,10 @@ dependencies {
     implementation 'org.apache.kafka:kafka-streams'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'dev.arbjerg:lavaplayer:2.1.1'
+    implementation 'dev.arbjerg:lavaplayer:2.2.0'
     implementation 'dev.arbjerg:lavaplayer:afec211f05c9dcf0b6ee44276a02f0316ea2458a-SNAPSHOT'
-    implementation "com.github.TopiSenpai.LavaSrc:lavasrc:4.0.1"
+    implementation "com.github.topi314.lavasrc:lavasrc:4.1.1"
+    implementation "com.github.topi314.lavasrc:lavasrc-protocol:4.1.1"
     implementation("com.google.guava:guava:31.0.1-jre")
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

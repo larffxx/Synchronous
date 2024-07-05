@@ -10,7 +10,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class CommandPayload {
-    private Long chatId;
-    private String name, command;
+    private String guildId;
+    private String name;
+    private String command;
     private List<String> options;
 }

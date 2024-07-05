@@ -37,7 +37,7 @@ public class RegisterCommand extends Command {
 
     @Override
     public void execute(JsonNode data) {
-        getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild())
+        getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild())
                 .getTextChannelsByName("telegram", true).get(0)
                 .sendMessage(data.findValue("name").asText() + ": was registered").queue();
     }

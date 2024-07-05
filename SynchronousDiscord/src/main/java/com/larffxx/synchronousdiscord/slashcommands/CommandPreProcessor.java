@@ -21,6 +21,7 @@ public class CommandPreProcessor implements PreProcessor<Command> {
             commandMap.put(command.getCommand(), command);
         }
     }
+
     @Override
     public Command getCommand(String command) {
         return commandMap.get(command);

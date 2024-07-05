@@ -1,12 +1,14 @@
 package com.larffxx.synchronousdiscord.lavaplayer;
 
 import com.github.topi314.lavasrc.spotify.SpotifySourceManager;
+import com.github.topi314.lavasrc.yandexmusic.YandexMusicSourceManager;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -34,7 +36,8 @@ public class ResultHandler implements AudioLoadResultHandler {
         this.commandListener = commandListener;
         this.musicManagers = new HashMap<>();
         this.audioPlayerManager = new DefaultAudioPlayerManager();
-        audioPlayerManager.registerSourceManager(new SpotifySourceManager(null, commandListener.getClientId(), commandListener.getClientSecret(), "US", audioPlayerManager));
+        audioPlayerManager.registerSourceManager(new SpotifySourceManager(null, commandListener.getSpotifyClientId(), commandListener.getSpotifyClientSecret(), "US", audioPlayerManager));
+        audioPlayerManager.registerSourceManager(new YandexMusicSourceManager(commandListener.getYandexAccessToken()));
 
         AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
