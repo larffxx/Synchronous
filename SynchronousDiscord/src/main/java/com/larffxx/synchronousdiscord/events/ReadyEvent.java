@@ -37,7 +37,9 @@ public class ReadyEvent extends Event<net.dv8tion.jda.api.events.session.ReadyEv
                             .addOption(OptionType.ATTACHMENT, "photo", "Upload photo")
                             .addOption(OptionType.STRING, "url", "Enter your social url"),
                     Commands.slash("connect", "Connect your servers")
-                            .addOption(OptionType.STRING, "telegram", "Enter your telegram channel name")
+                            .addOption(OptionType.STRING, "telegram", "Enter your telegram channel name"),
+                    Commands.slash("delete", "delete messages")
+                            .addOption(OptionType.INTEGER, "value", "Number of messages")
                             .setDefaultPermissions(DefaultMemberPermissions.ENABLED)).queue();
         }
     }
