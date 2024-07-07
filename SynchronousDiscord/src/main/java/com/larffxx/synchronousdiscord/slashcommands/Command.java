@@ -1,6 +1,7 @@
 package com.larffxx.synchronousdiscord.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +17,7 @@ public abstract class Command {
     public Command(EventReceiver eventReceiver) {
         this.eventReceiver = eventReceiver;
     }
-
-    public abstract void execute(SlashCommandInteractionEvent t);
-    public abstract void execute(JsonNode data);
+    public abstract void execute(SlashCommandInteractionEvent t) throws CommandException;
+    public abstract void execute(JsonNode data) throws CommandException;
     public abstract String getCommand();
 }

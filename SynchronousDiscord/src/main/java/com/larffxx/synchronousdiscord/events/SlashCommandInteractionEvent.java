@@ -1,5 +1,6 @@
 package com.larffxx.synchronousdiscord.events;
 
+import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.slashcommands.Command;
@@ -26,7 +27,12 @@ public class SlashCommandInteractionEvent extends Event<net.dv8tion.jda.api.even
         getEventReceiver().setTextChannel(event.getChannel().asTextChannel());
         Command command = commandPreProcessor.getCommand(event.getInteraction().getName());
         commandListener.getDiscordCommandProducer().send(event);
-        command.execute(event);
+
+        try {
+            command.execute(event);
+        } catch (CommandException e) {
+            event.reply(e.getMessage()).queue();
+        }
     }
 
     @Override
