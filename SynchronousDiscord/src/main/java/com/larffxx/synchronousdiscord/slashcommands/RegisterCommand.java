@@ -23,7 +23,8 @@ public class RegisterCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (!event.getUser().isBot()) {
-            UsersConnect usersConnect = new UsersConnect(event.getInteraction().getUser().getName(), event.getOption("telegram").getAsString(),event.getInteraction().getUser().getId(), serversConnectDAO.getByDiscordGuild(event.getGuild().getId()));
+            UsersConnect usersConnect = new UsersConnect(event.getInteraction().getUser().getName(), event.getOption(getOption()).getAsString(),
+                    event.getInteraction().getUser().getId(), serversConnectDAO.getByDiscordGuild(event.getGuild().getId()));
             try {
                 if (usersConnectDAO.getByDiscordName(event.getInteraction().getUser().getName()).getDiscordName().equals(usersConnect.getDiscordName())) {
                     event.reply("You have been registered before").queue();
@@ -45,5 +46,10 @@ public class RegisterCommand extends Command {
     @Override
     public String getCommand() {
         return "register";
+    }
+
+    @Override
+    public String getOption() {
+        return "telegram";
     }
 }

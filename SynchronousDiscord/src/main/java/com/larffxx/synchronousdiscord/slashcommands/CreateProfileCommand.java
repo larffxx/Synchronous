@@ -51,4 +51,9 @@ public class CreateProfileCommand extends Command {
     public String getCommand() {
         return "create";
     }
+
+    @Override
+    public String getOption() {
+        return "create";
+    }
 }

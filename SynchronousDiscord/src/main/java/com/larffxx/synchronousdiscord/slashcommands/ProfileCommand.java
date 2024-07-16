@@ -62,4 +62,9 @@ public class ProfileCommand extends Command {
     public String getCommand() {
         return "profile";
     }
+
+    @Override
+    public String getOption() {
+        return "profile";
+    }
 }

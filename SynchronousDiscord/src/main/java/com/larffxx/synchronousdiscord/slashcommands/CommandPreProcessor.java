@@ -26,4 +26,5 @@ public class CommandPreProcessor implements PreProcessor<Command> {
     public Command getCommand(String command) {
         return commandMap.get(command);
     }
+
 }

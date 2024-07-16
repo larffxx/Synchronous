@@ -42,4 +42,9 @@ public class SkipTrackCommand extends Command{
     public String getCommand() {
         return "skip";
     }
+
+    @Override
+    public String getOption() {
+        return "";
+    }
 }

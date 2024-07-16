@@ -59,4 +59,9 @@ public class LoopCommand extends Command {
     public String getCommand() {
         return "loop";
     }
+
+    @Override
+    public String getOption() {
+        return "";
+    }
 }

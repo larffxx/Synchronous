@@ -2,6 +2,7 @@ package com.larffxx.synchronousdiscord.routeservices;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
+import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
@@ -21,5 +22,5 @@ public abstract class RouteService<T> {
         this.serversConnectDAO = serversConnectDAO;
         this.preProcessor = preProcessor;
     }
-    public abstract void send(JsonNode data);
+    public abstract void send(JsonNode data) throws CommandException;
 }

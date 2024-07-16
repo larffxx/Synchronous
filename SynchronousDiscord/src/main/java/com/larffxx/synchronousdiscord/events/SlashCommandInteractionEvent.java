@@ -1,10 +1,9 @@
 package com.larffxx.synchronousdiscord.events;
 
 import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.executor.CommandExecutor;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.slashcommands.Command;
-import com.larffxx.synchronousdiscord.slashcommands.CommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -14,25 +13,23 @@ import org.springframework.stereotype.Component;
 @Setter
 public class SlashCommandInteractionEvent extends Event<net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent> {
     private final CommandListener commandListener;
-    private final CommandPreProcessor commandPreProcessor;
+    private final CommandExecutor commandExecutor;
 
-    public SlashCommandInteractionEvent(EventReceiver eventReceiver, CommandPreProcessor commandPreProcessor, CommandListener commandListener) {
+    public SlashCommandInteractionEvent(EventReceiver eventReceiver, CommandListener commandListener, CommandExecutor commandExecutor) {
         super(eventReceiver);
-        this.commandPreProcessor = commandPreProcessor;
         this.commandListener = commandListener;
+        this.commandExecutor = commandExecutor;
     }
 
     @Override
     public void execute(net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent event) {
         getEventReceiver().setTextChannel(event.getChannel().asTextChannel());
-        Command command = commandPreProcessor.getCommand(event.getInteraction().getName());
-        commandListener.getDiscordCommandProducer().send(event);
-
         try {
-            command.execute(event);
+            commandExecutor.execute(event);
         } catch (CommandException e) {
             event.reply(e.getMessage()).queue();
         }
+        commandListener.getDiscordCommandProducer().send(event);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +22,7 @@ public class EditProfileCommand extends Command{
 
     @Override
     public void execute(SlashCommandInteractionEvent t) {
-        profileDAO.updateProfile(t.getOption("description").getAsString(),
+        profileDAO.updateProfile(getOption(),
                 t.getOption("photo").getAsAttachment().getUrl(),
                 t.getOption("url").getAsString(),
                 usersConnectDAO.getByDiscordName(t.getInteraction().getUser().getName()));
@@ -39,5 +40,10 @@ public class EditProfileCommand extends Command{
     @Override
     public String getCommand() {
         return "edit";
+    }
+
+    @Override
+    public String getOption() {
+        return "description";
     }
 }

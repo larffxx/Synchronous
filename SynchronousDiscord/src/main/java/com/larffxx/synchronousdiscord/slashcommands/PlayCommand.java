@@ -30,7 +30,7 @@ public class PlayCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (!event.getUser().isBot()) {
-            link = event.getOption("type").getAsString();
+            link = event.getOption(getOption()).getAsString();
             if (!isUrl(link)) {
                 link = "ytsearch:" + link;
             }
@@ -77,5 +77,10 @@ public class PlayCommand extends Command {
     @Override
     public String getCommand() {
         return "play";
+    }
+
+    @Override
+    public String getOption() {
+        return "type";
     }
 }

@@ -45,4 +45,9 @@ public class StopCommand extends Command{
     public String getCommand() {
         return "stop";
     }
+
+    @Override
+    public String getOption() {
+        return "";
+    }
 }

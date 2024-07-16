@@ -22,7 +22,7 @@ public class ConnectCommand extends Command{
 
     @Override
     public void execute(SlashCommandInteractionEvent t) {
-        serversConnectDAO.saveServer(t.getGuild().getId(), t.getOption("telegram").getAsString());
+        serversConnectDAO.saveServer(t.getGuild().getId(), t.getOption(getOption()).getAsString());
         t.reply("Servers connected").queue();
     }
 
@@ -37,6 +37,11 @@ public class ConnectCommand extends Command{
 
     @Override
     public String getCommand() {
+        return "connect";
+    }
+
+    @Override
+    public String getOption() {
         return "connect";
     }
 }

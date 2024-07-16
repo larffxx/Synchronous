@@ -63,4 +63,9 @@ public class QueueCommand extends Command {
         return "queue";
     }
 
+    @Override
+    public String getOption() {
+        return "queue";
+    }
+
 }

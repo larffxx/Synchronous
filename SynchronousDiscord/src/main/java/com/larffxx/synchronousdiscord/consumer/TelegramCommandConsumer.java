@@ -5,6 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
+import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
+import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.routeservices.TelegramCommandRouteService;
 import com.larffxx.synchronousdiscord.slashcommands.Command;
 import com.larffxx.synchronousdiscord.slashcommands.CommandPreProcessor;
@@ -22,15 +25,17 @@ public class TelegramCommandConsumer {
     private final CommandPreProcessor preProcessor;
     private final GuildProfileDAO guildProfileDAO;
     private final TelegramCommandRouteService telegramCommandRouteService;
+    private final CommandVerifier commandVerifier;
 
-    public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService, GuildProfileDAO guildProfileDAO, CommandPreProcessor preProcessor) {
+    public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService, GuildProfileDAO guildProfileDAO, CommandPreProcessor preProcessor, CommandVerifier commandVerifier) {
         this.telegramCommandRouteService = telegramCommandRouteService;
         this.guildProfileDAO = guildProfileDAO;
         this.preProcessor = preProcessor;
+        this.commandVerifier = commandVerifier;
     }
 
     @KafkaListener(topics = "${tCTopic}", groupId = "${groupId}")
-    public void listener(@Payload String command) {
+    public void listener(@Payload String command) throws CommandException {
         JsonNode data = null;
         try {
             data = new ObjectMapper().readTree(command);
@@ -38,6 +43,8 @@ public class TelegramCommandConsumer {
             com.execute(data);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+        } catch (CommandException e) {
+            throw new CommandException(InfExcMessages.UNDETECTED_EXCEPTION);
         }
         telegramCommandRouteService.send(data);
     }
