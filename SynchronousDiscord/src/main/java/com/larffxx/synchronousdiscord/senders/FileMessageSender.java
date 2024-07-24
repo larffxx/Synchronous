@@ -2,6 +2,7 @@ package com.larffxx.synchronousdiscord.senders;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
+import com.larffxx.synchronousdiscord.infmsg.SendersInfMessages;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,23 +26,23 @@ public class FileMessageSender extends Sender<JsonNode>{
 
     @Override
     public void send(JsonNode data) {
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelsByName("telegram", true).get(0);
+        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
+        TextChannel textChannel = guild.getTextChannelsByName(SendersInfMessages.TEXT_CHANNEL_IN_DISCORD, true).get(0);
 
         sendFileMessage(data, textChannel);
     }
 
     private void sendFileMessage(JsonNode data, TextChannel textChannel){
-        if (!data.findValue("message").asText().equals("null") && !data.findValue("file").asText().equals("null")) {
+        if (!data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText().equals("null") && !data.findValue(SendersInfMessages.FILE_FROM_TELEGRAM).asText().equals("null")) {
             textChannel
-                    .sendMessage(data.findValue("name").asText() + ": " + data.findValue("message").asText())
-                    .addFiles(FileUpload.fromData(new File(data.findPath("file").asText()), "photo.png"))
-                    .setEmbeds(new EmbedBuilder().setImage("attachment://photo.png").build()).queue();
+                    .sendMessage(data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText() + ": " + data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText())
+                    .addFiles(FileUpload.fromData(new File(data.findPath(SendersInfMessages.FILE_FROM_TELEGRAM).asText()), SendersInfMessages.PHOTO_NAME))
+                    .setEmbeds(new EmbedBuilder().setImage(SendersInfMessages.PHOTO_ATTACHMENT).build()).queue();
         } else {
             textChannel
-                    .sendMessage(data.findValue("name").asText() + ": ")
-                    .addFiles(FileUpload.fromData(new File(data.findPath("file").asText()), "photo.png"))
-                    .setEmbeds(new EmbedBuilder().setImage("attachment://photo.png").build()).queue();
+                    .sendMessage(data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText() + ": ")
+                    .addFiles(FileUpload.fromData(new File(data.findPath(SendersInfMessages.FILE_FROM_TELEGRAM).asText()), SendersInfMessages.PHOTO_NAME))
+                    .setEmbeds(new EmbedBuilder().setImage(SendersInfMessages.PHOTO_ATTACHMENT).build()).queue();
         }
     }
 

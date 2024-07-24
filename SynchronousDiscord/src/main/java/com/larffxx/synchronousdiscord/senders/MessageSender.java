@@ -3,6 +3,7 @@ package com.larffxx.synchronousdiscord.senders;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
+import com.larffxx.synchronousdiscord.infmsg.SendersInfMessages;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,14 +31,15 @@ public class MessageSender extends Sender<JsonNode> {
 
     @Override
     public void send(JsonNode data) {
-        Matcher matcher = Pattern.compile(getUSERNAME_PATTER()).matcher(data.findValue("message").asText());
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelsByName("telegram", true).get(0);
+        Matcher matcher = Pattern.compile(getUSERNAME_PATTER()).matcher(data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText());
+        Guild guild = getEventReceiver().getJda()
+                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
+        TextChannel textChannel = guild.getTextChannelsByName(SendersInfMessages.TEXT_CHANNEL_IN_DISCORD, true).get(0);
 
         if (matcher.find()) {
             sendFormattedMessage(data, matcher, textChannel);
         } else {
-            textChannel.sendMessage(data.findValue("name").asText() + ": " + data.findValue("message")).queue();
+            textChannel.sendMessage(data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText() + ": " + data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM)).queue();
         }
     }
 
@@ -47,8 +49,8 @@ public class MessageSender extends Sender<JsonNode> {
         for (Member member : memberList) {
             if (usersConnectDAO.existsByDiscordId(member.getUser().getId())) {
                 if (isUserInDB(matcher, member)) {
-                    String formattedMSG = data.findValue("message").asText().replace(matcher.group(), member.getUser().getAsMention());
-                    textChannel.sendMessage(data.findValue("name").asText() + ": " + formattedMSG).queue();
+                    String formattedMSG = data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText().replace(matcher.group(), member.getUser().getAsMention());
+                    textChannel.sendMessage(data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText() + ": " + formattedMSG).queue();
                 }
             }
         }
