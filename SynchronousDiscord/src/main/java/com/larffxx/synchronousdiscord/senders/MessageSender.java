@@ -31,7 +31,7 @@ public class MessageSender extends Sender<JsonNode> {
 
     @Override
     public void send(JsonNode data) {
-        Matcher matcher = Pattern.compile(getUSERNAME_PATTER()).matcher(data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText());
+        Matcher matcher = Pattern.compile(getUSERNAME_PATTER()).matcher(data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText());
         Guild guild = getEventReceiver().getJda()
                 .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(SendersInfMessages.TEXT_CHANNEL_IN_DISCORD, true).get(0);
@@ -50,7 +50,7 @@ public class MessageSender extends Sender<JsonNode> {
             if (usersConnectDAO.existsByDiscordId(member.getUser().getId())) {
                 if (isUserInDB(matcher, member)) {
                     String formattedMSG = data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText().replace(matcher.group(), member.getUser().getAsMention());
-                    textChannel.sendMessage(data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText() + ": " + formattedMSG).queue();
+                    textChannel.sendMessage(formattedMSG).queue();
                 }
             }
         }
