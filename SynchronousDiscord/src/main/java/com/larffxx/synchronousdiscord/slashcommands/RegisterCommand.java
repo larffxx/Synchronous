@@ -44,7 +44,7 @@ public class RegisterCommand extends Command {
 
     @Override
     public void execute(JsonNode data) {
-        Guild guild = serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild())
+        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild());
         TextChannel telegramChannel = guild.getTextChannelsByName(TELEGRAM, true).get(0);
 
         telegramChannel.sendMessage(data.findValue("name").asText() + SUCCESS_MESSAGE).queue();
