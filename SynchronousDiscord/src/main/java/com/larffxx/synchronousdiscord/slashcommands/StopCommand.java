@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.InfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
@@ -33,7 +33,7 @@ public class StopCommand extends Command{
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(event.getGuild());
 
         guildMusicManager.getScheduler().stopTrack();
-        event.reply(InfMessages.STOP_SUCCESS_MESSAGE).queue();
+        event.reply(CommandInfMessages.STOP_SUCCESS_MESSAGE).queue();
 
 
         AudioManager manager = event.getGuild().getAudioManager();
@@ -42,14 +42,14 @@ public class StopCommand extends Command{
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(InfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
         Guild guild = getEventReceiver().getJda().getGuildById(guildId);
         TextChannel textChannel = guild.getTextChannelsByName("telegram", true).get(0);
 
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(guild);
 
         guildMusicManager.getScheduler().stopTrack();
-        textChannel.sendMessage(InfMessages.STOP_SUCCESS_MESSAGE).queue();
+        textChannel.sendMessage(CommandInfMessages.STOP_SUCCESS_MESSAGE).queue();
 
     }
 

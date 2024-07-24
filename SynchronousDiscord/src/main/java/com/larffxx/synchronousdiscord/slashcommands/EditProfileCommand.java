@@ -3,13 +3,12 @@ package com.larffxx.synchronousdiscord.slashcommands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.InfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,20 +27,20 @@ public class EditProfileCommand extends Command{
 
     @Override
     public void execute(SlashCommandInteractionEvent t) {
-        profileDAO.updateProfile(t.getOption(InfMessages.DESCRIPTION_OPTION).getAsString(),
-                t.getOption(InfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
-                t.getOption(InfMessages.URL_OPTION).getAsString(),
+        profileDAO.updateProfile(t.getOption(CommandInfMessages.DESCRIPTION_OPTION).getAsString(),
+                t.getOption(CommandInfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
+                t.getOption(CommandInfMessages.URL_OPTION).getAsString(),
                 usersConnectDAO.getByDiscordName(t.getInteraction().getUser().getName()));
-        t.reply(InfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();
+        t.reply(CommandInfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();
     }
 
     @Override
     public void execute(JsonNode data) {
-        UsersConnect user = usersConnectDAO.getByDiscordName(data.get(InfMessages.NAME_FROM_TELEGRAM).asText());
+        UsersConnect user = usersConnectDAO.getByDiscordName(data.get(CommandInfMessages.NAME_FROM_TELEGRAM).asText());
         Guild guild = getEventReceiver().getJda().getGuildById(user.getServersConnect().getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelById(data.get(InfMessages.TELEGRAM_CHANNEL).asText());
+        TextChannel textChannel = guild.getTextChannelById(data.get(CommandInfMessages.TELEGRAM_CHANNEL).asText());
 
-        textChannel.sendMessage(data.findValue(InfMessages.NAME_FROM_TELEGRAM).asText() + InfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();
+        textChannel.sendMessage(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText() + CommandInfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();
     }
 
     @Override

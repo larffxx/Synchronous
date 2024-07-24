@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.InfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
@@ -28,25 +28,25 @@ public class UserRegisterCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         if (!event.getUser().isBot()) {
             UsersConnect usersConnect = new UsersConnect(event.getInteraction().getUser().getName(),
-                    event.getOption(InfMessages.TELEGRAM_CHANNEL).getAsString(),
+                    event.getOption(CommandInfMessages.TELEGRAM_CHANNEL).getAsString(),
                     event.getInteraction().getUser().getId(), serversConnectDAO.getByDiscordGuild(event.getGuild().getId()));
             try {
                 if (usersConnectDAO.getByDiscordName(event.getInteraction().getUser().getName()).getDiscordName().equals(usersConnect.getDiscordName())) {
-                    event.reply(InfMessages.USER_REGISTER_UNSUCCESSFUL_MESSAGE).queue();
+                    event.reply(CommandInfMessages.USER_REGISTER_UNSUCCESSFUL_MESSAGE).queue();
                 }
             } catch (NullPointerException e) {
                 usersConnectDAO.saveData(usersConnect);
-                event.reply(InfMessages.USER_REGISTER_SUCCESS_MESSAGE).queue();
+                event.reply(CommandInfMessages.USER_REGISTER_SUCCESS_MESSAGE).queue();
             }
         }
     }
 
     @Override
     public void execute(JsonNode data) {
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(InfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
-        TextChannel telegramChannel = guild.getTextChannelsByName(InfMessages.TELEGRAM_CHANNEL, true).get(0);
+        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
+        TextChannel telegramChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
 
-        telegramChannel.sendMessage(data.findValue(InfMessages.NAME_FROM_TELEGRAM).asText() + InfMessages.USER_REGISTER_SUCCESS_MESSAGE).queue();
+        telegramChannel.sendMessage(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText() + CommandInfMessages.USER_REGISTER_SUCCESS_MESSAGE).queue();
     }
 
     @Override

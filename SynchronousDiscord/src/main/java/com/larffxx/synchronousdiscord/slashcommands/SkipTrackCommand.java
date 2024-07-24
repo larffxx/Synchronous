@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.InfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
@@ -32,19 +32,19 @@ public class SkipTrackCommand extends Command{
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
         musicManager.getScheduler().nextTrack();
 
-        event.reply(InfMessages.SKIP_SUCCESS_MESSAGE).queue();
+        event.reply(CommandInfMessages.SKIP_SUCCESS_MESSAGE).queue();
     }
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(InfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
         Guild guild = getEventReceiver().getJda().getGuildById(guildId);
-        TextChannel textChannel = guild.getTextChannelsByName(InfMessages.TELEGRAM_CHANNEL, true).get(0);
+        TextChannel textChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
 
         musicManager.getScheduler().nextTrack();
-        textChannel.sendMessage(InfMessages.SKIP_SUCCESS_MESSAGE).queue();
+        textChannel.sendMessage(CommandInfMessages.SKIP_SUCCESS_MESSAGE).queue();
 
     }
 

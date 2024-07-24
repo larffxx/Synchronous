@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.InfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.model.Profile;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
@@ -35,24 +35,24 @@ public class CreateProfileCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent t) {
         if (!profileDAO.existsByUsersConnect(usersConnectDAO.getByDiscordName(t.getInteraction().getUser().getName()))) {
-            Profile profile = new Profile(t.getOption(InfMessages.DESCRIPTION_OPTION).getAsString(),
-                    t.getOption(InfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
-                    t.getOption(InfMessages.URL_OPTION).getAsString(),
+            Profile profile = new Profile(t.getOption(CommandInfMessages.DESCRIPTION_OPTION).getAsString(),
+                    t.getOption(CommandInfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
+                    t.getOption(CommandInfMessages.URL_OPTION).getAsString(),
                     usersConnectRepository.getReferenceById(usersConnectDAO.getByDiscordName(t.getInteraction().getUser().getName()).getId()));
             profileDAO.saveModel(profile);
-            t.reply(InfMessages.CREATE_PROFILE_SUCCESS_MESSAGE).queue();
+            t.reply(CommandInfMessages.CREATE_PROFILE_SUCCESS_MESSAGE).queue();
         } else {
-            t.reply(InfMessages.CREATE_PROFILE_UNSUCCESSFUL_MESSAGE).queue();
+            t.reply(CommandInfMessages.CREATE_PROFILE_UNSUCCESSFUL_MESSAGE).queue();
         }
     }
 
     @Override
     public void execute(JsonNode data) {
-        UsersConnect user = usersConnectDAO.getByDiscordName(data.get(InfMessages.NAME_FROM_TELEGRAM).asText());
+        UsersConnect user = usersConnectDAO.getByDiscordName(data.get(CommandInfMessages.NAME_FROM_TELEGRAM).asText());
         Guild guild = getEventReceiver().getJda().getGuildById(user.getServersConnect().getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelById(data.get(InfMessages.TELEGRAM_CHANNEL).asText());
+        TextChannel textChannel = guild.getTextChannelById(data.get(CommandInfMessages.TELEGRAM_CHANNEL).asText());
 
-        textChannel.sendMessage(data.findValue("name").asText() + InfMessages.CREATE_PROFILE_SUCCESS_MESSAGE).queue();
+        textChannel.sendMessage(data.findValue("name").asText() + CommandInfMessages.CREATE_PROFILE_SUCCESS_MESSAGE).queue();
     }
 
     @Override

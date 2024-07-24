@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.InfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
@@ -34,29 +34,29 @@ public class LoopCommand extends Command {
     public void execute(SlashCommandInteractionEvent t) {
         GuildMusicManager musicManager = resultHandler.getMusicManager(t.getGuild());
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
-            t.reply(InfMessages.LOOP_UNSUCCESSFUL_MESSAGE).queue();
+            t.reply(CommandInfMessages.LOOP_UNSUCCESSFUL_MESSAGE).queue();
         }else {
             boolean loop = !musicManager.getScheduler().isRepeat();
             musicManager.getScheduler().setRepeat(loop);
-            t.reply(InfMessages.LOOP_SUCCESS_MESSAGE).queue();
+            t.reply(CommandInfMessages.LOOP_SUCCESS_MESSAGE).queue();
         }
     }
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(InfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
         Guild guild = getEventReceiver().getJda().getGuildById(guildId);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
         EmbedBuilder eb = new EmbedBuilder();
 
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
-            eb.setDescription(InfMessages.LOOP_UNSUCCESSFUL_MESSAGE);
+            eb.setDescription(CommandInfMessages.LOOP_UNSUCCESSFUL_MESSAGE);
             commandListener.getEmbedSender().send(eb);
         }else {
             boolean loop = !musicManager.getScheduler().isRepeat();
             musicManager.getScheduler().setRepeat(loop);
-            eb.setDescription(InfMessages.LOOP_SUCCESS_MESSAGE);
+            eb.setDescription(CommandInfMessages.LOOP_SUCCESS_MESSAGE);
             commandListener.getEmbedSender().send(eb);
         }
     }

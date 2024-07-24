@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.InfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.PlayerManager;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
@@ -33,7 +33,7 @@ public class PlayCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (!event.getUser().isBot()) {
-            link = event.getOption(InfMessages.PLAY_LINK_FROM_DISCORD).getAsString();
+            link = event.getOption(CommandInfMessages.PLAY_LINK_FROM_DISCORD).getAsString();
             if (!isUrl(link)) {
                 link = "ytsearch:" + link;
             }
@@ -45,19 +45,19 @@ public class PlayCommand extends Command {
             manager.openAudioConnection(channel);
 
             playerManager.loadAndPlay(event.getChannel().asTextChannel(), link);
-            event.reply(InfMessages.PLAY_SUCCESS_MESSAGE).queue();
+            event.reply(CommandInfMessages.PLAY_SUCCESS_MESSAGE).queue();
         }
     }
 
     @Override
     public void execute(JsonNode data) {
-        link = String.valueOf(data.findValues(InfMessages.PLAY_LINK_FROM_TELEGRAM).get(0).get(0).asText());
+        link = String.valueOf(data.findValues(CommandInfMessages.PLAY_LINK_FROM_TELEGRAM).get(0).get(0).asText());
         if (!isUrl(link)) {
             link = "ytsearch:" + link;
         }
         Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO
-                .getByTelegramChat(data.findValue(InfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelsByName(InfMessages.TELEGRAM_CHANNEL, true).get(0);
+                .getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
+        TextChannel textChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
 
         VoiceChannel channel = guild.getVoiceChannelsByName("general", true).get(0);
         AudioManager manager = guild.getAudioManager();

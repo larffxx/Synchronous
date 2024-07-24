@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class InfMessages {
+public class CommandInfMessages {
     public static final String TELEGRAM_CHANNEL_NAME_FROM_OPTIONS = "connect";
     public static final String CONNECT_SUCCESS_MESSAGE = "Servers connected successfully!";
     public static final String TELEGRAM_CHANNEL = "telegram";
