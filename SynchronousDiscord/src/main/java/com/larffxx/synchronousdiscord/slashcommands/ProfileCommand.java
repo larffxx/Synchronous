@@ -3,6 +3,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
+import com.larffxx.synchronousdiscord.infmsg.InfMessages;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
@@ -38,9 +39,9 @@ public class ProfileCommand extends Command {
                     .setImage(profileDAO.getProfile(usersConnectDAO.getByDiscordName(event.getUser().getName()).getDiscordName()).getPhotoUrl())
                     .setUrl(profileDAO.getProfile(usersConnectDAO.getByDiscordName(event.getUser().getName()).getDiscordName()).getSocialUrl());
             commandListener.getEmbedSender().send(eb);
-            event.reply(SUCCESS_MESSAGE).queue();
+            event.reply(InfMessages.PROFILE_SUCCESS_MESSAGE).queue();
         } else {
-            event.reply(UNSUCCESSFUL_MESSAGE).queue();
+            event.reply(InfMessages.PROFILE_UNSUCCESSFUL_MESSAGE).queue();
         }
     }
 
@@ -57,8 +58,8 @@ public class ProfileCommand extends Command {
             commandListener.getEmbedSender().send(eb);
         } else {
             EmbedBuilder eb = new EmbedBuilder()
-                    .setAuthor(data.findValue(NAME_FROM_TELEGRAM).asText())
-                    .setDescription(UNSUCCESSFUL_MESSAGE);
+                    .setAuthor(data.findValue(InfMessages.NAME_FROM_TELEGRAM).asText())
+                    .setDescription(InfMessages.PROFILE_UNSUCCESSFUL_MESSAGE);
             commandListener.getEmbedSender().send(eb);
         }
     }

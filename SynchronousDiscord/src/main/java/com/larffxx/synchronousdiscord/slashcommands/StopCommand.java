@@ -3,12 +3,14 @@ package com.larffxx.synchronousdiscord.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
+import com.larffxx.synchronousdiscord.infmsg.InfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.springframework.stereotype.Component;
@@ -31,7 +33,7 @@ public class StopCommand extends Command{
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(event.getGuild());
 
         guildMusicManager.getScheduler().stopTrack();
-        event.reply("Stopped").queue();
+        event.reply(InfMessages.STOP_SUCCESS_MESSAGE).queue();
 
 
         AudioManager manager = event.getGuild().getAudioManager();
@@ -40,12 +42,15 @@ public class StopCommand extends Command{
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild();
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(InfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
         Guild guild = getEventReceiver().getJda().getGuildById(guildId);
+        TextChannel textChannel = guild.getTextChannelsByName("telegram", true).get(0);
 
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(guild);
 
         guildMusicManager.getScheduler().stopTrack();
+        textChannel.sendMessage(InfMessages.STOP_SUCCESS_MESSAGE).queue();
+
     }
 
     @Override

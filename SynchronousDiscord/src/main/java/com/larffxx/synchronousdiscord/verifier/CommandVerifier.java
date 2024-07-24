@@ -8,8 +8,10 @@ import com.larffxx.synchronousdiscord.slashcommands.SlashCommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import okio.Options;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,9 +30,10 @@ public class CommandVerifier {
     }
 
     public void commandVerifier(SlashCommandInteractionEvent t) throws CommandException {
+        List<Command.Option> commandOptions = t.getGuild().retrieveCommandById(t.getCommandId()).complete().getOptions();
         List<OptionMapping> options = t.getInteraction().getOptions();
 
-        if (t.getOptions().isEmpty() && !options.isEmpty()) {
+        if (commandOptions.size() > t.getOptions().size()) {
             throw new CommandException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
         }
 

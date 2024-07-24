@@ -3,6 +3,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
+import com.larffxx.synchronousdiscord.infmsg.InfMessages;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
@@ -16,12 +17,7 @@ public class EditProfileCommand extends Command{
     private final ProfileDAO profileDAO;
     private final UsersConnectDAO usersConnectDAO;
 
-    private final String SUCCESS_MESSAGE = "Profile was edited";
-    private final String DESCRIPTION_OPTION = "description";
-    private final String PHOTO_OPTION = "photo";
-    private final String URL_OPTION = "url";
-    private final String NAME_FROM_TELEGRAM = "name";
-    private final String TELEGRAM_TEXT_CHANNEL = "telegram";
+
 
     public EditProfileCommand(EventReceiver eventReceiver, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
         super(eventReceiver);
@@ -32,20 +28,20 @@ public class EditProfileCommand extends Command{
 
     @Override
     public void execute(SlashCommandInteractionEvent t) {
-        profileDAO.updateProfile(t.getOption(DESCRIPTION_OPTION).getAsString(),
-                t.getOption(PHOTO_OPTION).getAsAttachment().getUrl(),
-                t.getOption(URL_OPTION).getAsString(),
+        profileDAO.updateProfile(t.getOption(InfMessages.DESCRIPTION_OPTION).getAsString(),
+                t.getOption(InfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
+                t.getOption(InfMessages.URL_OPTION).getAsString(),
                 usersConnectDAO.getByDiscordName(t.getInteraction().getUser().getName()));
-        t.reply(SUCCESS_MESSAGE).queue();
+        t.reply(InfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();
     }
 
     @Override
     public void execute(JsonNode data) {
-        UsersConnect user = usersConnectDAO.getByDiscordName(data.get(NAME_FROM_TELEGRAM).asText());
+        UsersConnect user = usersConnectDAO.getByDiscordName(data.get(InfMessages.NAME_FROM_TELEGRAM).asText());
         Guild guild = getEventReceiver().getJda().getGuildById(user.getServersConnect().getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelById(data.get(TELEGRAM_TEXT_CHANNEL).asText());
+        TextChannel textChannel = guild.getTextChannelById(data.get(InfMessages.TELEGRAM_CHANNEL).asText());
 
-        textChannel.sendMessage(data.findValue("name").asText() + SUCCESS_MESSAGE).queue();
+        textChannel.sendMessage(data.findValue(InfMessages.NAME_FROM_TELEGRAM).asText() + InfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();
     }
 
     @Override

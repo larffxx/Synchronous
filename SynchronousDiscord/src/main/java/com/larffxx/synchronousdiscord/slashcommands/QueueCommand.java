@@ -2,6 +2,7 @@ package com.larffxx.synchronousdiscord.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
+import com.larffxx.synchronousdiscord.infmsg.InfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
@@ -35,13 +36,13 @@ public class QueueCommand extends Command {
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
         queueEmbedCreator(musicManager);
 
-        event.reply("Current queue").queue();
+        event.reply(InfMessages.QUEUE_SUCCESS_MESSAGE).queue();
     }
 
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild();
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(InfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
         Guild guild = getEventReceiver().getJda().getGuildById(guildId);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
@@ -53,7 +54,7 @@ public class QueueCommand extends Command {
         List<AudioTrack> queue = new ArrayList<>(musicManager.getScheduler().getQueue());
         EmbedBuilder eb = new EmbedBuilder();
         if (queue.isEmpty()) {
-            eb.setDescription("Queue is empty");
+            eb.setDescription(InfMessages.QUEUE_UNSUCCESSFUL_MESSAGE);
         }else {
             for (int i = 0; i < 10; i++) {
                 eb.addField(i + ":", queue.get(i).getInfo().title, false);

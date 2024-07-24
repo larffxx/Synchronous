@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Setter
 public abstract class Command {
     private final EventReceiver eventReceiver;
-    private final String GUILD_ID_FROM_TELEGRAM = "guildId";
 
     public Command(EventReceiver eventReceiver) {
         this.eventReceiver = eventReceiver;

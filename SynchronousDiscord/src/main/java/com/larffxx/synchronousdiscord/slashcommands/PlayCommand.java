@@ -2,9 +2,11 @@ package com.larffxx.synchronousdiscord.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
+import com.larffxx.synchronousdiscord.infmsg.InfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.PlayerManager;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -19,10 +21,6 @@ public class PlayCommand extends Command {
     private final ServersConnectDAO serversConnectDAO;
     private final PlayerManager playerManager;
 
-    private final String LINK_FROM_DISCORD = "link";
-    private final String LINK_FROM_TELEGRAM = "options";
-    private final String TELEGRAM_CHANNEL_IN_DISCORD = "telegram";
-
     private String link;
 
     public PlayCommand(EventReceiver eventReceiver, PlayerManager playerManager, ServersConnectDAO serversConnectDAO) {
@@ -35,7 +33,7 @@ public class PlayCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (!event.getUser().isBot()) {
-            link = event.getOption(LINK_FROM_DISCORD).getAsString();
+            link = event.getOption(InfMessages.PLAY_LINK_FROM_DISCORD).getAsString();
             if (!isUrl(link)) {
                 link = "ytsearch:" + link;
             }
@@ -47,26 +45,25 @@ public class PlayCommand extends Command {
             manager.openAudioConnection(channel);
 
             playerManager.loadAndPlay(event.getChannel().asTextChannel(), link);
-            event.reply("Track was added").queue();
+            event.reply(InfMessages.PLAY_SUCCESS_MESSAGE).queue();
         }
     }
 
     @Override
     public void execute(JsonNode data) {
-        link = String.valueOf(data.findValues(LINK_FROM_TELEGRAM).get(0).get(0).asText());
+        link = String.valueOf(data.findValues(InfMessages.PLAY_LINK_FROM_TELEGRAM).get(0).get(0).asText());
         if (!isUrl(link)) {
             link = "ytsearch:" + link;
         }
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild());
+        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO
+                .getByTelegramChat(data.findValue(InfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
+        TextChannel textChannel = guild.getTextChannelsByName(InfMessages.TELEGRAM_CHANNEL, true).get(0);
 
         VoiceChannel channel = guild.getVoiceChannelsByName("general", true).get(0);
         AudioManager manager = guild.getAudioManager();
 
         manager.openAudioConnection(channel);
-
-        playerManager.loadAndPlay(getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild())
-                .getTextChannelsByName(TELEGRAM_CHANNEL_IN_DISCORD, true).get(0), link);
+        playerManager.loadAndPlay(textChannel, link);
     }
 
     public boolean isUrl(String url) {
