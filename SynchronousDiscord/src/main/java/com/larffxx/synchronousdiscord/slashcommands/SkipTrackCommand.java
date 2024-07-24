@@ -7,6 +7,7 @@ import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +34,11 @@ public class SkipTrackCommand extends Command{
 
     @Override
     public void execute(JsonNode data) {
-        GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()));
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild();
+        Guild guild = getEventReceiver().getJda().getGuildById(guildId);
+
+        GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
+
         musicManager.getScheduler().nextTrack();
     }
 
@@ -43,8 +47,5 @@ public class SkipTrackCommand extends Command{
         return "skip";
     }
 
-    @Override
-    public String getOption() {
-        return "";
-    }
+
 }

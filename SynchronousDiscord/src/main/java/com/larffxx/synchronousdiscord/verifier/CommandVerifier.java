@@ -4,7 +4,7 @@ package com.larffxx.synchronousdiscord.verifier;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.slashcommands.CommandPreProcessor;
+import com.larffxx.synchronousdiscord.slashcommands.SlashCommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -19,11 +19,11 @@ import java.util.List;
 @Getter
 @Setter
 public class CommandVerifier {
-    private final CommandPreProcessor commandPreProcessor;
+    private final SlashCommandPreProcessor slashCommandPreProcessor;
     private final EventReceiver eventReceiver;
 
-    public CommandVerifier(CommandPreProcessor commandPreProcessor, EventReceiver eventReceiver) {
-        this.commandPreProcessor = commandPreProcessor;
+    public CommandVerifier(SlashCommandPreProcessor slashCommandPreProcessor, EventReceiver eventReceiver) {
+        this.slashCommandPreProcessor = slashCommandPreProcessor;
         this.eventReceiver = eventReceiver;
     }
 
@@ -34,19 +34,17 @@ public class CommandVerifier {
             throw new CommandException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
         }
 
-        String option = commandPreProcessor.getCommand(t.getInteraction().getName()).getOption();
-        OptionMapping optionMapping = t.getOption(option);
-
-
         eventReceiver.setMessageChannel(t.getMessageChannel());
         eventReceiver.setOptionMappings(options);
 
-        if (optionMapping != null && !optionMapping.getType().equals(optionMapping.getType())) {
-            throw new CommandException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
-        }
+        for (OptionMapping option : options) {
+            if (option != null && !option.getType().equals(option.getType())) {
+                throw new CommandException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+            }
 
-        if(optionMapping != null && optionMapping.getType().equals(OptionType.INTEGER) && optionMapping.getAsInt() < 0){
-            throw new CommandException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+            if (option != null && option.getType().equals(OptionType.INTEGER) && option.getAsInt() < 0) {
+                throw new CommandException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+            }
         }
     }
 }

@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 @Setter
 public abstract class Command {
     private final EventReceiver eventReceiver;
+    private final String GUILD_ID_FROM_TELEGRAM = "guildId";
+
     public Command(EventReceiver eventReceiver) {
         this.eventReceiver = eventReceiver;
     }
@@ -21,5 +23,4 @@ public abstract class Command {
     public abstract void execute(SlashCommandInteractionEvent t) throws CommandException;
     public abstract void execute(JsonNode data) throws CommandException;
     public abstract String getCommand();
-    public abstract String getOption();
 }

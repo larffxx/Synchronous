@@ -8,6 +8,7 @@ import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
 import org.springframework.stereotype.Component;
@@ -28,26 +29,27 @@ public class StopCommand extends Command{
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(event.getGuild());
+
         guildMusicManager.getScheduler().stopTrack();
         event.reply("Stopped").queue();
+
+
         AudioManager manager = event.getGuild().getAudioManager();
         manager.closeAudioConnection();
     }
 
     @Override
     public void execute(JsonNode data) {
-        GuildMusicManager guildMusicManager = resultHandler.getMusicManager(getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()));
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild();
+        Guild guild = getEventReceiver().getJda().getGuildById(guildId);
+
+        GuildMusicManager guildMusicManager = resultHandler.getMusicManager(guild);
+
         guildMusicManager.getScheduler().stopTrack();
     }
 
     @Override
     public String getCommand() {
         return "stop";
-    }
-
-    @Override
-    public String getOption() {
-        return "";
     }
 }

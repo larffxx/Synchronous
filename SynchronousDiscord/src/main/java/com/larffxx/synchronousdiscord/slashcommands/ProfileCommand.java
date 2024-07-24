@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
+import com.larffxx.synchronousdiscord.model.UsersConnect;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -14,6 +15,10 @@ public class ProfileCommand extends Command {
     private final ProfileDAO profileDAO;
     private final UsersConnectDAO usersConnectDAO;
     private final CommandListener commandListener;
+
+    private final String NAME_FROM_TELEGRAM = "name";
+    private final String SUCCESS_MESSAGE = "Your profile";
+    private final String UNSUCCESSFUL_MESSAGE = "Create profile with /create command";
 
     public ProfileCommand(EventReceiver eventReceiver, CommandListener commandListener, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
         super(eventReceiver);
@@ -28,32 +33,32 @@ public class ProfileCommand extends Command {
         if (profileDAO.existsByUsersConnect(profileDAO.getUsersConnectDAO().getByDiscordName(event.getInteraction().getUser().getName()))) {
             EmbedBuilder eb = new EmbedBuilder()
                     .setAuthor(event.getUser().getName())
-                    .setTitle(event.getUser().getName() + ": profile")
+                    .setTitle(event.getUser().getName())
                     .setDescription(profileDAO.getProfile(usersConnectDAO.getByDiscordName(event.getUser().getName()).getDiscordName()).getDescription())
                     .setImage(profileDAO.getProfile(usersConnectDAO.getByDiscordName(event.getUser().getName()).getDiscordName()).getPhotoUrl())
                     .setUrl(profileDAO.getProfile(usersConnectDAO.getByDiscordName(event.getUser().getName()).getDiscordName()).getSocialUrl());
             commandListener.getEmbedSender().send(eb);
-            event.reply("Your profile").queue();
+            event.reply(SUCCESS_MESSAGE).queue();
         } else {
-            event.reply("Create profile with /create command").queue();
+            event.reply(UNSUCCESSFUL_MESSAGE).queue();
         }
     }
 
     @Override
     public void execute(JsonNode data) {
-        if (profileDAO.existsByUsersConnect(profileDAO.getUsersConnectDAO().getByTelegramName(data.findValue("name").asText()))) {
+        UsersConnect user = usersConnectDAO.getByTelegramName(data.findValue(NAME_FROM_TELEGRAM).asText());
+        if (profileDAO.existsByUsersConnect(profileDAO.getUsersConnectDAO().getByTelegramName(data.findValue(NAME_FROM_TELEGRAM).asText()))) {
             EmbedBuilder eb = new EmbedBuilder()
-                    .setAuthor(data.findValue("name").asText())
-                    .setTitle(data.findValue("name").asText() + ": profile")
-                    .setDescription(profileDAO.getProfile(usersConnectDAO.getByTelegramName(data.findValue("name").asText()).getDiscordName()).getDescription())
-                    .setImage(profileDAO.getProfile(usersConnectDAO.getByTelegramName(data.findValue("name").asText()).getDiscordName()).getPhotoUrl())
-                    .setUrl(profileDAO.getProfile(usersConnectDAO.getByTelegramName(data.findValue("name").asText()).getDiscordName()).getSocialUrl());
+                    .setAuthor(data.findValue(NAME_FROM_TELEGRAM).asText())
+                    .setTitle(data.findValue(NAME_FROM_TELEGRAM).asText())
+                    .setDescription(profileDAO.getProfile(user.getDiscordName()).getDescription())
+                    .setImage(profileDAO.getProfile(user.getDiscordName()).getPhotoUrl())
+                    .setUrl(profileDAO.getProfile(user.getDiscordName()).getSocialUrl());
             commandListener.getEmbedSender().send(eb);
         } else {
             EmbedBuilder eb = new EmbedBuilder()
-                    .setAuthor(data.findValue("name").asText())
-                    .setTitle("Error")
-                    .setDescription("Create profile with /create command");
+                    .setAuthor(data.findValue(NAME_FROM_TELEGRAM).asText())
+                    .setDescription(UNSUCCESSFUL_MESSAGE);
             commandListener.getEmbedSender().send(eb);
         }
     }
@@ -63,8 +68,5 @@ public class ProfileCommand extends Command {
         return "profile";
     }
 
-    @Override
-    public String getOption() {
-        return "profile";
-    }
+
 }

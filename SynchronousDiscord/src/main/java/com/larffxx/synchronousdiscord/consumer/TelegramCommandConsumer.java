@@ -10,7 +10,7 @@ import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.routeservices.TelegramCommandRouteService;
 import com.larffxx.synchronousdiscord.slashcommands.Command;
-import com.larffxx.synchronousdiscord.slashcommands.CommandPreProcessor;
+import com.larffxx.synchronousdiscord.slashcommands.SlashCommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,12 +22,12 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class TelegramCommandConsumer {
-    private final CommandPreProcessor preProcessor;
+    private final SlashCommandPreProcessor preProcessor;
     private final GuildProfileDAO guildProfileDAO;
     private final TelegramCommandRouteService telegramCommandRouteService;
     private final CommandVerifier commandVerifier;
 
-    public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService, GuildProfileDAO guildProfileDAO, CommandPreProcessor preProcessor, CommandVerifier commandVerifier) {
+    public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService, GuildProfileDAO guildProfileDAO, SlashCommandPreProcessor preProcessor, CommandVerifier commandVerifier) {
         this.telegramCommandRouteService = telegramCommandRouteService;
         this.guildProfileDAO = guildProfileDAO;
         this.preProcessor = preProcessor;

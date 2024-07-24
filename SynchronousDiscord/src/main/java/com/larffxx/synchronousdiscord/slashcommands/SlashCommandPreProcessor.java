@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Component
 @AllArgsConstructor
-public class CommandPreProcessor implements PreProcessor<Command> {
+public class SlashCommandPreProcessor implements PreProcessor<Command> {
     private final Collection<Command> commands;
 
     private Map<String, Command> commandMap;

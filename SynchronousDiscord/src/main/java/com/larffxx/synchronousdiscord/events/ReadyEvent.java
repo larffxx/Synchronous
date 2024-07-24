@@ -22,7 +22,7 @@ public class ReadyEvent extends Event<net.dv8tion.jda.api.events.session.ReadyEv
         for (Guild guild : event.getJDA().getGuilds()) {
             guild.updateCommands().addCommands(
                     Commands.slash("profile", "get profile"),
-                    Commands.slash("play", "play music").addOption(OptionType.STRING, "type", "track url"),
+                    Commands.slash("play", "play music").addOption(OptionType.STRING, "link", "track url"),
                     Commands.slash("queue", "queue tracks"),
                     Commands.slash("skip", "skip track"),
                     Commands.slash("stop", "stop track"),

@@ -51,8 +51,5 @@ public class DeleteMessageCommand extends Command {
         return "delete";
     }
 
-    @Override
-    public String getOption() {
-        return "value";
-    }
+
 }

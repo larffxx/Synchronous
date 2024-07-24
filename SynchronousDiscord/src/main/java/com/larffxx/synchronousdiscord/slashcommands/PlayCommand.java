@@ -18,6 +18,11 @@ import java.net.URL;
 public class PlayCommand extends Command {
     private final ServersConnectDAO serversConnectDAO;
     private final PlayerManager playerManager;
+
+    private final String LINK_FROM_DISCORD = "link";
+    private final String LINK_FROM_TELEGRAM = "options";
+    private final String TELEGRAM_CHANNEL_IN_DISCORD = "telegram";
+
     private String link;
 
     public PlayCommand(EventReceiver eventReceiver, PlayerManager playerManager, ServersConnectDAO serversConnectDAO) {
@@ -30,7 +35,7 @@ public class PlayCommand extends Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         if (!event.getUser().isBot()) {
-            link = event.getOption(getOption()).getAsString();
+            link = event.getOption(LINK_FROM_DISCORD).getAsString();
             if (!isUrl(link)) {
                 link = "ytsearch:" + link;
             }
@@ -48,11 +53,11 @@ public class PlayCommand extends Command {
 
     @Override
     public void execute(JsonNode data) {
-        link = String.valueOf(data.findValues("options").get(0).get(0).asText());
+        link = String.valueOf(data.findValues(LINK_FROM_TELEGRAM).get(0).get(0).asText());
         if (!isUrl(link)) {
             link = "ytsearch:" + link;
         }
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild());
+        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild());
 
         VoiceChannel channel = guild.getVoiceChannelsByName("general", true).get(0);
         AudioManager manager = guild.getAudioManager();
@@ -60,8 +65,8 @@ public class PlayCommand extends Command {
         manager.openAudioConnection(channel);
 
         playerManager.loadAndPlay(getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild())
-                .getTextChannelsByName("telegram", true).get(0), link);
+                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild())
+                .getTextChannelsByName(TELEGRAM_CHANNEL_IN_DISCORD, true).get(0), link);
     }
 
     public boolean isUrl(String url) {
@@ -79,8 +84,5 @@ public class PlayCommand extends Command {
         return "play";
     }
 
-    @Override
-    public String getOption() {
-        return "type";
-    }
+
 }

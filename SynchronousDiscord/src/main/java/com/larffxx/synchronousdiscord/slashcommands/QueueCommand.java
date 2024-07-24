@@ -8,6 +8,7 @@ import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 
@@ -33,14 +34,18 @@ public class QueueCommand extends Command {
     public void execute(SlashCommandInteractionEvent event) {
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
         queueEmbedCreator(musicManager);
+
         event.reply("Current queue").queue();
     }
 
 
     @Override
     public void execute(JsonNode data) {
-        GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()));
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild();
+        Guild guild = getEventReceiver().getJda().getGuildById(guildId);
+
+        GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
+
         queueEmbedCreator(musicManager);
     }
 
@@ -63,9 +68,6 @@ public class QueueCommand extends Command {
         return "queue";
     }
 
-    @Override
-    public String getOption() {
-        return "queue";
-    }
+
 
 }

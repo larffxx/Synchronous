@@ -9,6 +9,7 @@ import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,9 @@ public class LoopCommand extends Command {
     private final ServersConnectDAO serversConnectDAO;
     private final CommandListener commandListener;
     private final ResultHandler resultHandler;
+
+    private final String SUCCESS_MESSAGE = "Loop";
+    private final String UNSUCCESSFUL_MESSAGE = "No music";
 
     public LoopCommand(EventReceiver eventReceiver, CommandListener commandListener, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO) {
         super(eventReceiver);
@@ -32,25 +36,29 @@ public class LoopCommand extends Command {
     public void execute(SlashCommandInteractionEvent t) {
         GuildMusicManager musicManager = resultHandler.getMusicManager(t.getGuild());
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
-            t.reply("No music playing").queue();
+            t.reply(UNSUCCESSFUL_MESSAGE).queue();
         }else {
             boolean loop = !musicManager.getScheduler().isRepeat();
             musicManager.getScheduler().setRepeat(loop);
-            t.reply("Looped").queue();
+            t.reply(SUCCESS_MESSAGE).queue();
         }
     }
 
     @Override
     public void execute(JsonNode data) {
-        GuildMusicManager musicManager = resultHandler.getMusicManager(getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue("guildId").asText()).getDiscordGuild()));
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(getGUILD_ID_FROM_TELEGRAM()).asText()).getDiscordGuild();
+        Guild guild = getEventReceiver().getJda().getGuildById(guildId);
+
+        GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
         EmbedBuilder eb = new EmbedBuilder();
+
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
-            eb.setDescription("No music is playing");
+            eb.setDescription(UNSUCCESSFUL_MESSAGE);
             commandListener.getEmbedSender().send(eb);
         }else {
             boolean loop = !musicManager.getScheduler().isRepeat();
             musicManager.getScheduler().setRepeat(loop);
-            eb.setDescription("Looped");
+            eb.setDescription(SUCCESS_MESSAGE);
             commandListener.getEmbedSender().send(eb);
         }
     }
@@ -60,8 +68,5 @@ public class LoopCommand extends Command {
         return "loop";
     }
 
-    @Override
-    public String getOption() {
-        return "";
-    }
+
 }
