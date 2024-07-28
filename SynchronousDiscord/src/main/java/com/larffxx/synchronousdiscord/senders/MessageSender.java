@@ -8,9 +8,11 @@ import com.larffxx.synchronousdiscord.senders.utility.MessageFormatter;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,10 +36,13 @@ public class MessageSender extends Sender<JsonNode> {
                 .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(SendersInfMessages.TEXT_CHANNEL_IN_DISCORD, true).get(0);
 
+        List<Member> memberList = textChannel.getMembers();
+        String message = data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText()+": "+ data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText();
+
         if (matcher.find()) {
-            messageFormatter.sendFormattedMessage(data,matcher,textChannel);
+            textChannel.sendMessage(messageFormatter.formatMessage(message,matcher,memberList)).queue();
         } else {
-            textChannel.sendMessage(data.findValue(SendersInfMessages.NAME_IN_TELEGRAM).asText() + ": " + data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM)).queue();
+            textChannel.sendMessage(message).queue();
         }
     }
 

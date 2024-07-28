@@ -21,16 +21,14 @@ public class MessageFormatter {
     }
 
 
-    public void sendFormattedMessage(JsonNode data, Matcher matcher, TextChannel textChannel) {
-        List<Member> memberList = textChannel.getMembers();
-
+    public String formatMessage(String message, Matcher matcher, List<Member> memberList) {
         for (Member member : memberList) {
             if (usersConnectDAO.existsByDiscordId(member.getUser().getId())) {
                 if (userInDBChecker.isUserInDB(matcher, member)) {
-                    String formattedMSG = data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText().replace(matcher.group(), member.getUser().getAsMention());
-                    textChannel.sendMessage(formattedMSG).queue();
+                    return message.replace(matcher.group(), member.getUser().getAsMention());
                 }
             }
         }
+        return "No user found";
     }
 }
