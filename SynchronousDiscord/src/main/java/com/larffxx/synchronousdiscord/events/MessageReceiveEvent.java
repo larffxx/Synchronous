@@ -10,17 +10,18 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class MessageReceiveEvent extends Event<MessageReceivedEvent> {
+public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
     private final CommandListener commandListener;
+    private final EventReceiver eventReceiver;
 
-    public MessageReceiveEvent(EventReceiver eventReceiver, CommandListener commandListener) {
-        super(eventReceiver);
+    public MessageReceiveEvent(CommandListener commandListener, EventReceiver eventReceiver) {
         this.commandListener = commandListener;
+        this.eventReceiver = eventReceiver;
     }
 
     @Override
     public void execute(MessageReceivedEvent event) {
-        getEventReceiver().setTextChannel(event.getChannel().asTextChannel());
+        eventReceiver.setTextChannel(event.getChannel().asTextChannel());
         if (!event.getAuthor().isBot()) {
             if (event.getMessage().getAttachments().isEmpty()) {
                 commandListener.getDiscordMessageProducer().send(event);

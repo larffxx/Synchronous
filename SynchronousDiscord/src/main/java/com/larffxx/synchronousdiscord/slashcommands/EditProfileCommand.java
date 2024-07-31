@@ -12,16 +12,16 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import org.springframework.stereotype.Component;
 
 @Component
-public class EditProfileCommand extends Command{
+public class EditProfileCommand implements Command{
     private final ProfileDAO profileDAO;
     private final UsersConnectDAO usersConnectDAO;
+    private final EventReceiver eventReceiver;
 
 
-
-    public EditProfileCommand(EventReceiver eventReceiver, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
-        super(eventReceiver);
+    public EditProfileCommand(ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO, EventReceiver eventReceiver) {
         this.profileDAO = profileDAO;
         this.usersConnectDAO = usersConnectDAO;
+        this.eventReceiver = eventReceiver;
     }
 
 
@@ -37,7 +37,7 @@ public class EditProfileCommand extends Command{
     @Override
     public void execute(JsonNode data) {
         UsersConnect user = usersConnectDAO.getByDiscordName(data.get(CommandInfMessages.NAME_FROM_TELEGRAM).asText());
-        Guild guild = getEventReceiver().getJda().getGuildById(user.getServersConnect().getDiscordGuild());
+        Guild guild = eventReceiver.getJda().getGuildById(user.getServersConnect().getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelById(data.get(CommandInfMessages.TELEGRAM_CHANNEL).asText());
 
         textChannel.sendMessage(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText() + CommandInfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();

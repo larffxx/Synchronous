@@ -13,22 +13,24 @@ import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
 @Setter
-public class CreateProfileCommand extends Command {
+public class CreateProfileCommand implements Command {
     private final ProfileDAO profileDAO;
     private final UsersConnectDAO usersConnectDAO;
     private final UsersConnectRepository usersConnectRepository;
+    private final EventReceiver eventReceiver;
 
 
-    public CreateProfileCommand(EventReceiver eventReceiver, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO, UsersConnectRepository usersConnectRepository) {
-        super(eventReceiver);
+    public CreateProfileCommand(ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO, UsersConnectRepository usersConnectRepository, EventReceiver eventReceiver) {
         this.profileDAO = profileDAO;
         this.usersConnectDAO = usersConnectDAO;
         this.usersConnectRepository = usersConnectRepository;
+        this.eventReceiver = eventReceiver;
     }
 
 
@@ -49,7 +51,7 @@ public class CreateProfileCommand extends Command {
     @Override
     public void execute(JsonNode data) {
         UsersConnect user = usersConnectDAO.getByDiscordName(data.get(CommandInfMessages.NAME_FROM_TELEGRAM).asText());
-        Guild guild = getEventReceiver().getJda().getGuildById(user.getServersConnect().getDiscordGuild());
+        Guild guild = eventReceiver.getJda().getGuildById(user.getServersConnect().getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelById(data.get(CommandInfMessages.TELEGRAM_CHANNEL).asText());
 
         textChannel.sendMessage(data.findValue("name").asText() + CommandInfMessages.CREATE_PROFILE_SUCCESS_MESSAGE).queue();

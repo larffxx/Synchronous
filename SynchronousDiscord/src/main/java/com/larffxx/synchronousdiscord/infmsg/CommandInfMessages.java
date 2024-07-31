@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class CommandInfMessages {
+    public static final String TELEGRAM_CHAT_ID = "chatId";
+    public static final String DISCORD_TEXT_CHANNEL = "telegram";
+    public static final String COMMAND_VALUE = "command";
     public static final String TELEGRAM_CHANNEL_NAME_FROM_OPTIONS = "connect";
     public static final String CONNECT_SUCCESS_MESSAGE = "Servers connected successfully!";
     public static final String TELEGRAM_CHANNEL = "telegram";

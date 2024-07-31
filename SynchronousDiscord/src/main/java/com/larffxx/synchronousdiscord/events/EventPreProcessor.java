@@ -1,6 +1,5 @@
 package com.larffxx.synchronousdiscord.events;
 
-import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -16,14 +16,15 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class SkipTrackCommand extends Command{
+public class SkipTrackCommand implements Command{
     private final ServersConnectDAO serversConnectDAO;
     private final ResultHandler resultHandler;
+    private final EventReceiver eventReceiver;
 
-    public SkipTrackCommand(EventReceiver eventReceiver, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO) {
-        super(eventReceiver);
+    public SkipTrackCommand(ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.resultHandler = resultHandler;
         this.serversConnectDAO = serversConnectDAO;
+        this.eventReceiver = eventReceiver;
     }
 
 
@@ -38,7 +39,7 @@ public class SkipTrackCommand extends Command{
     @Override
     public void execute(JsonNode data) {
         String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
-        Guild guild = getEventReceiver().getJda().getGuildById(guildId);
+        Guild guild = eventReceiver.getJda().getGuildById(guildId);
         TextChannel textChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);

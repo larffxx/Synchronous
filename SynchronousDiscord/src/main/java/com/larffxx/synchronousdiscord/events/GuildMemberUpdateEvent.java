@@ -1,11 +1,9 @@
 package com.larffxx.synchronousdiscord.events;
 
-import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.events.utility.UpdateGuildProfiles;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
-import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,14 +15,13 @@ import java.util.List;
 @Component
 @Getter
 @Setter
-public class GuildMemberUpdateEvent extends Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent> {
+public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent> {
     private final ServersConnectDAO serversConnectDAO;
     private final UsersConnectDAO usersConnectDAO;
     private final UpdateGuildProfiles updateGuildProfiles;
 
 
-    public GuildMemberUpdateEvent(EventReceiver eventReceiver, UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO, UpdateGuildProfiles updateGuildProfiles) {
-        super(eventReceiver);
+    public GuildMemberUpdateEvent(UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO, UpdateGuildProfiles updateGuildProfiles) {
         this.usersConnectDAO = usersConnectDAO;
         this.serversConnectDAO = serversConnectDAO;
         this.updateGuildProfiles = updateGuildProfiles;
@@ -34,7 +31,6 @@ public class GuildMemberUpdateEvent extends Event<net.dv8tion.jda.api.events.gui
     public void execute(net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent event) {
         Guild guild = event.getGuild();
         if (serversConnectDAO.existsByDiscordGuildId(event.getGuild().getId())) {
-
             List<Member> members =
                     guild.getMembers()
                             .stream()
@@ -47,6 +43,8 @@ public class GuildMemberUpdateEvent extends Event<net.dv8tion.jda.api.events.gui
 
             updateGuildProfiles.update(members,guild);
 
+        }else {
+            guild.getTextChannels().get(0).sendMessage(InfExcMessages.SERVER_IS_NOT_CONNECTED_TO_TELEGRAM).queue();
         }
     }
 

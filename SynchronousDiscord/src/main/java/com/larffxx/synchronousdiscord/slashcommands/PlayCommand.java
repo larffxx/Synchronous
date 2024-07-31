@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
@@ -17,16 +18,17 @@ import java.net.URL;
 
 
 @Component
-public class PlayCommand extends Command {
+public class PlayCommand implements Command {
     private final ServersConnectDAO serversConnectDAO;
     private final PlayerManager playerManager;
+    private final EventReceiver eventReceiver;
 
     private String link;
 
-    public PlayCommand(EventReceiver eventReceiver, PlayerManager playerManager, ServersConnectDAO serversConnectDAO) {
-        super(eventReceiver);
+    public PlayCommand(PlayerManager playerManager, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.playerManager = playerManager;
         this.serversConnectDAO = serversConnectDAO;
+        this.eventReceiver = eventReceiver;
     }
 
 
@@ -55,7 +57,7 @@ public class PlayCommand extends Command {
         if (!isUrl(link)) {
             link = "ytsearch:" + link;
         }
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO
+        Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO
                 .getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
 
@@ -80,6 +82,4 @@ public class PlayCommand extends Command {
     public String getCommand() {
         return "play";
     }
-
-
 }

@@ -11,19 +11,20 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class SlashCommandInteractionEvent extends Event<net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent> {
+public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent> {
     private final CommandListener commandListener;
     private final CommandExecutor commandExecutor;
+    private final EventReceiver eventReceiver;
 
-    public SlashCommandInteractionEvent(EventReceiver eventReceiver, CommandListener commandListener, CommandExecutor commandExecutor) {
-        super(eventReceiver);
+    public SlashCommandInteractionEvent(CommandListener commandListener, CommandExecutor commandExecutor, EventReceiver eventReceiver1) {
         this.commandListener = commandListener;
         this.commandExecutor = commandExecutor;
+        this.eventReceiver = eventReceiver1;
     }
 
     @Override
     public void execute(net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent event) {
-        getEventReceiver().setTextChannel(event.getChannel().asTextChannel());
+        eventReceiver.setTextChannel(event.getChannel().asTextChannel());
         try {
             commandExecutor.execute(event);
         } catch (CommandException e) {

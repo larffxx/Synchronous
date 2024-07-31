@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -17,16 +18,19 @@ import java.io.File;
 @Component
 @Getter
 @Setter
-public class FileMessageSender extends Sender<JsonNode>{
+public class FileMessageSender implements Sender<JsonNode>{
+    private final EventReceiver eventReceiver;
     private final ServersConnectDAO serversConnectDAO;
-    public FileMessageSender(EventReceiver eventReceiver, ServersConnectDAO serversConnectDAO) {
-        super(eventReceiver);
+
+
+    public FileMessageSender(ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.serversConnectDAO = serversConnectDAO;
+        this.eventReceiver = eventReceiver;
     }
 
     @Override
     public void send(JsonNode data) {
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
+        Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(SendersInfMessages.TEXT_CHANNEL_IN_DISCORD, true).get(0);
 
         sendFileMessage(data, textChannel);
@@ -48,6 +52,6 @@ public class FileMessageSender extends Sender<JsonNode>{
 
     @Override
     public String getSender() {
-        return "fileMessageSender";
+        return "fileMessage";
     }
 }

@@ -9,18 +9,20 @@ import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserRegisterCommand extends Command {
+public class UserRegisterCommand implements Command {
     private final UsersConnectDAO usersConnectDAO;
     private final ServersConnectDAO serversConnectDAO;
+    private final EventReceiver eventReceiver;
 
 
-    public UserRegisterCommand(EventReceiver eventReceiver, UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO) {
-        super(eventReceiver);
+    public UserRegisterCommand(UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.usersConnectDAO = usersConnectDAO;
         this.serversConnectDAO = serversConnectDAO;
+        this.eventReceiver = eventReceiver;
     }
 
 
@@ -43,7 +45,7 @@ public class UserRegisterCommand extends Command {
 
     @Override
     public void execute(JsonNode data) {
-        Guild guild = getEventReceiver().getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
+        Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
         TextChannel telegramChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
 
         telegramChannel.sendMessage(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText() + CommandInfMessages.USER_REGISTER_SUCCESS_MESSAGE).queue();

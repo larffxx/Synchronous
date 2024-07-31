@@ -3,6 +3,7 @@ package com.larffxx.synchronousdiscord.routeservices;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.slashcommands.Command;
@@ -22,9 +23,10 @@ public class TelegramCommandRouteService extends RouteService<Command>{
 
     public void send(JsonNode data) throws CommandException {
         getEventReceiver().setTextChannel(getEventReceiver().getJda()
-                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild())
-                .getTextChannelsByName("telegram",true).get(0));
-        Command command = getPreProcessor().getCommand(data.findValue("command").asText());
+                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild())
+                .getTextChannelsByName(CommandInfMessages.DISCORD_TEXT_CHANNEL,true).get(0));
+        Command command = getPreProcessor().getCommand(data.findValue(CommandInfMessages.COMMAND_VALUE).asText());
+
         command.execute(data);
     }
 

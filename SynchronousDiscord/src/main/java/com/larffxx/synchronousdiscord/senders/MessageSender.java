@@ -10,6 +10,7 @@ import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,19 +20,21 @@ import java.util.regex.Pattern;
 @Component
 @Getter
 @Setter
-public class MessageSender extends Sender<JsonNode> {
+public class MessageSender implements Sender<JsonNode> {
+    private final String USERNAME_PATTER = "@([a-zA-Z0-9\\._\\-]{3,})";
+    private final EventReceiver eventReceiver;
     private final ServersConnectDAO serversConnectDAO;
     private final MessageFormatter messageFormatter;
 
-    public MessageSender(EventReceiver eventReceiver, ServersConnectDAO serversConnectDAO, MessageFormatter messageFormatter) {
-        super(eventReceiver);
+    public MessageSender(ServersConnectDAO serversConnectDAO, MessageFormatter messageFormatter, EventReceiver eventReceiver) {
         this.serversConnectDAO = serversConnectDAO;
         this.messageFormatter = messageFormatter;
+        this.eventReceiver = eventReceiver;
     }
 
     @Override
     public void send(JsonNode data) {
-        Matcher matcher = Pattern.compile(getUSERNAME_PATTER()).matcher(data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText());
+        Matcher matcher = Pattern.compile(USERNAME_PATTER).matcher(data.findValue(SendersInfMessages.MESSAGE_FROM_TELEGRAM).asText());
         Guild guild = getEventReceiver().getJda()
                 .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(SendersInfMessages.TEXT_CHANNEL_IN_DISCORD, true).get(0);
@@ -48,6 +51,6 @@ public class MessageSender extends Sender<JsonNode> {
 
     @Override
     public String getSender() {
-        return "messageSender";
+        return "message";
     }
 }

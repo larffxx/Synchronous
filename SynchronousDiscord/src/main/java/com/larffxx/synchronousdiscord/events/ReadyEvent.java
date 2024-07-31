@@ -1,6 +1,5 @@
 package com.larffxx.synchronousdiscord.events;
 
-import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
@@ -12,10 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class ReadyEvent extends Event<net.dv8tion.jda.api.events.session.ReadyEvent> {
-    public ReadyEvent(EventReceiver eventReceiver) {
-        super(eventReceiver);
-    }
+public class ReadyEvent implements Event<net.dv8tion.jda.api.events.session.ReadyEvent> {
 
     @Override
     public void execute(net.dv8tion.jda.api.events.session.ReadyEvent event) {

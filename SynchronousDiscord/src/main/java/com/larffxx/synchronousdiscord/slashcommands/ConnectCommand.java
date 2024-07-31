@@ -10,17 +10,19 @@ import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
 @Setter
-public class ConnectCommand extends Command{
+public class ConnectCommand implements Command{
+    private final EventReceiver eventReceiver;
     private final ServersConnectDAO serversConnectDAO;
 
-    public ConnectCommand(EventReceiver eventReceiver, ServersConnectDAO serversConnectDAO) {
-        super(eventReceiver);
+    public ConnectCommand(ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.serversConnectDAO = serversConnectDAO;
+        this.eventReceiver = eventReceiver;
     }
 
 
@@ -33,7 +35,7 @@ public class ConnectCommand extends Command{
     @Override
     public void execute(JsonNode data) {
         ServersConnect serversConnect = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText());
-        Guild guildId = getEventReceiver().getJda().getGuildById(serversConnect.getDiscordGuild());
+        Guild guildId = eventReceiver.getJda().getGuildById(serversConnect.getDiscordGuild());
         TextChannel textChannel = guildId.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL,true).get(0);
 
         textChannel.sendMessage(CommandInfMessages.CONNECT_SUCCESS_MESSAGE).queue();

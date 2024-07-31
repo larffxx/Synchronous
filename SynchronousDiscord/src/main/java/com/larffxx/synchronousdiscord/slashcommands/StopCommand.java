@@ -13,19 +13,21 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
 @Setter
-public class StopCommand extends Command{
+public class StopCommand implements Command{
     private final ServersConnectDAO serversConnectDAO;
     private final ResultHandler resultHandler;
+    private final EventReceiver eventReceiver;
 
-    public StopCommand(EventReceiver eventReceiver, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO) {
-        super(eventReceiver);
+    public StopCommand(ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.resultHandler = resultHandler;
         this.serversConnectDAO = serversConnectDAO;
+        this.eventReceiver = eventReceiver;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class StopCommand extends Command{
     @Override
     public void execute(JsonNode data) {
         String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
-        Guild guild = getEventReceiver().getJda().getGuildById(guildId);
+        Guild guild = eventReceiver.getJda().getGuildById(guildId);
         TextChannel textChannel = guild.getTextChannelsByName("telegram", true).get(0);
 
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(guild);

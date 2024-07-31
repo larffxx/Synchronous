@@ -2,6 +2,7 @@ package com.larffxx.synchronousdiscord.routeservices;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
+import com.larffxx.synchronousdiscord.infmsg.SendersInfMessages;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.senders.Sender;
@@ -18,15 +19,11 @@ public class TelegramMessageRouteService extends RouteService<Sender>{
 
     public void send(JsonNode data) {
         getEventReceiver().setTextChannel(getEventReceiver().getJda()
-                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue("chatId").asText()).getDiscordGuild())
-                .getTextChannelsByName("telegram", true).get(0));
-        if (data.findValue("file").asText().equals("null")) {
-            Sender sender = getPreProcessor().getCommand("messageSender");
-            sender.send(data);
-        } else {
-            Sender sender = getPreProcessor().getCommand("fileMessageSender");
-            sender.send(data);
-        }
+                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue(SendersInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild())
+                .getTextChannelsByName(SendersInfMessages.TEXT_CHANNEL_IN_DISCORD, true).get(0));
+        Sender sender = getPreProcessor().getCommand(data.findValue(SendersInfMessages.MESSAGE_TYPE).asText());
+
+        sender.send(data);
     }
 }
 

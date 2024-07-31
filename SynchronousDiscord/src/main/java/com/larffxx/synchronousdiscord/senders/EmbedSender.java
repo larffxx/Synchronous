@@ -5,15 +5,16 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmbedSender extends Sender<EmbedBuilder> {
+public class EmbedSender implements Sender<EmbedBuilder> {
+    private final EventReceiver eventReceiver;
 
     public EmbedSender(EventReceiver eventReceiver) {
-        super(eventReceiver);
+        this.eventReceiver = eventReceiver;
     }
 
     @Override
     public void send(EmbedBuilder eb) {
-        getEventReceiver().getTextChannel().sendMessageEmbeds(eb.build()).queue();
+        eventReceiver.getTextChannel().sendMessageEmbeds(eb.build()).queue();
     }
 
     @Override

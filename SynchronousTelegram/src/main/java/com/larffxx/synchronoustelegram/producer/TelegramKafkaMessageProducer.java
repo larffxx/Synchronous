@@ -27,9 +27,9 @@ public class TelegramKafkaMessageProducer {
     public void sendKafkaMessage(Update update, File file) {
         MessagePayload messagePayload;
         if (update.getMessage().getCaption() != null) {
-            messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getCaption(), file.getAbsoluteFile(), update.getMessage().getChatId());
+            messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getCaption(), file.getAbsoluteFile(), update.getMessage().getChatId(), "fileMessage");
         } else {
-            messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), file.getAbsoluteFile(), update.getMessage().getChatId());
+            messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), file.getAbsoluteFile(), update.getMessage().getChatId(), "fileMessage");
         }
 
         Message message = MessageBuilder.withPayload(messagePayload).setHeader("kafka_topic", topic).build();
@@ -37,7 +37,7 @@ public class TelegramKafkaMessageProducer {
     }
 
     public void sendKafkaMessage(Update update) {
-        MessagePayload messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getText(), update.getMessage().getChatId());
+        MessagePayload messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getText(), update.getMessage().getChatId(), "message");
         Message message = MessageBuilder.withPayload(messagePayload).setHeader("kafka_topic", topic).build();
         kafkaTemplate.send(message);
     }

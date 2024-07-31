@@ -6,23 +6,18 @@ import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
-import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProfileCommand extends Command {
+public class ProfileCommand implements Command {
     private final ProfileDAO profileDAO;
     private final UsersConnectDAO usersConnectDAO;
     private final CommandListener commandListener;
 
-    private final String NAME_FROM_TELEGRAM = "name";
-    private final String SUCCESS_MESSAGE = "Your profile";
-    private final String UNSUCCESSFUL_MESSAGE = "Create profile with /create command";
 
-    public ProfileCommand(EventReceiver eventReceiver, CommandListener commandListener, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
-        super(eventReceiver);
+    public ProfileCommand(CommandListener commandListener, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
         this.commandListener = commandListener;
         this.profileDAO = profileDAO;
         this.usersConnectDAO = usersConnectDAO;
@@ -47,11 +42,11 @@ public class ProfileCommand extends Command {
 
     @Override
     public void execute(JsonNode data) {
-        UsersConnect user = usersConnectDAO.getByTelegramName(data.findValue(NAME_FROM_TELEGRAM).asText());
-        if (profileDAO.existsByUsersConnect(profileDAO.getUsersConnectDAO().getByTelegramName(data.findValue(NAME_FROM_TELEGRAM).asText()))) {
+        UsersConnect user = usersConnectDAO.getByTelegramName(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText());
+        if (profileDAO.existsByUsersConnect(profileDAO.getUsersConnectDAO().getByTelegramName(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText()))) {
             EmbedBuilder eb = new EmbedBuilder()
-                    .setAuthor(data.findValue(NAME_FROM_TELEGRAM).asText())
-                    .setTitle(data.findValue(NAME_FROM_TELEGRAM).asText())
+                    .setAuthor(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText())
+                    .setTitle(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText())
                     .setDescription(profileDAO.getProfile(user.getDiscordName()).getDescription())
                     .setImage(profileDAO.getProfile(user.getDiscordName()).getPhotoUrl())
                     .setUrl(profileDAO.getProfile(user.getDiscordName()).getSocialUrl());

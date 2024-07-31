@@ -12,12 +12,14 @@ public class MessagePayload{
     private String name;
     private String message;
     private File file;
+    private String messageType;
     private String command;
 
-    public MessagePayload(String name, String message, Long chatId) {
+    public MessagePayload(String name, String message, Long chatId, String type) {
         this.name = name;
         this.message = message;
         this.chatId = chatId;
+        this.messageType = type;
     }
 
     public MessagePayload(String name, String command, String message, Long chatId) {
@@ -27,18 +29,21 @@ public class MessagePayload{
         this.chatId = chatId;
     }
 
-    public MessagePayload(String name, File file, Long chatId) {
+    public MessagePayload(String name, File file, Long chatId, String type) {
         this.name = name;
         this.file = file;
         this.chatId = chatId;
+        this.messageType = type;
     }
 
-    public MessagePayload(String name, String message, File file, Long chatId) {
+    public MessagePayload(String name, String message, File file, Long chatId, String type) {
         this.name = name;
         this.file = file;
         this.message = message;
         this.chatId = chatId;
+        this.messageType = type;
     }
+
 
     public String toString() {
         return "Name: " + this.name + " Message: " + this.message;

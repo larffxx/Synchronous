@@ -12,21 +12,23 @@ import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
 @Setter
-public class LoopCommand extends Command {
+public class LoopCommand implements Command {
     private final ServersConnectDAO serversConnectDAO;
     private final CommandListener commandListener;
     private final ResultHandler resultHandler;
+    private final EventReceiver eventReceiver;
 
-    public LoopCommand(EventReceiver eventReceiver, CommandListener commandListener, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO) {
-        super(eventReceiver);
+    public LoopCommand(CommandListener commandListener, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.commandListener = commandListener;
         this.resultHandler = resultHandler;
         this.serversConnectDAO = serversConnectDAO;
+        this.eventReceiver = eventReceiver;
     }
 
 
@@ -45,7 +47,7 @@ public class LoopCommand extends Command {
     @Override
     public void execute(JsonNode data) {
         String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
-        Guild guild = getEventReceiver().getJda().getGuildById(guildId);
+        Guild guild = eventReceiver.getJda().getGuildById(guildId);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
         EmbedBuilder eb = new EmbedBuilder();

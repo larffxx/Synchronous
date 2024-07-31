@@ -1,6 +1,5 @@
 package com.larffxx.synchronousdiscord.events;
 
-import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -9,11 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class JoinEvent extends Event<GuildJoinEvent> {
-
-    public JoinEvent(EventReceiver eventReceiver) {
-        super(eventReceiver);
-    }
+public class JoinEvent implements Event<GuildJoinEvent> {
 
     @Override
     public void execute(GuildJoinEvent event) {
