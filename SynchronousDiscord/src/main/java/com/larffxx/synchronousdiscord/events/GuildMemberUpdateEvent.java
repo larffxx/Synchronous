@@ -1,44 +1,54 @@
 package com.larffxx.synchronousdiscord.events;
 
 import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
-import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
+import com.larffxx.synchronousdiscord.events.utility.UpdateGuildProfiles;
+import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @Getter
 @Setter
-public class GuildMemberUpdateEvent extends Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent>{
-    private final ProfileDAO profileDAO;
+public class GuildMemberUpdateEvent extends Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent> {
     private final ServersConnectDAO serversConnectDAO;
     private final GuildProfileDAO guildProfileDAO;
     private final UsersConnectDAO usersConnectDAO;
-    public GuildMemberUpdateEvent(EventReceiver eventReceiver, UsersConnectDAO usersConnectDAO, GuildProfileDAO guildProfileDAO, ServersConnectDAO serversConnectDAO, ProfileDAO profileDAO) {
+    private final UpdateGuildProfiles updateGuildProfiles;
+
+
+    public GuildMemberUpdateEvent(EventReceiver eventReceiver, UsersConnectDAO usersConnectDAO, GuildProfileDAO guildProfileDAO, ServersConnectDAO serversConnectDAO, UpdateGuildProfiles updateGuildProfiles) {
         super(eventReceiver);
         this.usersConnectDAO = usersConnectDAO;
         this.guildProfileDAO = guildProfileDAO;
         this.serversConnectDAO = serversConnectDAO;
-        this.profileDAO = profileDAO;
+        this.updateGuildProfiles = updateGuildProfiles;
     }
 
     @Override
     public void execute(net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent event) {
+        Guild guild = event.getGuild();
         if (serversConnectDAO.existsByDiscordGuildId(event.getGuild().getId())) {
-            for (Member member : event.getGuild().getMembers()) {
-                if (!usersConnectDAO.existsByDiscordId(member.getId()) && !member.getUser().isBot()) {
-                    event.getGuild().getTextChannelsByName("telegram", true).get(0).sendMessage("Register a member with name: " + member.getUser().getName()).queue();
-                } else if (usersConnectDAO.existsByDiscordId(member.getId()) && !guildProfileDAO.existsByUserId(usersConnectDAO.getByDiscordId(member.getUser().getId()))) {
-                    guildProfileDAO.setGuildProfile(member.getNickname(), usersConnectDAO.getByDiscordName(member.getUser().getName()), serversConnectDAO.getByDiscordGuild(event.getGuild().getId()), profileDAO.getProfile(member.getUser().getName()));
-                } else if (guildProfileDAO.existsByUserId(usersConnectDAO.getByDiscordId(member.getId())) && !member.getNickname().equals(guildProfileDAO.getGuildProfileByUsersConnect(usersConnectDAO.getByDiscordId(member.getId())).getName())) {
-                    usersConnectDAO.updateByDiscordId(member.getUser().getName(), member.getUser().getId());
-                    guildProfileDAO.updateGuildProfile(member.getNickname(), usersConnectDAO.getByDiscordId(member.getId()));
-                }
+
+            List<Member> members =
+                    guild.getMembers()
+                            .stream()
+                            .filter(member -> usersConnectDAO.existsByDiscordId(member.getId()))
+                            .toList();
+
+            if(members.isEmpty()){
+                guild.getTextChannelsByName("telegram", true).get(0).sendMessage(InfExcMessages.NO_REGISTERED_USERS).queue();
             }
+
+            updateGuildProfiles.update(members,guild);
+
         }
     }
 

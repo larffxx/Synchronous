@@ -12,9 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface GuildProfileRepository extends JpaRepository<GuildProfile, Long> {
 
     boolean existsByUsersConnect(UsersConnect usersConnect);
-    GuildProfile getGuildProfileByUsersConnect(UsersConnect usersConnect);
-
-    GuildProfile getByName(String name);
+    boolean existsByName(String name);
 
     @Transactional
     @Modifying

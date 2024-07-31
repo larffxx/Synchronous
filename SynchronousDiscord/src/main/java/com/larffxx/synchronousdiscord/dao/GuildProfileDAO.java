@@ -5,11 +5,9 @@ import com.larffxx.synchronousdiscord.model.Profile;
 import com.larffxx.synchronousdiscord.model.ServersConnect;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
 import com.larffxx.synchronousdiscord.repo.GuildProfileRepository;
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,20 +26,12 @@ public class GuildProfileDAO {
         guildProfileRepository.save(guildProfile);
     }
 
-    public boolean existsByUserId(UsersConnect usersConnect){
+    public boolean existsByUserConnect(UsersConnect usersConnect){
         return guildProfileRepository.existsByUsersConnect(usersConnect);
-    }
-
-    public GuildProfile getGuildProfileByUsersConnect(UsersConnect usersConnect){
-        return guildProfileRepository.getGuildProfileByUsersConnect(usersConnect);
     }
 
     public void updateGuildProfile(String name, UsersConnect usersConnect){
         guildProfileRepository.updateByUsersConnect(name, usersConnect);
-    }
-
-    public GuildProfile getByName(String name){
-        return guildProfileRepository.getByName(name);
     }
 
 }

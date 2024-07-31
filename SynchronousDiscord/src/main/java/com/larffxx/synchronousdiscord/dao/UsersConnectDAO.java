@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+
+
 @Component
 @Scope("prototype")
 @Getter
@@ -25,8 +27,9 @@ public class UsersConnectDAO {
     public UsersConnect getByDiscordId(String id){
         return usersConnectRepository.findByDiscordId(id);
     }
-    public boolean existsByDiscordId(String discordGuildId){
-        return usersConnectRepository.existsByDiscordId(discordGuildId);
+
+    public boolean existsByDiscordId(String userDiscordId){
+        return usersConnectRepository.existsByDiscordId(userDiscordId);
     }
 
     public UsersConnect getByTelegramName(String name){
