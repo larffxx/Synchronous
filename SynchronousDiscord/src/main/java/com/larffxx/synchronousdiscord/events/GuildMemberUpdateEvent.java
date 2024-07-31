@@ -19,15 +19,13 @@ import java.util.List;
 @Setter
 public class GuildMemberUpdateEvent extends Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent> {
     private final ServersConnectDAO serversConnectDAO;
-    private final GuildProfileDAO guildProfileDAO;
     private final UsersConnectDAO usersConnectDAO;
     private final UpdateGuildProfiles updateGuildProfiles;
 
 
-    public GuildMemberUpdateEvent(EventReceiver eventReceiver, UsersConnectDAO usersConnectDAO, GuildProfileDAO guildProfileDAO, ServersConnectDAO serversConnectDAO, UpdateGuildProfiles updateGuildProfiles) {
+    public GuildMemberUpdateEvent(EventReceiver eventReceiver, UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO, UpdateGuildProfiles updateGuildProfiles) {
         super(eventReceiver);
         this.usersConnectDAO = usersConnectDAO;
-        this.guildProfileDAO = guildProfileDAO;
         this.serversConnectDAO = serversConnectDAO;
         this.updateGuildProfiles = updateGuildProfiles;
     }
