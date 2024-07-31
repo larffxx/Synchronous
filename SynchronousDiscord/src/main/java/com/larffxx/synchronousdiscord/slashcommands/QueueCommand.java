@@ -7,6 +7,7 @@ import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
+import com.larffxx.synchronousdiscord.slashcommands.utility.QueueChecker;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -21,20 +22,22 @@ import java.util.List;
 public class QueueCommand extends Command {
     private final ServersConnectDAO serversConnectDAO;
     private final CommandListener commandListener;
-    public final ResultHandler resultHandler;
+    private final ResultHandler resultHandler;
+    private final QueueChecker queueChecker;
 
-    public QueueCommand(EventReceiver eventReceiver, CommandListener commandListener, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO) {
+    public QueueCommand(EventReceiver eventReceiver, CommandListener commandListener, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, QueueChecker queueChecker) {
         super(eventReceiver);
         this.commandListener = commandListener;
         this.resultHandler = resultHandler;
         this.serversConnectDAO = serversConnectDAO;
+        this.queueChecker = queueChecker;
     }
 
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
-        queueEmbedCreator(musicManager);
+        queueSender(musicManager);
 
         event.reply(CommandInfMessages.QUEUE_SUCCESS_MESSAGE).queue();
     }
@@ -47,28 +50,24 @@ public class QueueCommand extends Command {
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
 
-        queueEmbedCreator(musicManager);
+        queueSender(musicManager);
     }
 
-    private void queueEmbedCreator(GuildMusicManager musicManager) {
+    private void queueSender(GuildMusicManager musicManager) {
         List<AudioTrack> queue = new ArrayList<>(musicManager.getScheduler().getQueue());
         EmbedBuilder eb = new EmbedBuilder();
-        if (queue.isEmpty()) {
-            eb.setDescription(CommandInfMessages.QUEUE_UNSUCCESSFUL_MESSAGE);
-        }else {
-            for (int i = 0; i < 10; i++) {
-                eb.addField(i + ":", queue.get(i).getInfo().title, false);
-            }
-        }
+
+        queueChecker.queueCheck(queue, eb);
+
         commandListener.getEmbedSender().send(eb);
     }
+
 
 
     @Override
     public String getCommand() {
         return "queue";
     }
-
 
 
 }
