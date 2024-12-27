@@ -28,7 +28,10 @@ public class DiscordBot {
 
     @PostConstruct
     public void settingUpDiscord() {
-        jda = JDABuilder.create(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT).enableCache(CacheFlag.VOICE_STATE).addEventListeners(eventsListener).build();
+        jda = JDABuilder.create(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT).enableCache(CacheFlag.VOICE_STATE)
+                .addEventListeners(eventsListener)
+                .enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.SCHEDULED_EVENTS)
+                .build();
         eventReceiver.setJda(jda);
     }
 }

@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.events.utility;
+package com.larffxx.synchronousdiscord.updater;
 
 import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
@@ -15,13 +15,13 @@ import java.util.List;
 @Component
 @Getter
 @Setter
-public class UpdateGuildProfiles {
+public class GuildProfileUpdater {
     private final ProfileDAO profileDAO;
     private final ServersConnectDAO serversConnectDAO;
     private final GuildProfileDAO guildProfileDAO;
     private final UsersConnectDAO usersConnectDAO;
 
-    public UpdateGuildProfiles(ProfileDAO profileDAO, ServersConnectDAO serversConnectDAO, GuildProfileDAO guildProfileDAO, UsersConnectDAO usersConnectDAO) {
+    public GuildProfileUpdater(ProfileDAO profileDAO, ServersConnectDAO serversConnectDAO, GuildProfileDAO guildProfileDAO, UsersConnectDAO usersConnectDAO) {
         this.profileDAO = profileDAO;
         this.serversConnectDAO = serversConnectDAO;
         this.guildProfileDAO = guildProfileDAO;

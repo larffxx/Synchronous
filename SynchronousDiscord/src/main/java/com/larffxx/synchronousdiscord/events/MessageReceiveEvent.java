@@ -26,7 +26,7 @@ public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
             if (event.getMessage().getAttachments().isEmpty()) {
                 commandListener.getDiscordMessageProducer().send(event);
             } else {
-                commandListener.getDiscordMessageProducer().send(event, event.getMessage().getAttachments().get(0).getUrl());
+                commandListener.getDiscordMessageProducer().sendWithAttachment(event);
             }
         }
     }

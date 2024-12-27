@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
-import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.routeservices.TelegramCommandRouteService;
 import com.larffxx.synchronousdiscord.slashcommands.Command;
 import com.larffxx.synchronousdiscord.slashcommands.SlashCommandPreProcessor;
@@ -43,8 +42,6 @@ public class TelegramCommandConsumer {
             com.execute(data);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-        } catch (CommandException e) {
-            throw new CommandException(InfExcMessages.UNDETECTED_EXCEPTION);
         }
         telegramCommandRouteService.send(data);
     }

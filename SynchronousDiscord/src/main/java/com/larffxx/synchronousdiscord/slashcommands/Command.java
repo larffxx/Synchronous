@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public interface Command {
-
     void execute(SlashCommandInteractionEvent t) throws CommandException;
     void execute(JsonNode data) throws CommandException;
     String getCommand();

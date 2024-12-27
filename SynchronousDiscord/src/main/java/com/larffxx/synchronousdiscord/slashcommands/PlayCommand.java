@@ -6,11 +6,11 @@ import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.PlayerManager;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.MalformedURLException;
@@ -34,21 +34,28 @@ public class PlayCommand implements Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        if (!event.getUser().isBot()) {
-            link = event.getOption(CommandInfMessages.PLAY_LINK_FROM_DISCORD).getAsString();
-            if (!isUrl(link)) {
-                link = "ytsearch:" + link;
-            }
-            Guild guild = event.getGuild();
+        Guild guild = event.getGuild();
+        Member member = event.getMember();
 
-            VoiceChannel channel = event.getMember().getVoiceState().getChannel().asVoiceChannel();
-            AudioManager manager = guild.getAudioManager();
-
-            manager.openAudioConnection(channel);
-
-            playerManager.loadAndPlay(event.getChannel().asTextChannel(), link);
-            event.reply(CommandInfMessages.PLAY_SUCCESS_MESSAGE).queue();
+        if (member.getVoiceState().getChannel().asVoiceChannel() == null) {
+            event.reply("You are not in a voice channel").queue();
+            return;
         }
+
+        event.deferReply().queue();
+
+        link = event.getOption(CommandInfMessages.PLAY_LINK_FROM_DISCORD).getAsString();
+        if (!isUrl(link)) {
+            link = "ytsearch:" + link;
+        }
+
+        VoiceChannel channel = member.getVoiceState().getChannel().asVoiceChannel();
+        AudioManager manager = guild.getAudioManager();
+
+        manager.openAudioConnection(channel);
+
+        playerManager.loadAndPlay(event.getChannel().asTextChannel(), link);
+        event.getHook().sendMessage(CommandInfMessages.PLAY_SUCCESS_MESSAGE).queue();
     }
 
     @Override
@@ -68,7 +75,7 @@ public class PlayCommand implements Command {
         playerManager.loadAndPlay(textChannel, link);
     }
 
-    public boolean isUrl(String url) {
+    private boolean isUrl(String url) {
         try {
             new URL(url);
             return true;

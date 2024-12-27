@@ -2,7 +2,7 @@ package com.larffxx.synchronoustelegram.commands;
 
 import com.larffxx.synchronoustelegram.dao.UsersConnectDAO;
 import com.larffxx.synchronoustelegram.models.UsersConnect;
-import com.larffxx.synchronoustelegram.receivers.UpdateReceiver;
+import com.larffxx.synchronoustelegram.holder.UpdateHolder;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -11,32 +11,28 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class RegisterCommand extends Command {
     private final UsersConnectDAO usersConnectDAO;
 
-    public RegisterCommand(UpdateReceiver updateReceiver, UsersConnectDAO usersConnectDAO) {
-        super(updateReceiver);
+    public RegisterCommand(UpdateHolder updateHolder, UsersConnectDAO usersConnectDAO) {
+        super(updateHolder);
         this.usersConnectDAO = usersConnectDAO;
     }
 
-    public void execute(UpdateReceiver updateReceiver) {
+    public void execute(UpdateHolder updateHolder) throws TelegramApiException {
         SendMessage sm;
-        String[] discordName = updateReceiver.getUpdate().getMessage().getText().split(" ");
-        UsersConnect usersConnect = new UsersConnect(discordName[1], updateReceiver.getUpdate().getMessage().getFrom().getUserName());
-        try {
-            if (this.usersConnectDAO.getByTelegramName(updateReceiver.getUpdate().getMessage().getFrom().getUserName()).equals(usersConnect.getTelegramName())) {
-                sm = SendMessage.builder().chatId(updateReceiver.getChatId()).text("You have been registered before").build();
-                updateReceiver.getTelegramClient().execute(sm);
-            }
-        } catch (NullPointerException e) {
-            usersConnectDAO.saveData(usersConnect);
-            sm = SendMessage.builder().chatId(updateReceiver.getChatId()).text("registered").build();
-            try {
-                updateReceiver.getTelegramClient().execute(sm);
-            } catch (TelegramApiException ex) {
-                ex.printStackTrace();
-            }
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        String[] discordName = updateHolder.getUpdate().getMessage().getText().split(" ");
+        String telegramName = updateHolder.getUpdate().getMessage().getFrom().getUserName();
+        UsersConnect usersConnect = new UsersConnect(discordName[1], updateHolder.getUpdate().getMessage().getFrom().getUserName());
 
+        if (usersConnectDAO.getByTelegramName(telegramName).getTelegramName() != null) {
+            sm = SendMessage.builder().chatId(updateHolder.getChatId()).text("You have been registered before").build();
+
+            updateHolder.getTelegramClient().execute(sm);
+        } else {
+            usersConnectDAO.saveData(usersConnect);
+
+            sm = SendMessage.builder().chatId(updateHolder.getChatId()).text("registered").build();
+
+            updateHolder.getTelegramClient().execute(sm);
+        }
     }
 
     public String getCommand() {

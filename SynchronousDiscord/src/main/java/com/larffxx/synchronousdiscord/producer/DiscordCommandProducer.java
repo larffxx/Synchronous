@@ -1,10 +1,10 @@
 package com.larffxx.synchronousdiscord.producer;
 
+import com.larffxx.synchronousdiscord.parser.CommandPayloadParser;
 import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -12,8 +12,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 @Component
 @Getter
@@ -27,12 +25,15 @@ public class DiscordCommandProducer {
     }
 
     public void send(SlashCommandInteractionEvent event) {
-        CommandPayload commandPayload = new CommandPayload(event.getInteraction().getGuild().getId(), event.getInteraction().getMember().getEffectiveName(), event.getName(),
-                new ArrayList<>(event.getOptions().stream().map(OptionMapping::getAsString).collect(Collectors.toList())));
+        CommandPayload commandPayload = new CommandPayloadParser().parse(event);
+
         Message command = MessageBuilder
                 .withPayload(commandPayload)
                 .setHeader(KafkaHeaders.TOPIC, cTopic)
                 .build();
+
         commandPayloadKafkaTemplate.send(command);
     }
+
+
 }

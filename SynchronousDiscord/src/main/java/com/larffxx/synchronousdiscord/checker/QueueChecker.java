@@ -1,23 +1,28 @@
-package com.larffxx.synchronousdiscord.slashcommands.utility;
+package com.larffxx.synchronousdiscord.checker;
 
 import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class QueueChecker {
+public class QueueChecker{
 
-    public void queueCheck(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
+    public EmbedBuilder queueCheck(GuildMusicManager guildMusicManager) {
+        List<AudioTrack> queue = new ArrayList<>(guildMusicManager.getScheduler().getQueue());
+        EmbedBuilder embedBuilder = new EmbedBuilder();
+
         if (queue.isEmpty()) {
             emptyQueue(embedBuilder);
         } else {
             lessThanTenCheck(queue, embedBuilder);
         }
+        return embedBuilder;
     }
-
 
     private void lessThanTenCheck(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
         if (queue.size() < 10) {

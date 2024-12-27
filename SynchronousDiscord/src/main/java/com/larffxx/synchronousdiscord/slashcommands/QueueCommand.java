@@ -7,12 +7,11 @@ import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.slashcommands.utility.QueueChecker;
+import com.larffxx.synchronousdiscord.checker.QueueChecker;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -56,12 +55,9 @@ public class QueueCommand implements Command {
     }
 
     private void queueSender(GuildMusicManager musicManager) {
-        List<AudioTrack> queue = new ArrayList<>(musicManager.getScheduler().getQueue());
-        EmbedBuilder eb = new EmbedBuilder();
+        EmbedBuilder answer = queueChecker.queueCheck(musicManager);
 
-        queueChecker.queueCheck(queue, eb);
-
-        commandListener.getEmbedSender().send(eb);
+        commandListener.getEmbedSender().send(answer);
     }
 
 

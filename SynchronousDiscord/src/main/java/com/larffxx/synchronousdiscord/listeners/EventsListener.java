@@ -8,8 +8,6 @@ import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
 import org.springframework.stereotype.Component;
 
-
-
 @Component
 @Getter
 @Setter
@@ -24,7 +22,7 @@ public class EventsListener implements EventListener {
     @Override
     public void onEvent(GenericEvent event) {
         if (eventPreProcessor.getCommand(event.getClass()) != null) {
-            Event<GenericEvent> ev = eventPreProcessor.getCommand(event.getClass());
+            Event ev = eventPreProcessor.getCommand(event.getClass());
             ev.execute(event);
         }
     }

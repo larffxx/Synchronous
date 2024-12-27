@@ -1,32 +1,26 @@
 package com.larffxx.synchronoustelegram.commands;
 
-import com.larffxx.synchronoustelegram.receivers.UpdateReceiver;
+import com.larffxx.synchronoustelegram.holder.UpdateHolder;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class SendTextMessage extends Command{
-    public SendTextMessage(UpdateReceiver updateReceiver) {
-        super(updateReceiver);
+public class SendTextMessage extends Command {
+    public SendTextMessage(UpdateHolder updateHolder) {
+        super(updateHolder);
     }
 
-    public void execute(UpdateReceiver update) {
+    public void execute(UpdateHolder update) throws TelegramApiException {
         SendMessage sm = SendMessage.builder().chatId(String.valueOf(update.getChatId())).text("Text").build();
-        try {
-            update.getTelegramClient().execute(sm);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+
+        update.getTelegramClient().execute(sm);
     }
 
-    public void execute(Long id, String text) {
+    public void execute(Long id, String text) throws TelegramApiException {
         SendMessage sm = SendMessage.builder().chatId(id).text(text).build();
-        try {
-            getUpdateReceiver().getTelegramClient().execute(sm);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+
+        getUpdateHolder().getTelegramClient().execute(sm);
     }
 
     public String getCommand() {

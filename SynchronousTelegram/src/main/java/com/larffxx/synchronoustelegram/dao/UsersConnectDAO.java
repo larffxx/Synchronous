@@ -14,8 +14,8 @@ public class UsersConnectDAO {
         this.usersConnectRepository = usersConnectRepository;
     }
 
-    public String getByTelegramName(String name) {
-        return usersConnectRepository.findByTelegramName(name).getTelegramName();
+    public UsersConnect getByTelegramName(String name) {
+        return usersConnectRepository.findByTelegramName(name);
     }
 
     public UsersConnect getByDiscordName(String name){

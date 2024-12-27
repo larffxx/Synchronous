@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.events;
 
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
-import com.larffxx.synchronousdiscord.events.utility.UpdateGuildProfiles;
+import com.larffxx.synchronousdiscord.updater.GuildProfileUpdater;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,13 +18,13 @@ import java.util.List;
 public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent> {
     private final ServersConnectDAO serversConnectDAO;
     private final UsersConnectDAO usersConnectDAO;
-    private final UpdateGuildProfiles updateGuildProfiles;
+    private final GuildProfileUpdater guildProfileUpdater;
 
 
-    public GuildMemberUpdateEvent(UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO, UpdateGuildProfiles updateGuildProfiles) {
+    public GuildMemberUpdateEvent(UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO, GuildProfileUpdater guildProfileUpdater) {
         this.usersConnectDAO = usersConnectDAO;
         this.serversConnectDAO = serversConnectDAO;
-        this.updateGuildProfiles = updateGuildProfiles;
+        this.guildProfileUpdater = guildProfileUpdater;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.
                 guild.getTextChannelsByName("telegram", true).get(0).sendMessage(InfExcMessages.NO_REGISTERED_USERS).queue();
             }
 
-            updateGuildProfiles.update(members,guild);
+            guildProfileUpdater.update(members,guild);
 
         }else {
             guild.getTextChannels().get(0).sendMessage(InfExcMessages.SERVER_IS_NOT_CONNECTED_TO_TELEGRAM).queue();

@@ -1,8 +1,7 @@
 package com.larffxx.synchronoustelegram.commands;
 
 import com.larffxx.synchronoustelegram.dao.ServersConnectDAO;
-import com.larffxx.synchronoustelegram.receivers.UpdateReceiver;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.larffxx.synchronoustelegram.holder.UpdateHolder;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -11,30 +10,25 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class ConnectCommand extends Command {
     private final ServersConnectDAO serversConnectDAO;
 
-    public ConnectCommand(UpdateReceiver updateReceiver, ServersConnectDAO serversConnectDAO) {
-        super(updateReceiver);
+    public ConnectCommand(UpdateHolder updateHolder, ServersConnectDAO serversConnectDAO) {
+        super(updateHolder);
         this.serversConnectDAO = serversConnectDAO;
     }
 
 
     @Override
-    public void execute(UpdateReceiver updateReceiver) {
+    public void execute(UpdateHolder updateHolder) throws TelegramApiException {
         SendMessage sm;
-        if(serversConnectDAO.existsByTelegramChatName(updateReceiver.getUpdate().getMessage().getChat().getTitle())) {
-            serversConnectDAO.updateTelegramChannel(updateReceiver.getChatId(), updateReceiver.getUpdate().getMessage().getChat().getTitle());
-            sm = SendMessage.builder().chatId(updateReceiver.getChatId()).text("connected").build();
-            try {
-                updateReceiver.getTelegramClient().execute(sm);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
-        }else {
-            sm = SendMessage.builder().chatId(updateReceiver.getChatId()).text("connected before").build();
-            try {
-                updateReceiver.getTelegramClient().execute(sm);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+        if (serversConnectDAO.existsByTelegramChatName(updateHolder.getUpdate().getMessage().getChat().getTitle())) {
+            serversConnectDAO.updateTelegramChannel(updateHolder.getChatId(), updateHolder.getUpdate().getMessage().getChat().getTitle());
+
+            sm = SendMessage.builder().chatId(updateHolder.getChatId()).text("connected").build();
+
+            updateHolder.getTelegramClient().execute(sm);
+        } else {
+            sm = SendMessage.builder().chatId(updateHolder.getChatId()).text("connected before").build();
+
+            updateHolder.getTelegramClient().execute(sm);
         }
     }
 
