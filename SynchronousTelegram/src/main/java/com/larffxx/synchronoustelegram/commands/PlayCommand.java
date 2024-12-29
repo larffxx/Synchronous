@@ -1,8 +1,10 @@
 package com.larffxx.synchronoustelegram.commands;
 
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
+import com.larffxx.synchronoustelegram.sender.TextMessageSender;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -11,15 +13,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Getter
 @Setter
 public class PlayCommand extends Command{
-    public PlayCommand(UpdateHolder updateHolder) {
+    private final TextMessageSender textMessageSender;
+
+    public PlayCommand(UpdateHolder updateHolder, TextMessageSender textMessageSender) {
         super(updateHolder);
+        this.textMessageSender = textMessageSender;
     }
 
     @Override
     public void execute(UpdateHolder updateHolder) throws TelegramApiException {
-        SendMessage sm;
-        sm = SendMessage.builder().chatId(updateHolder.getChatId()).text("Music added").build();
-        updateHolder.getTelegramClient().execute(sm);
+        textMessageSender.send(Long.valueOf(updateHolder.getChatId()), "Music added");
     }
 
     @Override
