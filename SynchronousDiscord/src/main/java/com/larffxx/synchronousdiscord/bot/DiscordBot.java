@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 @Component
 @Getter
 @Setter
@@ -30,7 +31,7 @@ public class DiscordBot {
     public void settingUpDiscord() {
         jda = JDABuilder.create(token, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_VOICE_STATES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT).enableCache(CacheFlag.VOICE_STATE)
                 .addEventListeners(eventsListener)
-                .enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.SCHEDULED_EVENTS)
+                .enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_EXPRESSIONS, GatewayIntent.SCHEDULED_EVENTS)
                 .build();
         eventReceiver.setJda(jda);
     }

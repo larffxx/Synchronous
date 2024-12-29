@@ -8,7 +8,7 @@ import java.io.File;
 @Getter
 @Setter
 public class MessagePayload {
-    private Long chatId;
+    private Long guildId;
     private String name;
     private String message;
     private File file;
@@ -17,6 +17,6 @@ public class MessagePayload {
     public MessagePayload(String name, String message, Long chatId){
         this.name = name;
         this.message = message;
-        this.chatId = chatId;
+        this.guildId = chatId;
     }
 }

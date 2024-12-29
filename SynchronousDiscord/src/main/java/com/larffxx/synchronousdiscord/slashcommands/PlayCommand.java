@@ -42,8 +42,6 @@ public class PlayCommand implements Command {
             return;
         }
 
-        event.deferReply().queue();
-
         link = event.getOption(CommandInfMessages.PLAY_LINK_FROM_DISCORD).getAsString();
         if (!isUrl(link)) {
             link = "ytsearch:" + link;

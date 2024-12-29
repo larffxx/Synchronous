@@ -35,6 +35,6 @@ public class ConnectCommand extends Command {
 
     @Override
     public String getCommand() {
-        return "connect";
+        return "/connect";
     }
 }

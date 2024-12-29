@@ -21,9 +21,9 @@ public class AddNewcomerRole implements Addable<GuildMemberJoinEvent>{
     public void add(GuildMemberJoinEvent e) {
         Member member = e.getMember();
         guild = e.getGuild();
-        role = guild.getRolesByName("Newcomer", true).get(0);
 
         createRoleIfNotExist();
+        role = guild.getRolesByName("Newcomer", true).get(0);
 
         guild.addRoleToMember(member.getUser(), role).queue();
     }
