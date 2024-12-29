@@ -6,10 +6,10 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class SendTextMessage {
+public class TextMessageSender {
     private final UpdateHolder updateHolder;
 
-    public SendTextMessage(UpdateHolder updateHolder) {
+    public TextMessageSender(UpdateHolder updateHolder) {
         this.updateHolder = updateHolder;
     }
 

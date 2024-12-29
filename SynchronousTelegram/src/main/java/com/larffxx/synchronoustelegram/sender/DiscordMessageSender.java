@@ -1,9 +1,8 @@
-package com.larffxx.synchronoustelegram.consumer.utility;
+package com.larffxx.synchronoustelegram.sender;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronoustelegram.dao.ServersConnectDAO;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
-import com.larffxx.synchronoustelegram.sender.SendTextMessage;
 import com.larffxx.synchronoustelegram.dao.GuildProfileDAO;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,13 +19,13 @@ public class DiscordMessageSender {
     private final ServersConnectDAO serversConnectDAO;
     private final UpdateHolder updateHolder;
     private final GuildProfileDAO guildProfileDAO;
-    private final SendTextMessage sendTextMessage;
+    private final TextMessageSender textMessageSender;
     private Matcher matcher;
 
-    public DiscordMessageSender(UpdateHolder updateHolder, GuildProfileDAO guildProfileDAO, SendTextMessage sendTextMessage, ServersConnectDAO serversConnectDAO) {
+    public DiscordMessageSender(UpdateHolder updateHolder, GuildProfileDAO guildProfileDAO, TextMessageSender textMessageSender, ServersConnectDAO serversConnectDAO) {
         this.updateHolder = updateHolder;
         this.guildProfileDAO = guildProfileDAO;
-        this.sendTextMessage = sendTextMessage;
+        this.textMessageSender = textMessageSender;
         this.serversConnectDAO = serversConnectDAO;
     }
 
@@ -37,9 +36,9 @@ public class DiscordMessageSender {
 
         setMatcher(message);
         if(matcher.find()){
-            sendTextMessage.send(Long.valueOf(updateHolder.getChatId()), formatMsg(message));
+            textMessageSender.send(Long.valueOf(updateHolder.getChatId()), formatMsg(message));
         }else {
-            sendTextMessage.send(Long.valueOf(updateHolder.getChatId()), message);
+            textMessageSender.send(Long.valueOf(updateHolder.getChatId()), message);
         }
     }
 

@@ -3,7 +3,7 @@ package com.larffxx.synchronoustelegram.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.larffxx.synchronoustelegram.consumer.utility.DiscordMessageSender;
+import com.larffxx.synchronoustelegram.sender.DiscordMessageSender;
 import com.larffxx.synchronoustelegram.exception.TelegramException;
 import lombok.Getter;
 import lombok.Setter;
