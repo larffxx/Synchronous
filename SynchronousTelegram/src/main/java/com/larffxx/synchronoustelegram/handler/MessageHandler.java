@@ -2,6 +2,8 @@ package com.larffxx.synchronoustelegram.handler;
 
 import com.larffxx.synchronoustelegram.commands.Command;
 import com.larffxx.synchronoustelegram.exception.TelegramException;
+import com.larffxx.synchronoustelegram.executor.TelegramClientCommandExecutor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
@@ -21,35 +23,29 @@ import java.io.File;
 @Component
 public class MessageHandler {
     private final UpdateHolder updateHolder;
-    private final CommandPreProcessor commandPreProcessor;
+    private final TelegramClientCommandExecutor clientCommandExecutor;
     private final TelegramKafkaCommandProducer telegramKafkaCommandProducer;
     private final TelegramKafkaMessageProducer telegramKafkaMessageProducer;
 
-    public MessageHandler(UpdateHolder updateHolder, CommandPreProcessor commandPreProcessor, TelegramKafkaCommandProducer telegramKafkaCommandProducer, TelegramKafkaMessageProducer telegramKafkaMessageProducer) {
+    public MessageHandler(UpdateHolder updateHolder, TelegramKafkaCommandProducer telegramKafkaCommandProducer, TelegramKafkaMessageProducer telegramKafkaMessageProducer, TelegramClientCommandExecutor clientCommandExecutor) {
         this.updateHolder = updateHolder;
-        this.commandPreProcessor = commandPreProcessor;
         this.telegramKafkaCommandProducer = telegramKafkaCommandProducer;
         this.telegramKafkaMessageProducer = telegramKafkaMessageProducer;
+        this.clientCommandExecutor = clientCommandExecutor;
     }
 
     public void handleMessage(Update update) {
-        if(update.getMessage().hasPhoto()){
+        if (update.getMessage().hasPhoto()) {
             photoMessageReceived(update);
-        }else {
+        } else {
             textMessageReceived(update);
         }
     }
 
-    private void textMessageReceived(Update update){
+    private void textMessageReceived(Update update) {
         if (update.getMessage().getText().startsWith("/")) {
-            String[] s = update.getMessage().getText().split(" ");
-            Command command = commandPreProcessor.getCommand(s[0]);
+            clientCommandExecutor.execute(update);
 
-            try {
-                command.execute(updateHolder);
-            } catch (TelegramApiException e) {
-                throw new TelegramException(e.getMessage());
-            }
             telegramKafkaCommandProducer.sendKafkaMessage(update);
         } else {
             telegramKafkaMessageProducer.sendKafkaMessage(update);
@@ -58,11 +54,14 @@ public class MessageHandler {
 
     private void photoMessageReceived(Update update) {
         TelegramClient telegramClient = updateHolder.getTelegramClient();
+
+        String getFileId = update.getMessage().getPhoto().get(2).getFileId();
         try {
-            telegramKafkaMessageProducer.sendKafkaMessage(update, new File
-                    (String.valueOf(telegramClient.downloadFile(telegramClient.execute(new GetFile(update.getMessage().getPhoto().get(2).getFileId()))))));
+            File file = new File(String.valueOf(telegramClient.downloadFile(getFileId)));
+
+            telegramKafkaMessageProducer.sendKafkaMessage(update, file);
         } catch (TelegramApiException e) {
-            throw new TelegramException(e.getMessage());
+            //TODO custom exception
         }
     }
 }
