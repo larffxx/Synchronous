@@ -5,7 +5,6 @@ import com.larffxx.synchronoustelegram.models.UsersConnect;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
 import com.larffxx.synchronoustelegram.sender.TextMessageSender;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component

@@ -20,7 +20,6 @@ public class TelegramCommandRouteService extends RouteService<Command>{
         super(eventReceiver, serversConnectDAO, preProcessor);
     }
 
-
     public void send(JsonNode data) throws CommandException {
         getEventReceiver().setTextChannel(getEventReceiver().getJda()
                 .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild())

@@ -34,6 +34,7 @@ public class PlayCommand implements Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        event.deferReply().queue();
         Guild guild = event.getGuild();
         Member member = event.getMember();
 
