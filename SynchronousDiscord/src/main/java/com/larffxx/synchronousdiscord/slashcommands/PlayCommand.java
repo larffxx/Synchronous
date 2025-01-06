@@ -34,7 +34,6 @@ public class PlayCommand implements Command {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
         Guild guild = event.getGuild();
         Member member = event.getMember();
 
@@ -54,7 +53,7 @@ public class PlayCommand implements Command {
         manager.openAudioConnection(channel);
 
         playerManager.loadAndPlay(event.getChannel().asTextChannel(), link);
-        event.getHook().sendMessage(CommandInfMessages.PLAY_SUCCESS_MESSAGE).queue();
+        event.getHook().editOriginal(CommandInfMessages.PLAY_SUCCESS_MESSAGE).queue();
     }
 
     @Override

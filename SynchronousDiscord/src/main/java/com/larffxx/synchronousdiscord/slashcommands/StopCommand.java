@@ -35,7 +35,7 @@ public class StopCommand implements Command{
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(event.getGuild());
 
         guildMusicManager.getScheduler().stopTrack();
-        event.reply(CommandInfMessages.STOP_SUCCESS_MESSAGE).queue();
+        event.getHook().editOriginal(CommandInfMessages.STOP_SUCCESS_MESSAGE).queue();
 
 
         AudioManager manager = event.getGuild().getAudioManager();

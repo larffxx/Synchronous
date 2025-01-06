@@ -26,12 +26,12 @@ public class EditProfileCommand implements Command{
 
 
     @Override
-    public void execute(SlashCommandInteractionEvent t) {
-        profileDAO.updateProfile(t.getOption(CommandInfMessages.DESCRIPTION_OPTION).getAsString(),
-                t.getOption(CommandInfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
-                t.getOption(CommandInfMessages.URL_OPTION).getAsString(),
-                usersConnectDAO.getByDiscordName(t.getInteraction().getUser().getName()));
-        t.reply(CommandInfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();
+    public void execute(SlashCommandInteractionEvent event) {
+        profileDAO.updateProfile(event.getOption(CommandInfMessages.DESCRIPTION_OPTION).getAsString(),
+                event.getOption(CommandInfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
+                event.getOption(CommandInfMessages.URL_OPTION).getAsString(),
+                usersConnectDAO.getByDiscordName(event.getInteraction().getUser().getName()));
+        event.getHook().editOriginal(CommandInfMessages.EDIT_PROFILE_SUCCESS_MESSAGE).queue();
     }
 
     @Override

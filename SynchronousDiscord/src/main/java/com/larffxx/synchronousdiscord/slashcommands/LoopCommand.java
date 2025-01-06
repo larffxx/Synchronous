@@ -33,14 +33,14 @@ public class LoopCommand implements Command {
 
 
     @Override
-    public void execute(SlashCommandInteractionEvent t) {
-        GuildMusicManager musicManager = resultHandler.getMusicManager(t.getGuild());
+    public void execute(SlashCommandInteractionEvent event) {
+        GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
-            t.reply(CommandInfMessages.LOOP_UNSUCCESSFUL_MESSAGE).queue();
+            event.getHook().editOriginal(CommandInfMessages.LOOP_UNSUCCESSFUL_MESSAGE).queue();
         }else {
             boolean loop = !musicManager.getScheduler().isRepeat();
             musicManager.getScheduler().setRepeat(loop);
-            t.reply(CommandInfMessages.LOOP_SUCCESS_MESSAGE).queue();
+            event.getHook().editOriginal(CommandInfMessages.LOOP_SUCCESS_MESSAGE).queue();
         }
     }
 

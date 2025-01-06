@@ -35,16 +35,16 @@ public class CreateProfileCommand implements Command {
 
 
     @Override
-    public void execute(SlashCommandInteractionEvent t) {
-        if (!profileDAO.existsByUsersConnect(usersConnectDAO.getByDiscordName(t.getInteraction().getUser().getName()))) {
-            Profile profile = new Profile(t.getOption(CommandInfMessages.DESCRIPTION_OPTION).getAsString(),
-                    t.getOption(CommandInfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
-                    t.getOption(CommandInfMessages.URL_OPTION).getAsString(),
-                    usersConnectRepository.getReferenceById(usersConnectDAO.getByDiscordName(t.getInteraction().getUser().getName()).getId()));
+    public void execute(SlashCommandInteractionEvent event) {
+        if (!profileDAO.existsByUsersConnect(usersConnectDAO.getByDiscordName(event.getInteraction().getUser().getName()))) {
+            Profile profile = new Profile(event.getOption(CommandInfMessages.DESCRIPTION_OPTION).getAsString(),
+                    event.getOption(CommandInfMessages.PHOTO_OPTION).getAsAttachment().getUrl(),
+                    event.getOption(CommandInfMessages.URL_OPTION).getAsString(),
+                    usersConnectRepository.getReferenceById(usersConnectDAO.getByDiscordName(event.getInteraction().getUser().getName()).getId()));
             profileDAO.saveModel(profile);
-            t.reply(CommandInfMessages.CREATE_PROFILE_SUCCESS_MESSAGE).queue();
+            event.getHook().editOriginal(CommandInfMessages.CREATE_PROFILE_SUCCESS_MESSAGE).queue();
         } else {
-            t.reply(CommandInfMessages.CREATE_PROFILE_UNSUCCESSFUL_MESSAGE).queue();
+            event.getHook().editOriginal(CommandInfMessages.CREATE_PROFILE_UNSUCCESSFUL_MESSAGE).queue();
         }
     }
 

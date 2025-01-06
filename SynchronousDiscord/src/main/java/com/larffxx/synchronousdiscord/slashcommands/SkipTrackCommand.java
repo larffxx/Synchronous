@@ -33,7 +33,7 @@ public class SkipTrackCommand implements Command{
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
         musicManager.getScheduler().nextTrack();
 
-        event.reply(CommandInfMessages.SKIP_SUCCESS_MESSAGE).queue();
+        event.getHook().editOriginal(CommandInfMessages.SKIP_SUCCESS_MESSAGE).queue();
     }
 
     @Override
@@ -46,7 +46,6 @@ public class SkipTrackCommand implements Command{
 
         musicManager.getScheduler().nextTrack();
         textChannel.sendMessage(CommandInfMessages.SKIP_SUCCESS_MESSAGE).queue();
-
     }
 
     @Override

@@ -22,18 +22,17 @@ public class DeleteMessageCommand implements Command {
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent t) throws CommandException {
+    public void execute(SlashCommandInteractionEvent event) throws CommandException {
         MessageChannel messageChannel = eventReceiver.getMessageChannel();
         int amount = eventReceiver.getOptionMappings().get(0).getAsInt();
-
 
         CompletableFuture<Void> completableFuture = deleteMessages(messageChannel, amount);
 
         completableFuture.whenComplete((result, ex) -> {
             if (ex != null) {
-                t.reply(ex.getMessage()).queue();
+                event.getHook().editOriginal(ex.getMessage()).queue();
             } else {
-                t.reply(String.format(CommandInfMessages.DELETE_SUCCESS_MESSAGE, amount)).queue();
+                event.getHook().editOriginal(String.format(CommandInfMessages.DELETE_SUCCESS_MESSAGE, amount)).queue();
             }
         });
     }

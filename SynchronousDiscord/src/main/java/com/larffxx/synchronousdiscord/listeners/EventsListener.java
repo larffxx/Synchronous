@@ -23,6 +23,7 @@ public class EventsListener implements EventListener {
     public void onEvent(GenericEvent event) {
         if (eventPreProcessor.getCommand(event.getClass()) != null) {
             Event ev = eventPreProcessor.getCommand(event.getClass());
+
             ev.execute(event);
         }
     }

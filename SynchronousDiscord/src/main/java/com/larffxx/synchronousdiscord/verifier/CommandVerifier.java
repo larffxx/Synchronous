@@ -4,14 +4,13 @@ package com.larffxx.synchronousdiscord.verifier;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.slashcommands.SlashCommandPreProcessor;
+import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import okio.Options;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

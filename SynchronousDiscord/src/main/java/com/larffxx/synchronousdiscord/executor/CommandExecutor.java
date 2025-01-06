@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.executor;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
 import com.larffxx.synchronousdiscord.slashcommands.Command;
-import com.larffxx.synchronousdiscord.slashcommands.SlashCommandPreProcessor;
+import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -22,6 +22,7 @@ public class CommandExecutor {
     }
 
     public void execute(SlashCommandInteractionEvent t) throws CommandException {
+        t.deferReply().queue();
         commandVerifier.commandVerifier(t);
         Command command = slashCommandPreProcessor.getCommand(t.getInteraction().getName());
 

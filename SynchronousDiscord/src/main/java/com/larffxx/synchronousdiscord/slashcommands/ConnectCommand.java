@@ -26,9 +26,9 @@ public class ConnectCommand implements Command{
 
 
     @Override
-    public void execute(SlashCommandInteractionEvent t) {
-        serversConnectDAO.saveServer(t.getGuild().getId(), t.getOption(CommandInfMessages.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString());
-        t.reply(CommandInfMessages.CONNECT_SUCCESS_MESSAGE).queue();
+    public void execute(SlashCommandInteractionEvent event) {
+        serversConnectDAO.saveServer(event.getGuild().getId(), event.getOption(CommandInfMessages.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString());
+        event.getHook().editOriginal(CommandInfMessages.CONNECT_SUCCESS_MESSAGE).queue();
     }
 
     @Override
