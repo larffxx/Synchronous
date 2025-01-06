@@ -50,9 +50,9 @@ public class CreateProfileCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        UsersConnect user = usersConnectDAO.getByDiscordName(data.get(CommandInfMessages.NAME_FROM_TELEGRAM).asText());
+        UsersConnect user = usersConnectDAO.getByDiscordName(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText());
         Guild guild = eventReceiver.getJda().getGuildById(user.getServersConnect().getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelById(data.get(CommandInfMessages.TELEGRAM_CHANNEL).asText());
+        TextChannel textChannel = guild.getTextChannelById(data.findValue(CommandInfMessages.TELEGRAM_CHANNEL).asText());
 
         textChannel.sendMessage(data.findValue("name").asText() + CommandInfMessages.CREATE_PROFILE_SUCCESS_MESSAGE).queue();
     }

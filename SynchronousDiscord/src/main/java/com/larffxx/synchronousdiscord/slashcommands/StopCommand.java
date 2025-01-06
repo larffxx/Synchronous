@@ -44,9 +44,9 @@ public class StopCommand implements Command{
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
         Guild guild = eventReceiver.getJda().getGuildById(guildId);
-        TextChannel textChannel = guild.getTextChannelsByName("telegram", true).get(0);
+        TextChannel textChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
 
         GuildMusicManager guildMusicManager = resultHandler.getMusicManager(guild);
 

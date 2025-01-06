@@ -46,7 +46,7 @@ public class LoopCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild();
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
         Guild guild = eventReceiver.getJda().getGuildById(guildId);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);

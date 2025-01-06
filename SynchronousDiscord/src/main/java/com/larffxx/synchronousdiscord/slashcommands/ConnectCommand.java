@@ -33,7 +33,7 @@ public class ConnectCommand implements Command{
 
     @Override
     public void execute(JsonNode data) {
-        ServersConnect serversConnect = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText());
+        ServersConnect serversConnect = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText());
         Guild guildId = eventReceiver.getJda().getGuildById(serversConnect.getDiscordGuild());
         TextChannel textChannel = guildId.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL,true).get(0);
 
