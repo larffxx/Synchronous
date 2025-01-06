@@ -34,15 +34,14 @@ public class TelegramCommandConsumer {
     }
 
     @KafkaListener(topics = "${tCTopic}", groupId = "${groupId}")
-    public void listener(@Payload String command) throws CommandException {
+    public void listener(@Payload String command) {
         JsonNode data = null;
         try {
             data = new ObjectMapper().readTree(command);
-            Command com = preProcessor.getCommand(data.findValue("command").asText());
-            com.execute(data);
+
+            telegramCommandRouteService.send(data);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        telegramCommandRouteService.send(data);
     }
 }

@@ -64,7 +64,7 @@ public class PlayCommand implements Command {
             link = "ytsearch:" + link;
         }
         Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO
-                .getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
+                .getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
 
         VoiceChannel channel = guild.getVoiceChannelsByName("general", true).get(0);
