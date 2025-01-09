@@ -35,7 +35,7 @@ public class ConnectCommand implements Command{
     public void execute(JsonNode data) {
         ServersConnect serversConnect = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText());
         Guild guildId = eventReceiver.getJda().getGuildById(serversConnect.getDiscordGuild());
-        TextChannel textChannel = guildId.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL,true).get(0);
+        TextChannel textChannel = guildId.getTextChannelsByName(CommandInfMessages.DISCORD_TEXT_CHANNEL,true).get(0);
 
         textChannel.sendMessage(CommandInfMessages.CONNECT_SUCCESS_MESSAGE).queue();
     }

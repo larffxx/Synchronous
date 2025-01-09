@@ -30,7 +30,7 @@ public class UserRegisterCommand implements Command {
     public void execute(SlashCommandInteractionEvent event) {
         if (!event.getUser().isBot()) {
             UsersConnect usersConnect = new UsersConnect(event.getInteraction().getUser().getName(),
-                    event.getOption(CommandInfMessages.TELEGRAM_CHANNEL).getAsString(),
+                    event.getOption(CommandInfMessages.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString(),
                     event.getInteraction().getUser().getId(), serversConnectDAO.getByDiscordGuild(event.getGuild().getId()));
             try {
                 if (usersConnectDAO.getByDiscordName(event.getInteraction().getUser().getName()).getDiscordName().equals(usersConnect.getDiscordName())) {
@@ -46,7 +46,7 @@ public class UserRegisterCommand implements Command {
     @Override
     public void execute(JsonNode data) {
         Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
-        TextChannel telegramChannel = guild.getTextChannelsByName(CommandInfMessages.TELEGRAM_CHANNEL, true).get(0);
+        TextChannel telegramChannel = guild.getTextChannelsByName(CommandInfMessages.DISCORD_TEXT_CHANNEL, true).get(0);
 
         telegramChannel.sendMessage(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText() + CommandInfMessages.USER_REGISTER_SUCCESS_MESSAGE).queue();
     }
