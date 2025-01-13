@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class TelegramMessageConsumer {
-    private final TelegramMessageRouteService telegramMessageConsumer;
+    private final TelegramMessageRouteService telegramMessageRouteService;
 
-    public TelegramMessageConsumer(TelegramMessageRouteService telegramMessageConsumer) {
-        this.telegramMessageConsumer = telegramMessageConsumer;
+    public TelegramMessageConsumer(TelegramMessageRouteService telegramMessageRouteService) {
+        this.telegramMessageRouteService = telegramMessageRouteService;
     }
 
     @KafkaListener(topics = "${tMTopic}", groupId = "${groupId}")
@@ -26,9 +26,10 @@ public class TelegramMessageConsumer {
         JsonNode data = null;
         try {
             data = new ObjectMapper().readTree(message);
+
+            telegramMessageRouteService.send(data);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        telegramMessageConsumer.send(data);
     }
 }
