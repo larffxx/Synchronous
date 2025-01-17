@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.controller.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.model.ServersConnect;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
@@ -27,17 +27,17 @@ public class ConnectCommand implements Command{
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        serversConnectDAO.saveServer(event.getGuild().getId(), event.getOption(CommandInfMessages.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString());
-        event.getHook().editOriginal(CommandInfMessages.CONNECT_SUCCESS_MESSAGE).queue();
+        serversConnectDAO.saveServer(event.getGuild().getId(), event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString());
+        event.getHook().editOriginal(CommandConstants.CONNECT_SUCCESS_MESSAGE).queue();
     }
 
     @Override
     public void execute(JsonNode data) {
-        ServersConnect serversConnect = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText());
+        ServersConnect serversConnect = serversConnectDAO.getByTelegramChat(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
         Guild guildId = eventReceiver.getJda().getGuildById(serversConnect.getDiscordGuild());
-        TextChannel textChannel = guildId.getTextChannelsByName(CommandInfMessages.DISCORD_TEXT_CHANNEL,true).get(0);
+        TextChannel textChannel = guildId.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL,true).get(0);
 
-        textChannel.sendMessage(CommandInfMessages.CONNECT_SUCCESS_MESSAGE).queue();
+        textChannel.sendMessage(CommandConstants.CONNECT_SUCCESS_MESSAGE).queue();
     }
 
 

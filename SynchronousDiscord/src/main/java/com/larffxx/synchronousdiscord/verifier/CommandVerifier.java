@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
-import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
 import lombok.Getter;
@@ -15,12 +15,9 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -62,16 +59,16 @@ public class CommandVerifier {
     }
 
     public void verifyCommand(JsonNode data) throws CommandException {
-        String telegramChatId = data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText();
+        String telegramChatId = data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText();
         Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO.getByTelegramChat(telegramChatId).getDiscordGuild());
-        String discordTextChannel = CommandInfMessages.DISCORD_TEXT_CHANNEL;
-        String strCommand = data.findValue(CommandInfMessages.COMMAND_VALUE).asText();
+        String discordTextChannel = CommandConstants.DISCORD_TEXT_CHANNEL;
+        String strCommand = data.findValue(CommandConstants.COMMAND_VALUE).asText();
         Command discordCommand = guild.retrieveCommands().complete().stream()
                 .filter(command -> command.getName().equals(strCommand))
                 .findFirst().get();
 
         List<Command.Option> commandOptions = discordCommand.getOptions();
-        List<String> providedOptions = data.findValues(CommandInfMessages.COMMAND_OPTIONS)
+        List<String> providedOptions = data.findValues(CommandConstants.COMMAND_OPTIONS)
                 .stream()
                 .map(JsonNode::asText).toList();
 

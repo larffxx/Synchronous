@@ -1,10 +1,7 @@
 package com.larffxx.synchronousdiscord.senders.utility;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.SendersInfMessages;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

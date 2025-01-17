@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.executor.CommandExecutor;
-import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.controller.slashcommands.Command;
@@ -25,12 +25,12 @@ public class TelegramCommandRouteService extends RouteService<Command>{
     }
 
     public void send(JsonNode data){
-        String telegramChatID = data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText();
+        String telegramChatID = data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText();
         String guildId = getServersConnectDAO().getByTelegramChat(telegramChatID).getDiscordGuild();
         TextChannel telegramChannel = getEventReceiver()
                 .getJda()
                 .getGuildById(guildId)
-                .getTextChannelsByName(CommandInfMessages.DISCORD_TEXT_CHANNEL,true).get(0);
+                .getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL,true).get(0);
 
         getEventReceiver().setTextChannel(telegramChannel);
 

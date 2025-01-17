@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class CommandInfMessages {
+public class CommandConstants {
     public static final String TELEGRAM_CHAT_ID = "chatId";
     public static final String DISCORD_TEXT_CHANNEL = "telegram";
     public static final String COMMAND_VALUE = "command";

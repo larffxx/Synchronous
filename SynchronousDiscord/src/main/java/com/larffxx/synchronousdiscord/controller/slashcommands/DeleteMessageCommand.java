@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.controller.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.exception.CommandException;
-import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -31,7 +31,7 @@ public class DeleteMessageCommand implements Command {
             if (ex != null) {
                 event.getHook().editOriginal(ex.getMessage()).queue();
             } else {
-                event.getHook().editOriginal(String.format(CommandInfMessages.DELETE_SUCCESS_MESSAGE, amount)).queue();
+                event.getHook().editOriginal(String.format(CommandConstants.DELETE_SUCCESS_MESSAGE, amount)).queue();
             }
         });
     }

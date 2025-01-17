@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class SendersInfMessages {
+public class SendersConstants {
     public static String MESSAGE_TYPE = "messageType";
     public static String MESSAGE_FROM_TELEGRAM = "message";
     public static String TELEGRAM_CHAT_ID = "chatId";

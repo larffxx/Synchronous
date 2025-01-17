@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.controller.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.PlayerManager;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
@@ -42,7 +42,7 @@ public class PlayCommand implements Command {
             return;
         }
 
-        link = event.getOption(CommandInfMessages.PLAY_LINK_FROM_DISCORD).getAsString();
+        link = event.getOption(CommandConstants.PLAY_LINK_FROM_DISCORD).getAsString();
         if (!isUrl(link)) {
             link = "ytsearch:" + link;
         }
@@ -53,18 +53,18 @@ public class PlayCommand implements Command {
         manager.openAudioConnection(channel);
 
         playerManager.loadAndPlay(event.getChannel().asTextChannel(), link);
-        event.getHook().editOriginal(CommandInfMessages.PLAY_SUCCESS_MESSAGE).queue();
+        event.getHook().editOriginal(CommandConstants.PLAY_SUCCESS_MESSAGE).queue();
     }
 
     @Override
     public void execute(JsonNode data) {
-        link = String.valueOf(data.findValues(CommandInfMessages.PLAY_LINK_FROM_TELEGRAM).get(0).get(0).asText());
+        link = String.valueOf(data.findValues(CommandConstants.PLAY_LINK_FROM_TELEGRAM).get(0).get(0).asText());
         if (!isUrl(link)) {
             link = "ytsearch:" + link;
         }
         Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO
-                .getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelsByName(CommandInfMessages.DISCORD_TEXT_CHANNEL, true).get(0);
+                .getByTelegramChat(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
+        TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);
 
         VoiceChannel channel = guild.getVoiceChannelsByName("general", true).get(0);
         AudioManager manager = guild.getAudioManager();

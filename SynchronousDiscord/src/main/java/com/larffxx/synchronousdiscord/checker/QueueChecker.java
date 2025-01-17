@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.checker;
 
-import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -38,7 +38,7 @@ public class QueueChecker{
     }
 
     private void emptyQueue(EmbedBuilder embedBuilder) {
-        embedBuilder.setDescription(CommandInfMessages.QUEUE_UNSUCCESSFUL_MESSAGE);
+        embedBuilder.setDescription(CommandConstants.QUEUE_UNSUCCESSFUL_MESSAGE);
     }
 
     private void queueMoreThanTen(List<AudioTrack> queue, EmbedBuilder embedBuilder) {

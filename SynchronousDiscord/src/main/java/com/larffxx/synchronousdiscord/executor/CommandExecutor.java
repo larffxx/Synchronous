@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.executor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.exception.CommandException;
-import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
 import com.larffxx.synchronousdiscord.controller.slashcommands.Command;
 import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
@@ -32,7 +32,7 @@ public class CommandExecutor {
     }
 
     public void execute(JsonNode data) throws CommandException {
-        String strCommand = data.findValue(CommandInfMessages.COMMAND_VALUE).asText();
+        String strCommand = data.findValue(CommandConstants.COMMAND_VALUE).asText();
 
         commandVerifier.verifyCommand(data);
         Command command = slashCommandPreProcessor.getCommand(strCommand);

@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.controller.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
@@ -36,13 +36,13 @@ public class QueueCommand implements Command {
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
         queueSender(musicManager);
 
-        event.reply(CommandInfMessages.QUEUE_SUCCESS_MESSAGE).queue();
+        event.reply(CommandConstants.QUEUE_SUCCESS_MESSAGE).queue();
     }
 
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
+        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
         Guild guild = eventReceiver.getJda().getGuildById(guildId);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
