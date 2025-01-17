@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.events;
 
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.executor.CommandExecutor;
-import com.larffxx.synchronousdiscord.listeners.CommandListener;
+import com.larffxx.synchronousdiscord.producer.DiscordCommandProducer;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent> {
-    private final CommandListener commandListener;
+    private final DiscordCommandProducer discordCommandProducer;
     private final CommandExecutor commandExecutor;
     private final EventReceiver eventReceiver;
 
-    public SlashCommandInteractionEvent(CommandListener commandListener, CommandExecutor commandExecutor, EventReceiver eventReceiver1) {
-        this.commandListener = commandListener;
+    public SlashCommandInteractionEvent(DiscordCommandProducer discordCommandProducer, CommandExecutor commandExecutor, EventReceiver eventReceiver1) {
+        this.discordCommandProducer = discordCommandProducer;
         this.commandExecutor = commandExecutor;
         this.eventReceiver = eventReceiver1;
     }
@@ -30,7 +30,7 @@ public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.e
         } catch (CommandException e) {
             event.reply(e.getMessage()).queue();
         }
-        commandListener.getDiscordCommandProducer().send(event);
+        discordCommandProducer.send(event);
     }
 
     @Override

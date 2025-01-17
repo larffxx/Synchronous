@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.bot;
+package com.larffxx.synchronousdiscord.config.bot;
 
 import com.larffxx.synchronousdiscord.listeners.EventsListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;

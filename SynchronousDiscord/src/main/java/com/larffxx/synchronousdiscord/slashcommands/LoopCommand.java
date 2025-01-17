@@ -5,8 +5,8 @@ import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
-import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
+import com.larffxx.synchronousdiscord.senders.EmbedSender;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class LoopCommand implements Command {
+    private final EmbedSender embedSender;
     private final ServersConnectDAO serversConnectDAO;
-    private final CommandListener commandListener;
     private final ResultHandler resultHandler;
     private final EventReceiver eventReceiver;
 
-    public LoopCommand(CommandListener commandListener, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
-        this.commandListener = commandListener;
+    public LoopCommand(EmbedSender embedSender, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
+        this.embedSender = embedSender;
         this.resultHandler = resultHandler;
         this.serversConnectDAO = serversConnectDAO;
         this.eventReceiver = eventReceiver;
@@ -54,12 +54,12 @@ public class LoopCommand implements Command {
 
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
             eb.setDescription(CommandInfMessages.LOOP_UNSUCCESSFUL_MESSAGE);
-            commandListener.getEmbedSender().send(eb);
+            embedSender.send(eb);
         }else {
             boolean loop = !musicManager.getScheduler().isRepeat();
             musicManager.getScheduler().setRepeat(loop);
             eb.setDescription(CommandInfMessages.LOOP_SUCCESS_MESSAGE);
-            commandListener.getEmbedSender().send(eb);
+            embedSender.send(eb);
         }
     }
 

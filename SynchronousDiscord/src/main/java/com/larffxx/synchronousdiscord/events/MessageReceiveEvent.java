@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.events;
 
-import com.larffxx.synchronousdiscord.listeners.CommandListener;
+import com.larffxx.synchronousdiscord.producer.DiscordMessageProducer;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
-    private final CommandListener commandListener;
+    private final DiscordMessageProducer discordMessageProducer;
     private final EventReceiver eventReceiver;
 
-    public MessageReceiveEvent(CommandListener commandListener, EventReceiver eventReceiver) {
-        this.commandListener = commandListener;
+    public MessageReceiveEvent(DiscordMessageProducer discordMessageProducer, EventReceiver eventReceiver) {
+        this.discordMessageProducer = discordMessageProducer;
         this.eventReceiver = eventReceiver;
     }
 
@@ -24,9 +24,9 @@ public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
         eventReceiver.setTextChannel(event.getChannel().asTextChannel());
         if (!event.getAuthor().isBot()) {
             if (event.getMessage().getAttachments().isEmpty()) {
-                commandListener.getDiscordMessageProducer().send(event);
+                discordMessageProducer.send(event);
             } else {
-                commandListener.getDiscordMessageProducer().sendWithAttachment(event);
+                discordMessageProducer.sendWithAttachment(event);
             }
         }
     }

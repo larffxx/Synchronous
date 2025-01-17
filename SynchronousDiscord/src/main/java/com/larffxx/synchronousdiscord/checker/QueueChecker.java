@@ -12,16 +12,21 @@ import java.util.List;
 @Component
 public class QueueChecker{
 
-    public EmbedBuilder queueCheck(GuildMusicManager guildMusicManager) {
+    public EmbedBuilder createEmbed(GuildMusicManager guildMusicManager) {
         List<AudioTrack> queue = new ArrayList<>(guildMusicManager.getScheduler().getQueue());
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
+        queueCheck(queue, embedBuilder);
+
+        return embedBuilder;
+    }
+
+    private void queueCheck(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
         if (queue.isEmpty()) {
             emptyQueue(embedBuilder);
         } else {
             lessThanTenCheck(queue, embedBuilder);
         }
-        return embedBuilder;
     }
 
     private void lessThanTenCheck(List<AudioTrack> queue, EmbedBuilder embedBuilder) {

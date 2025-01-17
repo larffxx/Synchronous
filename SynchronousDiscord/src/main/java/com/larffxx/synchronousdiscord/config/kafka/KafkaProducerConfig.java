@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.config;
+package com.larffxx.synchronousdiscord.config.kafka;
 
 import com.larffxx.synchronousdiscord.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;

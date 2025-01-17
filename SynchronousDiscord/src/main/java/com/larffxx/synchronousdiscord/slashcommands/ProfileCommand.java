@@ -4,23 +4,23 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
-import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
+import com.larffxx.synchronousdiscord.senders.EmbedSender;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProfileCommand implements Command {
+    private final EmbedSender embedSender;
     private final ProfileDAO profileDAO;
     private final UsersConnectDAO usersConnectDAO;
-    private final CommandListener commandListener;
 
 
-    public ProfileCommand(CommandListener commandListener, ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO) {
-        this.commandListener = commandListener;
+    public ProfileCommand(ProfileDAO profileDAO, UsersConnectDAO usersConnectDAO, EmbedSender embedSender) {
         this.profileDAO = profileDAO;
         this.usersConnectDAO = usersConnectDAO;
+        this.embedSender = embedSender;
     }
 
 
@@ -33,7 +33,7 @@ public class ProfileCommand implements Command {
                     .setDescription(profileDAO.getProfile(usersConnectDAO.getByDiscordName(event.getUser().getName()).getDiscordName()).getDescription())
                     .setImage(profileDAO.getProfile(usersConnectDAO.getByDiscordName(event.getUser().getName()).getDiscordName()).getPhotoUrl())
                     .setUrl(profileDAO.getProfile(usersConnectDAO.getByDiscordName(event.getUser().getName()).getDiscordName()).getSocialUrl());
-            commandListener.getEmbedSender().send(eb);
+            embedSender.send(eb);
             event.reply(CommandInfMessages.PROFILE_SUCCESS_MESSAGE).queue();
         } else {
             event.reply(CommandInfMessages.PROFILE_UNSUCCESSFUL_MESSAGE).queue();
@@ -50,12 +50,12 @@ public class ProfileCommand implements Command {
                     .setDescription(profileDAO.getProfile(user.getDiscordName()).getDescription())
                     .setImage(profileDAO.getProfile(user.getDiscordName()).getPhotoUrl())
                     .setUrl(profileDAO.getProfile(user.getDiscordName()).getSocialUrl());
-            commandListener.getEmbedSender().send(eb);
+            embedSender.send(eb);
         } else {
             EmbedBuilder eb = new EmbedBuilder()
                     .setAuthor(data.findValue(CommandInfMessages.NAME_FROM_TELEGRAM).asText())
                     .setDescription(CommandInfMessages.PROFILE_UNSUCCESSFUL_MESSAGE);
-            commandListener.getEmbedSender().send(eb);
+            embedSender.send(eb);
         }
     }
 

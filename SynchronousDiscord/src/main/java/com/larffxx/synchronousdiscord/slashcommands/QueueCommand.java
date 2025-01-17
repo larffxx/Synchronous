@@ -5,33 +5,29 @@ import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.lavaplayer.ResultHandler;
-import com.larffxx.synchronousdiscord.listeners.CommandListener;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import com.larffxx.synchronousdiscord.checker.QueueChecker;
-import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.larffxx.synchronousdiscord.senders.EmbedSender;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 @Component
 public class QueueCommand implements Command {
     private final ServersConnectDAO serversConnectDAO;
-    private final CommandListener commandListener;
     private final ResultHandler resultHandler;
+    private final EmbedSender embedSender;
     private final QueueChecker queueChecker;
     private final EventReceiver eventReceiver;
 
-    public QueueCommand(CommandListener commandListener, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, QueueChecker queueChecker, EventReceiver eventReceiver) {
-        this.commandListener = commandListener;
+    public QueueCommand(ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, QueueChecker queueChecker, EventReceiver eventReceiver, EmbedSender embedSender) {
         this.resultHandler = resultHandler;
         this.serversConnectDAO = serversConnectDAO;
         this.queueChecker = queueChecker;
         this.eventReceiver = eventReceiver;
+        this.embedSender = embedSender;
     }
 
 
@@ -55,9 +51,9 @@ public class QueueCommand implements Command {
     }
 
     private void queueSender(GuildMusicManager musicManager) {
-        EmbedBuilder answer = queueChecker.queueCheck(musicManager);
+        EmbedBuilder answer = queueChecker.createEmbed(musicManager);
 
-        commandListener.getEmbedSender().send(answer);
+        embedSender.send(answer);
     }
 
 
