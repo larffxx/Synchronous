@@ -33,7 +33,7 @@ public class GuildProfileUpdater {
             if(!guildProfileDAO.existsByUserConnect(usersConnectDAO.getByDiscordId(member.getId()))) {
                 createProfile(member, guild);
             }else {
-                updateProfile(member,guild);
+                updateProfile(member);
             }
         }
     }
@@ -45,7 +45,7 @@ public class GuildProfileUpdater {
                 profileDAO.getProfile(member.getUser().getName()));
     }
 
-    private void updateProfile(Member member, Guild guild){
+    private void updateProfile(Member member){
         usersConnectDAO.updateByDiscordId(member.getUser().getName(), member.getUser().getId());
         guildProfileDAO.updateGuildProfile(member.getNickname(), usersConnectDAO.getByDiscordId(member.getId()));
     }
