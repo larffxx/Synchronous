@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.slashcommands;
+package com.larffxx.synchronousdiscord.controller.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ProfileDAO;

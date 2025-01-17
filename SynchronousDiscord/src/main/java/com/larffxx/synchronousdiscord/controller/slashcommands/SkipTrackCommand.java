@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.slashcommands;
+package com.larffxx.synchronousdiscord.controller.slashcommands;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
@@ -6,25 +6,22 @@ import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.senders.EmbedSender;
 import lombok.Getter;
 import lombok.Setter;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 
 @Component
 @Getter
 @Setter
-public class LoopCommand implements Command {
-    private final EmbedSender embedSender;
+public class SkipTrackCommand implements Command{
     private final ServersConnectDAO serversConnectDAO;
     private final ResultHandler resultHandler;
     private final EventReceiver eventReceiver;
 
-    public LoopCommand(EmbedSender embedSender, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
-        this.embedSender = embedSender;
+    public SkipTrackCommand(ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.resultHandler = resultHandler;
         this.serversConnectDAO = serversConnectDAO;
         this.eventReceiver = eventReceiver;
@@ -34,37 +31,26 @@ public class LoopCommand implements Command {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
-        if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
-            event.getHook().editOriginal(CommandInfMessages.LOOP_UNSUCCESSFUL_MESSAGE).queue();
-        }else {
-            boolean loop = !musicManager.getScheduler().isRepeat();
-            musicManager.getScheduler().setRepeat(loop);
-            event.getHook().editOriginal(CommandInfMessages.LOOP_SUCCESS_MESSAGE).queue();
-        }
+        musicManager.getScheduler().nextTrack();
+
+        event.getHook().editOriginal(CommandInfMessages.SKIP_SUCCESS_MESSAGE).queue();
     }
 
     @Override
     public void execute(JsonNode data) {
         String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandInfMessages.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
         Guild guild = eventReceiver.getJda().getGuildById(guildId);
+        TextChannel textChannel = guild.getTextChannelsByName(CommandInfMessages.DISCORD_TEXT_CHANNEL, true).get(0);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
-        EmbedBuilder eb = new EmbedBuilder();
 
-        if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
-            eb.setDescription(CommandInfMessages.LOOP_UNSUCCESSFUL_MESSAGE);
-            embedSender.send(eb);
-        }else {
-            boolean loop = !musicManager.getScheduler().isRepeat();
-            musicManager.getScheduler().setRepeat(loop);
-            eb.setDescription(CommandInfMessages.LOOP_SUCCESS_MESSAGE);
-            embedSender.send(eb);
-        }
+        musicManager.getScheduler().nextTrack();
+        textChannel.sendMessage(CommandInfMessages.SKIP_SUCCESS_MESSAGE).queue();
     }
 
     @Override
     public String getCommand() {
-        return "loop";
+        return "skip";
     }
 
 

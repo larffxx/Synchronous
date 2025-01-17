@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
-import com.larffxx.synchronousdiscord.slashcommands.Command;
+import com.larffxx.synchronousdiscord.controller.slashcommands.Command;
 import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.preprocessor;
 
-import com.larffxx.synchronousdiscord.slashcommands.Command;
+import com.larffxx.synchronousdiscord.controller.slashcommands.Command;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

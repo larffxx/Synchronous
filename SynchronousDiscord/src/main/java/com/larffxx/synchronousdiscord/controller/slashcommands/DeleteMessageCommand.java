@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.slashcommands;
+package com.larffxx.synchronousdiscord.controller.slashcommands;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -7,7 +7,6 @@ import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;

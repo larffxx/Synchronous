@@ -4,15 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.executor.CommandExecutor;
-import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.infmsg.CommandInfMessages;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.slashcommands.Command;
+import com.larffxx.synchronousdiscord.controller.slashcommands.Command;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
