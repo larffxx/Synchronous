@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.listeners;
+package com.larffxx.synchronousdiscord.config.bot;
 
 import lombok.Getter;
 import lombok.Setter;
