@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.lavaplayer;
+package com.larffxx.synchronousdiscord.config.lavaplayer;
 
 import com.github.topi314.lavasrc.spotify.SpotifySourceManager;
 import com.github.topi314.lavasrc.yandexmusic.YandexMusicSourceManager;

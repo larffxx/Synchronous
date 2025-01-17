@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.lavaplayer;
+package com.larffxx.synchronousdiscord.config.lavaplayer;
 
 import lombok.Getter;
 import lombok.Setter;

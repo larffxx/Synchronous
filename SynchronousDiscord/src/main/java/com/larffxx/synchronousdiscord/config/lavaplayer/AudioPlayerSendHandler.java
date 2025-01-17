@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.lavaplayer;
+package com.larffxx.synchronousdiscord.config.lavaplayer;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.MutableAudioFrame;
