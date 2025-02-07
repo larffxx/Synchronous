@@ -18,9 +18,13 @@ public class TelegramMessageRouteService extends RouteService<Sender>{
     }
 
     public void send(JsonNode data) {
-        getEventReceiver().setTextChannel(getEventReceiver().getJda()
-                .getGuildById(getServersConnectDAO().getByTelegramChat(data.findValue(SendersConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild())
-                .getTextChannelsByName(SendersConstants.TEXT_CHANNEL_IN_DISCORD, true).get(0));
+        getEventReceiver().setTextChannel(getEventReceiver()
+                .getJda()
+                .getGuildById(getServersConnectDAO()
+                        .getByTelegramChat(data.findValue(SendersConstants.TELEGRAM_CHAT_ID).asText())
+                        .getDiscordGuild())
+                .getTextChannelsByName(SendersConstants.TEXT_CHANNEL_IN_DISCORD, true)
+                .get(0));
         Sender sender = getPreProcessor().getCommand(data.findValue(SendersConstants.MESSAGE_TYPE).asText());
 
         sender.send(data);

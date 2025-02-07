@@ -11,9 +11,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Getter
@@ -21,10 +19,10 @@ import java.util.stream.Collectors;
 public class DiscordMessageProducer {
     @Value("${dMTopic}")
     private String topic;
-    private final KafkaTemplate<String, MessagePayload> kafkaTemplate;
+    private final KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate;
 
     public DiscordMessageProducer(KafkaTemplate<String, MessagePayload> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
+        this.messagePayloadKafkaTemplate = kafkaTemplate;
     }
 
     public void send(MessageReceivedEvent event) {
@@ -35,7 +33,7 @@ public class DiscordMessageProducer {
                 .setHeader(KafkaHeaders.TOPIC, topic)
                 .build();
 
-        kafkaTemplate.send(message);
+        messagePayloadKafkaTemplate.send(message);
     }
 
     public void sendWithAttachment(MessageReceivedEvent event){
@@ -47,6 +45,6 @@ public class DiscordMessageProducer {
                 .setHeader(KafkaHeaders.TOPIC, topic)
                 .build();
 
-        kafkaTemplate.send(message);
+        messagePayloadKafkaTemplate.send(message);
     }
 }

@@ -30,7 +30,8 @@ public class TelegramCommandRouteService extends RouteService<Command>{
         TextChannel telegramChannel = getEventReceiver()
                 .getJda()
                 .getGuildById(guildId)
-                .getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL,true).get(0);
+                .getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL,true)
+                .get(0);
 
         getEventReceiver().setTextChannel(telegramChannel);
 
