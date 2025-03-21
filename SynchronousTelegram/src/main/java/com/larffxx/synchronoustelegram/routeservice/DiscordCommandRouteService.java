@@ -3,9 +3,10 @@ package com.larffxx.synchronoustelegram.routeservice;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronoustelegram.commands.Command;
 import com.larffxx.synchronoustelegram.dao.ServersConnectDAO;
+import com.larffxx.synchronoustelegram.exception.StringCommandExecutingException;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
+import com.larffxx.synchronoustelegram.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.preprocessors.CommandPreProcessor;
-import com.larffxx.synchronoustelegram.preprocessors.PreProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -43,8 +44,7 @@ public class DiscordCommandRouteService {
         try {
             command.execute(updateHolder);
         } catch (TelegramApiException e) {
-            //TODO custom exception
-            throw new RuntimeException(e);
+            throw new StringCommandExecutingException(InfExcMessage.WHILE_EXECUTE_STRING_COMMAND_EXCEPTION);
         }
     }
 

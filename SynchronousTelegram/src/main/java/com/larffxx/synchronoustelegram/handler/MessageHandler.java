@@ -1,13 +1,10 @@
 package com.larffxx.synchronoustelegram.handler;
 
-import com.larffxx.synchronoustelegram.commands.Command;
-import com.larffxx.synchronoustelegram.exception.TelegramException;
+import com.larffxx.synchronoustelegram.exception.ReceivingPhotoException;
 import com.larffxx.synchronoustelegram.executor.TelegramClientCommandExecutor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.telegram.telegrambots.meta.api.methods.GetFile;
+import com.larffxx.synchronoustelegram.infexc.InfExcMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
-import com.larffxx.synchronoustelegram.preprocessors.CommandPreProcessor;
 import com.larffxx.synchronoustelegram.producer.TelegramKafkaCommandProducer;
 import com.larffxx.synchronoustelegram.producer.TelegramKafkaMessageProducer;
 import lombok.Getter;
@@ -61,7 +58,7 @@ public class MessageHandler {
 
             telegramKafkaMessageProducer.sendKafkaMessage(update, file);
         } catch (TelegramApiException e) {
-            //TODO custom exception
+            throw new ReceivingPhotoException(InfExcMessage.RECEIVING_PHOTO_EXCEPTION);
         }
     }
 }

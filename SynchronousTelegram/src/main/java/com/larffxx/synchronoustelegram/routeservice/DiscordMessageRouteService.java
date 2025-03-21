@@ -1,6 +1,8 @@
 package com.larffxx.synchronoustelegram.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronoustelegram.exception.SendingMessageToTelegramException;
+import com.larffxx.synchronoustelegram.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.sender.DiscordMessageSender;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,8 +23,7 @@ public class DiscordMessageRouteService {
         try {
             discordMessageSender.sendTextMessageToTelegramChannel(data);
         } catch (TelegramApiException e) {
-            //TODO custom exception
-            throw new RuntimeException(e);
+            throw new SendingMessageToTelegramException(InfExcMessage.SENDING_TEXT_TO_TELEGRAM_EXCEPTION);
         }
     }
 }
