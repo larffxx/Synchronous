@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.repo;
 
-import com.larffxx.synchronoustelegram.models.ServersConnect;
+import com.larffxx.synchronoustelegram.model.ServersConnect;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

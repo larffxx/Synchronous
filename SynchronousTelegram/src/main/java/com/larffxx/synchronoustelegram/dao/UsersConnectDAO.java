@@ -1,9 +1,7 @@
 package com.larffxx.synchronoustelegram.dao;
 
-import com.larffxx.synchronoustelegram.models.UsersConnect;
-import com.larffxx.synchronoustelegram.repo.GuildProfileRepository;
+import com.larffxx.synchronoustelegram.model.UsersConnect;
 import com.larffxx.synchronoustelegram.repo.UsersConnectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

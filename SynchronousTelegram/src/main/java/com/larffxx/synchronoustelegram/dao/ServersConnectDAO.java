@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.dao;
 
-import com.larffxx.synchronoustelegram.models.ServersConnect;
+import com.larffxx.synchronoustelegram.model.ServersConnect;
 import com.larffxx.synchronoustelegram.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;

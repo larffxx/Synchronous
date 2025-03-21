@@ -1,6 +1,5 @@
 package com.larffxx.synchronousdiscord.model;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,16 +14,19 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String description, photoUrl, socialUrl;
+    private String name;
 
-    @OneToOne
-    @JoinColumn(name = "fk_users_connect_id", referencedColumnName = "users_connect_id", unique=true)
+    @ManyToOne
+    @JoinColumn(name = "fk_connect_id")
+    private ServersConnect serversConnect;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_user_id")
     private UsersConnect usersConnect;
 
-    public Profile(String description, String photoUrl,String socialUrl, UsersConnect usersConnect){
-        this.description = description;
-        this.photoUrl = photoUrl;
+    public Profile(String name, UsersConnect usersConnect, ServersConnect serversConnect){
+        this.name = name;
         this.usersConnect = usersConnect;
-        this.socialUrl = socialUrl;
+        this.serversConnect = serversConnect;
     }
 }

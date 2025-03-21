@@ -1,7 +1,6 @@
 package com.larffxx.synchronousdiscord.updater;
 
 import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
-import com.larffxx.synchronousdiscord.dao.ProfileDAO;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
 import lombok.Getter;
@@ -16,13 +15,11 @@ import java.util.List;
 @Getter
 @Setter
 public class GuildProfileUpdater {
-    private final ProfileDAO profileDAO;
     private final ServersConnectDAO serversConnectDAO;
     private final GuildProfileDAO guildProfileDAO;
     private final UsersConnectDAO usersConnectDAO;
 
-    public GuildProfileUpdater(ProfileDAO profileDAO, ServersConnectDAO serversConnectDAO, GuildProfileDAO guildProfileDAO, UsersConnectDAO usersConnectDAO) {
-        this.profileDAO = profileDAO;
+    public GuildProfileUpdater(ServersConnectDAO serversConnectDAO, GuildProfileDAO guildProfileDAO, UsersConnectDAO usersConnectDAO) {
         this.serversConnectDAO = serversConnectDAO;
         this.guildProfileDAO = guildProfileDAO;
         this.usersConnectDAO = usersConnectDAO;
@@ -41,8 +38,7 @@ public class GuildProfileUpdater {
     private void createProfile(Member member, Guild guild){
         guildProfileDAO.setGuildProfile(member.getNickname(),
                 usersConnectDAO.getByDiscordName(member.getUser().getName()),
-                serversConnectDAO.getByDiscordGuild(guild.getId()),
-                profileDAO.getProfile(member.getUser().getName()));
+                serversConnectDAO.getByDiscordGuild(guild.getId()));
     }
 
     private void updateProfile(Member member){

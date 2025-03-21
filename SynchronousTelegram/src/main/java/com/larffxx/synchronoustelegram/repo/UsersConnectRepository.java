@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.repo;
 
-import com.larffxx.synchronoustelegram.models.UsersConnect;
+import com.larffxx.synchronoustelegram.model.UsersConnect;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

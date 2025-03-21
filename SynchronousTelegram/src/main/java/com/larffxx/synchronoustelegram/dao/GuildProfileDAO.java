@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.dao;
 
-import com.larffxx.synchronoustelegram.models.GuildProfile;
+import com.larffxx.synchronoustelegram.model.Profile;
 import com.larffxx.synchronoustelegram.repo.GuildProfileRepository;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class GuildProfileDAO {
         this.guildProfileRepository = guildProfileRepository;
     }
 
-    public GuildProfile getByName(String name){
+    public Profile getByName(String name){
         return guildProfileRepository.getByName(name);
     }
 }

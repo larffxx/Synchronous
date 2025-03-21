@@ -1,6 +1,5 @@
 package com.larffxx.synchronousdiscord.dao;
 
-import com.larffxx.synchronousdiscord.model.GuildProfile;
 import com.larffxx.synchronousdiscord.model.Profile;
 import com.larffxx.synchronousdiscord.model.ServersConnect;
 import com.larffxx.synchronousdiscord.model.UsersConnect;
@@ -21,9 +20,9 @@ public class GuildProfileDAO {
         this.guildProfileRepository = guildProfileRepository;
     }
 
-    public void setGuildProfile(String name, UsersConnect usersConnect, ServersConnect serversConnect, Profile profile){
-        GuildProfile guildProfile = new GuildProfile(name, usersConnect, serversConnect, profile);
-        guildProfileRepository.save(guildProfile);
+    public void setGuildProfile(String name, UsersConnect usersConnect, ServersConnect serversConnect){
+        Profile profile = new Profile(name, usersConnect, serversConnect);
+        guildProfileRepository.save(profile);
     }
 
     public boolean existsByUserConnect(UsersConnect usersConnect){

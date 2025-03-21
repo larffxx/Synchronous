@@ -1,7 +1,7 @@
 package com.larffxx.synchronoustelegram.commands;
 
 import com.larffxx.synchronoustelegram.dao.UsersConnectDAO;
-import com.larffxx.synchronoustelegram.models.UsersConnect;
+import com.larffxx.synchronoustelegram.model.UsersConnect;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
 import com.larffxx.synchronoustelegram.sender.TextMessageSender;
 import org.springframework.stereotype.Component;

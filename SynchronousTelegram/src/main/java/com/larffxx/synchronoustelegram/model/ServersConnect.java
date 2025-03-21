@@ -1,4 +1,4 @@
-package com.larffxx.synchronoustelegram.models;
+package com.larffxx.synchronoustelegram.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

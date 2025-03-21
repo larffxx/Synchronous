@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.model;
+package com.larffxx.synchronoustelegram.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GuildProfile {
+public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -21,17 +21,12 @@ public class GuildProfile {
     private ServersConnect serversConnect;
 
     @ManyToOne
-    @JoinColumn(name ="fk_profile_id")
-    private Profile profile;
-
-    @ManyToOne
     @JoinColumn(name = "fk_user_id")
     private UsersConnect usersConnect;
 
-    public GuildProfile(String name, UsersConnect usersConnect, ServersConnect serversConnect, Profile profile){
+    public Profile(String name, UsersConnect usersConnect, ServersConnect serversConnect){
         this.name = name;
         this.usersConnect = usersConnect;
         this.serversConnect = serversConnect;
-        this.profile = profile;
     }
 }

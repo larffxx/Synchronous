@@ -24,10 +24,6 @@ public class ReadyEvent implements Event<net.dv8tion.jda.api.events.session.Read
                     Commands.slash("stop", "stop track"),
                     Commands.slash("loop", "loop track"),
                     Commands.slash("register", "register your telegram").addOption(OptionType.STRING, "telegram", "Enter your Telegram UserName"),
-                    Commands.slash("create", "Creating your custom profile")
-                            .addOption(OptionType.STRING, "description", "Enter description")
-                            .addOption(OptionType.ATTACHMENT, "photo", "Upload photo")
-                            .addOption(OptionType.STRING, "url", "Enter your social url"),
                     Commands.slash("edit", "Edit your custom profile")
                             .addOption(OptionType.STRING, "description", "Enter description")
                             .addOption(OptionType.ATTACHMENT, "photo", "Upload photo")
