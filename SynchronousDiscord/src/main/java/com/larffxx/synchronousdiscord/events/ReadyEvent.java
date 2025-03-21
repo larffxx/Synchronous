@@ -17,17 +17,12 @@ public class ReadyEvent implements Event<net.dv8tion.jda.api.events.session.Read
     public void execute(net.dv8tion.jda.api.events.session.ReadyEvent event) {
         for (Guild guild : event.getJDA().getGuilds()) {
             guild.updateCommands().addCommands(
-                    Commands.slash("profile", "get profile"),
                     Commands.slash("play", "play music").addOption(OptionType.STRING, "link", "track url"),
                     Commands.slash("queue", "queue tracks"),
                     Commands.slash("skip", "skip track"),
                     Commands.slash("stop", "stop track"),
                     Commands.slash("loop", "loop track"),
                     Commands.slash("register", "register your telegram").addOption(OptionType.STRING, "telegram", "Enter your Telegram UserName"),
-                    Commands.slash("edit", "Edit your custom profile")
-                            .addOption(OptionType.STRING, "description", "Enter description")
-                            .addOption(OptionType.ATTACHMENT, "photo", "Upload photo")
-                            .addOption(OptionType.STRING, "url", "Enter your social url"),
                     Commands.slash("connect", "Connect your servers")
                             .addOption(OptionType.STRING, "telegram", "Enter your telegram channel name"),
                     Commands.slash("delete", "delete messages")
