@@ -32,8 +32,8 @@ public class ServersConnectDAO {
         return serversConnectRepository.findByDiscordGuild(discordGuild);
     }
 
-    public void updateTelegramChannel(String telegramChat, String telegramChannel){
-        serversConnectRepository.updateByTelegramChannel(telegramChat, telegramChannel);
+    public void updateTelegramChannel(String telegramChatId, String telegramChatTitle){
+        serversConnectRepository.updateByTelegramChannel(telegramChatId, telegramChatTitle);
     }
 
     public void saveServer(String telegramGuild){

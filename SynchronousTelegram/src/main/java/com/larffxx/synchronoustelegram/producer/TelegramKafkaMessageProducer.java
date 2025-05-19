@@ -1,5 +1,6 @@
 package com.larffxx.synchronoustelegram.producer;
 
+import com.larffxx.synchronoustelegram.handler.utility.TmpToJpgConverter;
 import com.larffxx.synchronoustelegram.payload.MessagePayload;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,18 +19,20 @@ import java.io.File;
 public class TelegramKafkaMessageProducer {
     @Value("${tMTopic}")
     private String topic;
+    private final TmpToJpgConverter tmpToJpgConverter;
     private final KafkaTemplate<String, MessagePayload> kafkaTemplate;
 
-    public TelegramKafkaMessageProducer(KafkaTemplate<String, MessagePayload> kafkaTemplate) {
+    public TelegramKafkaMessageProducer(TmpToJpgConverter tmpToJpgConverter, KafkaTemplate<String, MessagePayload> kafkaTemplate) {
+        this.tmpToJpgConverter = tmpToJpgConverter;
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void sendKafkaMessage(Update update, File file) {
         MessagePayload messagePayload;
         if (update.getMessage().getCaption() != null) {
-            messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getCaption(), file.getAbsoluteFile(), update.getMessage().getChatId(), "fileMessage");
+            messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getCaption(), file, update.getMessage().getChatId(), "fileMessage");
         } else {
-            messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), file.getAbsoluteFile(), update.getMessage().getChatId(), "fileMessage");
+            messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), file, update.getMessage().getChatId(), "fileMessage");
         }
 
         Message message = MessageBuilder.withPayload(messagePayload).setHeader("kafka_topic", topic).build();

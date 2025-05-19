@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.checker;
+package com.larffxx.synchronousdiscord.embed;
 
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class QueueChecker{
+public class DiscordQueueEmbed {
 
     public EmbedBuilder createEmbed(GuildMusicManager guildMusicManager) {
         List<AudioTrack> queue = new ArrayList<>(guildMusicManager.getScheduler().getQueue());
@@ -25,15 +25,7 @@ public class QueueChecker{
         if (queue.isEmpty()) {
             emptyQueue(embedBuilder);
         } else {
-            lessThanTenCheck(queue, embedBuilder);
-        }
-    }
-
-    private void lessThanTenCheck(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
-        if (queue.size() < 10) {
-            queueLessThanTen(queue, embedBuilder);
-        } else {
-            queueMoreThanTen(queue, embedBuilder);
+            createQueue(queue, embedBuilder);
         }
     }
 
@@ -41,15 +33,15 @@ public class QueueChecker{
         embedBuilder.setDescription(CommandConstants.QUEUE_UNSUCCESSFUL_MESSAGE);
     }
 
-    private void queueMoreThanTen(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
-        for (int i = 0; i < 10; i++) {
+    private void createQueue(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
+        int displayLimit = Math.min(queue.size(), 10);
+
+        for (int i = 0; i < displayLimit; i++) {
             embedBuilder.addField(i + ":", queue.get(i).getInfo().title, false);
         }
-    }
 
-    private void queueLessThanTen(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
-        for (int i = 0; i < queue.size(); i++) {
-            embedBuilder.addField(i + ":", queue.get(i).getInfo().title, false);
+        if (queue.size() > 10) {
+            embedBuilder.addField("And " + (queue.size() - 10) + " more...", "", false);
         }
     }
 }

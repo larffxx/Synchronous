@@ -14,7 +14,6 @@ public class UserInDBChecker {
         this.usersConnectDAO = usersConnectDAO;
     }
 
-
     public boolean isUserInDB(Matcher matcher, Member member){
         return matcher.group().replace("@", "").equals(usersConnectDAO.getByDiscordId(member.getId()).getTelegramName());
     }

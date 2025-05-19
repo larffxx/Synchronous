@@ -4,6 +4,7 @@ import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -11,7 +12,12 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Component
 @Getter
@@ -37,8 +43,9 @@ public class DiscordMessageProducer {
     }
 
     public void sendWithAttachment(MessageReceivedEvent event){
-        List<net.dv8tion.jda.api.entities.Message.Attachment> attachments = event.getMessage().getAttachments();
-        MessagePayload messagePayload = new MessagePayload(event.getAuthor().getName(), attachments.stream().map(net.dv8tion.jda.api.entities.Message.Attachment::getUrl).toList().toString(), event.getGuild().getIdLong());
+        List<Attachment> attachments = event.getMessage().getAttachments();
+
+        MessagePayload messagePayload = new MessagePayload(event.getGuild().getIdLong(), event.getAuthor().getName(), downloadedAttachments(attachments));
 
         Message message = MessageBuilder
                 .withPayload(messagePayload)
@@ -46,5 +53,20 @@ public class DiscordMessageProducer {
                 .build();
 
         messagePayloadKafkaTemplate.send(message);
+    }
+
+    private List<File> downloadedAttachments(List<Attachment> attachments) {
+        List<File> files = new ArrayList<>();
+
+        attachments.forEach(attachment -> {
+            attachment.getProxy().downloadToFile(new File("C:/Users/offic/Desktop/tempphotos/" + attachment.getFileName())).thenAccept(path-> {
+            }).exceptionally(throwable -> {
+                //TODO: custom exception
+                throw new RuntimeException();
+            });
+            files.add(new File("C:/Users/offic/Desktop/tempphotos/" + attachment.getFileName()));
+        });
+
+        return files;
     }
 }

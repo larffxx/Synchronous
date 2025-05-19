@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.SendersConstants;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
+import com.larffxx.synchronousdiscord.senders.utility.TmpToJpgConverter;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -18,11 +19,13 @@ import java.io.File;
 @Getter
 @Setter
 public class FileMessageSender implements Sender<JsonNode>{
+    private final TmpToJpgConverter tmpToJpgConverter;
     private final EventReceiver eventReceiver;
     private final ServersConnectDAO serversConnectDAO;
 
 
-    public FileMessageSender(ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
+    public FileMessageSender(TmpToJpgConverter tmpToJpgConverter, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
+        this.tmpToJpgConverter = tmpToJpgConverter;
         this.serversConnectDAO = serversConnectDAO;
         this.eventReceiver = eventReceiver;
     }
@@ -35,17 +38,19 @@ public class FileMessageSender implements Sender<JsonNode>{
         sendFileMessage(data, textChannel);
     }
 
-    private void sendFileMessage(JsonNode data, TextChannel textChannel){
+    private void sendFileMessage(JsonNode data, TextChannel textChannel) {
+        File inputFile = new File(data.findValue(SendersConstants.FILE_FROM_TELEGRAM).asText());
+
         if (!data.findValue(SendersConstants.MESSAGE_FROM_TELEGRAM).asText().equals("null") && !data.findValue(SendersConstants.FILE_FROM_TELEGRAM).asText().equals("null")) {
             textChannel
                     .sendMessage(data.findValue(SendersConstants.NAME_IN_TELEGRAM).asText() + ": " + data.findValue(SendersConstants.MESSAGE_FROM_TELEGRAM).asText())
-                    .addFiles(FileUpload.fromData(new File(data.findPath(SendersConstants.FILE_FROM_TELEGRAM).asText()), SendersConstants.PHOTO_NAME))
+                    .addFiles(FileUpload.fromData(inputFile, SendersConstants.PHOTO_NAME))
                     .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build()).queue();
         } else {
             textChannel
                     .sendMessage(data.findValue(SendersConstants.NAME_IN_TELEGRAM).asText() + ": ")
-                    .addFiles(FileUpload.fromData(new File(data.findPath(SendersConstants.FILE_FROM_TELEGRAM).asText()), SendersConstants.PHOTO_NAME))
-                    .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build()).queue();
+                    .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build())
+                    .addFiles(FileUpload.fromData(inputFile, SendersConstants.PHOTO_NAME)).queue();
         }
     }
 
