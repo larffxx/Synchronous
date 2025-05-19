@@ -45,7 +45,7 @@ public class DiscordMessageProducer {
     public void sendWithAttachment(MessageReceivedEvent event){
         List<Attachment> attachments = event.getMessage().getAttachments();
 
-        MessagePayload messagePayload = new MessagePayload(event.getGuild().getIdLong(), event.getAuthor().getName(), downloadedAttachments(attachments));
+        MessagePayload messagePayload = new MessagePayload(event.getGuild().getIdLong(), event.getAuthor().getName(), event.getMessage().getContentDisplay(), downloadedAttachments(attachments));
 
         Message message = MessageBuilder
                 .withPayload(messagePayload)

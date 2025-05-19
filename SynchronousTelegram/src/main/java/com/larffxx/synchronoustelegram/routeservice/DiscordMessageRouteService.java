@@ -3,7 +3,7 @@ package com.larffxx.synchronoustelegram.routeservice;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronoustelegram.exception.SendingMessageToTelegramException;
 import com.larffxx.synchronoustelegram.infexc.InfExcMessage;
-import com.larffxx.synchronoustelegram.sender.DiscordMessageSender;
+import com.larffxx.synchronoustelegram.service.DiscordToTelegramMessageService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -13,15 +13,15 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Setter
 @Component
 public class DiscordMessageRouteService {
-    private final DiscordMessageSender discordMessageSender;
+    private final DiscordToTelegramMessageService discordToTelegramMessageService;
 
-    public DiscordMessageRouteService(DiscordMessageSender discordMessageSender) {
-        this.discordMessageSender = discordMessageSender;
+    public DiscordMessageRouteService(DiscordToTelegramMessageService discordToTelegramMessageService) {
+        this.discordToTelegramMessageService = discordToTelegramMessageService;
     }
 
     public void send(JsonNode data){
         try {
-            discordMessageSender.sendTextMessageToTelegramChannel(data);
+            discordToTelegramMessageService.sendMessageToTelegramChannel(data);
         } catch (TelegramApiException e) {
             throw new SendingMessageToTelegramException(InfExcMessage.SENDING_TEXT_TO_TELEGRAM_EXCEPTION);
         }

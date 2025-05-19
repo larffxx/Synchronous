@@ -9,7 +9,7 @@ import java.util.stream.StreamSupport;
 @Component
 public class URIFromJsonParser {
 
-    public List<String> parse(JsonNode data) {
+    public List<String> uriParse(JsonNode data) {
         List<JsonNode> rawUris = data.findValues("files").stream().toList();
         List<String> formatedJsonFiles = rawUris.stream()
                 .flatMap(jsonnode-> StreamSupport.stream(jsonnode.spliterator(), false))

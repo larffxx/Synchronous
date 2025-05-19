@@ -28,9 +28,10 @@ public class MessagePayload {
         this.authorName = authorName;
         this.message = message;
     }
-    public MessagePayload(Long guildId, String authorName, List<File> files){
+    public MessagePayload(Long guildId, String authorName, String message, List<File> files){
         this.guildId = guildId;
         this.authorName = authorName;
+        this.message = message;
         this.files = files;
     }
 }
