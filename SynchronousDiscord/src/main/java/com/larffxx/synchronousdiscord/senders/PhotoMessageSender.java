@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.SendersConstants;
 import com.larffxx.synchronousdiscord.receivers.EventReceiver;
-import com.larffxx.synchronousdiscord.senders.utility.TmpToJpgConverter;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -18,14 +17,12 @@ import java.io.File;
 @Component
 @Getter
 @Setter
-public class FileMessageSender implements Sender<JsonNode>{
-    private final TmpToJpgConverter tmpToJpgConverter;
+public class PhotoMessageSender implements Sender<JsonNode>{
     private final EventReceiver eventReceiver;
     private final ServersConnectDAO serversConnectDAO;
 
 
-    public FileMessageSender(TmpToJpgConverter tmpToJpgConverter, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
-        this.tmpToJpgConverter = tmpToJpgConverter;
+    public PhotoMessageSender(ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
         this.serversConnectDAO = serversConnectDAO;
         this.eventReceiver = eventReceiver;
     }
@@ -56,6 +53,6 @@ public class FileMessageSender implements Sender<JsonNode>{
 
     @Override
     public String getSender() {
-        return "fileMessage";
+        return "PHOTO_MESSAGE";
     }
 }

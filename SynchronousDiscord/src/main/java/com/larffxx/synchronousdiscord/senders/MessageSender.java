@@ -50,6 +50,6 @@ public class MessageSender implements Sender<JsonNode> {
 
     @Override
     public String getSender() {
-        return "message";
+        return "TEXT_MESSAGE";
     }
 }
