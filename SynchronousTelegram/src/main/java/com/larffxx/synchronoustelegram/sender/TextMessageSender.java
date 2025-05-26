@@ -25,13 +25,16 @@ public class TextMessageSender {
     }
 
     public void send(Long id, String text) throws TelegramApiException {
-        SendMessage sm = SendMessage.builder().chatId(id).text(text).build();
+        String telegramChatId = serversConnectDAO.getTelegramChatByDiscordGuild(String.valueOf(id));
+        updateHolder.setChatId(telegramChatId);
+
+        SendMessage sm = SendMessage.builder().chatId(telegramChatId).text(text).build();
 
         updateHolder.getTelegramClient().execute(sm);
     }
 
     public void send(DiscordPayload payload) throws TelegramApiException {
-        updateHolder.setChatId(serversConnectDAO.getTelegramChatByDiscordGuild(String.valueOf(payload.getGuildID())).getTelegramChannel());
+        updateHolder.setChatId(serversConnectDAO.getTelegramChatByDiscordGuild(String.valueOf(payload.getGuildID())));
         Long chatID = Long.valueOf(updateHolder.getChatId());
         SendMessage sm;
 
@@ -40,7 +43,7 @@ public class TextMessageSender {
         if(matcher.find()) {
             sm = SendMessage.builder().chatId(chatID).text(formatMsg(payload.getMessage())).build();
         }else{
-            sm = SendMessage.builder().chatId(chatID).text(payload.getMessage()).build();
+            sm = SendMessage.builder().chatId(chatID).text(payload.getAuthor() + ": " + payload.getMessage()).build();
         }
 
         updateHolder.getTelegramClient().execute(sm);

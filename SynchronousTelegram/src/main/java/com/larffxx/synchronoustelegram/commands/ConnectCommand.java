@@ -2,6 +2,7 @@ package com.larffxx.synchronoustelegram.commands;
 
 import com.larffxx.synchronoustelegram.dao.ServersConnectDAO;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
+import com.larffxx.synchronoustelegram.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.sender.TextMessageSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ public class ConnectCommand extends Command {
         this.serversConnectDAO = serversConnectDAO;
     }
 
-
     @Override
     public void execute(UpdateHolder updateHolder) throws TelegramApiException {
         if (serversConnectDAO.existsByTelegramChatName(updateHolder.getUpdate().getMessage().getChat().getTitle())) {
@@ -28,6 +28,19 @@ public class ConnectCommand extends Command {
             textMessageSender.send(Long.valueOf(updateHolder.getChatId()), "connected");
         } else {
             textMessageSender.send(Long.valueOf(updateHolder.getChatId()), "connected before");
+        }
+    }
+
+    @Override
+    public void execute(DiscordPayload discordPayload) throws TelegramApiException {
+        String telegramChannelName = discordPayload.getCommand().getOptions().get(0);
+
+        if (serversConnectDAO.existsByTelegramChatName(telegramChannelName)) {
+            serversConnectDAO.updateTelegramChannel(getUpdateHolder().getChatId(), telegramChannelName);
+
+            textMessageSender.send(Long.valueOf(getUpdateHolder().getChatId()), "connected");
+        } else {
+            textMessageSender.send(Long.valueOf(getUpdateHolder().getChatId()), "connected before");
         }
     }
 

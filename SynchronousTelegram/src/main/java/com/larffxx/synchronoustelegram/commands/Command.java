@@ -1,8 +1,10 @@
 package com.larffxx.synchronoustelegram.commands;
 
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
+import com.larffxx.synchronoustelegram.payload.DiscordPayload;
 import lombok.Getter;
 import lombok.Setter;
+
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -16,6 +18,7 @@ public abstract class Command {
         this.updateHolder = updateHolder;
     }
 
-    public abstract void execute(UpdateHolder updateHolder) throws TelegramApiException;
+    public abstract void execute(UpdateHolder update) throws TelegramApiException;
+    public abstract void execute(DiscordPayload discordPayload) throws TelegramApiException;
     public abstract String getCommand();
 }

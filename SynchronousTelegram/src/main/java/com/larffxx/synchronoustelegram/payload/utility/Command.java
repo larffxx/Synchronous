@@ -1,17 +1,17 @@
-package com.larffxx.synchronousdiscord.payload;
+package com.larffxx.synchronoustelegram.payload.utility;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
-public class CommandPayload {
-    private String guildId;
-    private String authorName;
-    private String command;
+public class Command {
+    private String commandName;
     private List<String> options;
 }

@@ -1,7 +1,8 @@
 package com.larffxx.synchronoustelegram.payload;
 
-import lombok.AllArgsConstructor;
+import com.larffxx.synchronoustelegram.payload.utility.Command;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.File;
@@ -9,11 +10,24 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class DiscordPayload {
     private Long guildID;
     private String author;
     private String message;
-    private String command;
+    private Command command;
     private List<File> files;
+
+    public DiscordPayload(Long guildID, String author, String message, List<File> files) {
+        this.guildID = guildID;
+        this.author = author;
+        this.message = message;
+        this.files = files;
+    }
+
+    public DiscordPayload(Long guildID, String author, Command command) {
+        this.guildID = guildID;
+        this.author = author;
+        this.command = command;
+    }
 }

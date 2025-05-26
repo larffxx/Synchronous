@@ -15,20 +15,12 @@ public class MessagePayload{
     private File file;
     private List<File> files;
     private String messageType;
-    private String command;
 
     public MessagePayload(String name, String message, Long chatId, String type) {
         this.name = name;
         this.message = message;
         this.chatId = chatId;
         this.messageType = type;
-    }
-
-    public MessagePayload(String name, String command, String message, Long chatId) {
-        this.name = name;
-        this.command = command;
-        this.message = message;
-        this.chatId = chatId;
     }
 
     public MessagePayload(Long chatId, String name, List<File> file, String type) {

@@ -22,7 +22,7 @@ public class PhotoMessageSender implements PhotoSender {
     }
 
     public void sendPhoto(DiscordPayload payload) throws TelegramApiException{
-        updateHolder.setChatId(serversConnectDAO.getTelegramChatByDiscordGuild(String.valueOf(payload.getGuildID())).getTelegramChannel());
+        updateHolder.setChatId(serversConnectDAO.getTelegramChatByDiscordGuild(String.valueOf(payload.getGuildID())));
         Long chatID = Long.valueOf(updateHolder.getChatId());
 
         if (payload.getMessage() == null || payload.getMessage().equals("null")) {

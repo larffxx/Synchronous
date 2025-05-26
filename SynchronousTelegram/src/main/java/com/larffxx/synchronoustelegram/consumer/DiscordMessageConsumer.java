@@ -23,7 +23,7 @@ public class DiscordMessageConsumer {
     @KafkaListener(topics = {"${dMTopic}"}, groupId = "${groupId}")
     public void listener(@Payload String message) {
         try {
-            JsonNode data = (new ObjectMapper()).readTree(message);
+            JsonNode data = new ObjectMapper().readTree(message);
 
             discordMessageRouteService.send(data);
         } catch (JsonProcessingException e) {

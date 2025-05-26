@@ -20,16 +20,13 @@ public class ServersConnectDAO {
         this.usersConnectDAO = usersConnectDAO;
     }
 
-    public ServersConnect getByTelegramChat(String telegramChat){
-        return serversConnectRepository.getConnectByTelegramChannel(telegramChat);
-    }
 
     public boolean existsByTelegramChatName(String telegramChatName){
         return serversConnectRepository.existsByTelegramChannel(telegramChatName);
     }
 
-    public ServersConnect getTelegramChatByDiscordGuild(String discordGuild){
-        return serversConnectRepository.findByDiscordGuild(discordGuild);
+    public String getTelegramChatByDiscordGuild(String discordGuild){
+        return serversConnectRepository.findByDiscordGuild(discordGuild).getTelegramChannel();
     }
 
     public void updateTelegramChannel(String telegramChatId, String telegramChatTitle){

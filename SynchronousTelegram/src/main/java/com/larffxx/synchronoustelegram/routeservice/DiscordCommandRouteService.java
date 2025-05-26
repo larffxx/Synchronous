@@ -6,6 +6,8 @@ import com.larffxx.synchronoustelegram.dao.ServersConnectDAO;
 import com.larffxx.synchronoustelegram.exception.StringCommandExecutingException;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
 import com.larffxx.synchronoustelegram.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.parser.DiscordCommandPayloadParser;
+import com.larffxx.synchronoustelegram.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.preprocessors.CommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +18,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Setter
 @Component
 public class DiscordCommandRouteService {
+    private final DiscordCommandPayloadParser discordCommandPayloadParser;
     private final ServersConnectDAO serversConnectDAO;
     private final CommandPreProcessor preProcessor;
     private final UpdateHolder updateHolder;
@@ -24,36 +27,25 @@ public class DiscordCommandRouteService {
     private final String COMMAND_JSON_NODE = "command";
     private final Character COMMAND_PREFIX = '/';
 
-    public DiscordCommandRouteService(ServersConnectDAO serversConnectDAO, CommandPreProcessor preProcessor, UpdateHolder updateHolder) {
+    public DiscordCommandRouteService(DiscordCommandPayloadParser discordCommandPayloadParser, ServersConnectDAO serversConnectDAO, CommandPreProcessor preProcessor, UpdateHolder updateHolder) {
+        this.discordCommandPayloadParser = discordCommandPayloadParser;
         this.serversConnectDAO = serversConnectDAO;
         this.preProcessor = preProcessor;
         this.updateHolder = updateHolder;
     }
 
     public void send(JsonNode data){
-        String guild = data.findValue(GUILD_ID_JSON_NODE).asText();
-        String command = createStringCommandFromJson(data);
+        DiscordPayload payload = discordCommandPayloadParser.parseDiscordCommand(data);
 
-        updateHolder.setChatId(serversConnectDAO.getTelegramChatByDiscordGuild(guild).getTelegramChannel());
-
-        executeStringCommand(command);
+        executeCommand(payload);
     }
 
-    private void executeStringCommand(String strCommand){
-        Command command = preProcessor.getCommand(strCommand);
+    private void executeCommand(DiscordPayload payload){
+        Command command = preProcessor.getCommand(payload.getCommand().getCommandName());
         try {
-            command.execute(updateHolder);
+            command.execute(payload);
         } catch (TelegramApiException e) {
             throw new StringCommandExecutingException(InfExcMessage.WHILE_EXECUTE_STRING_COMMAND_EXCEPTION);
         }
-    }
-
-    private String createStringCommandFromJson(JsonNode data){
-        String jsonCommand = data.findValue(COMMAND_JSON_NODE).asText();
-        StringBuilder builder = new StringBuilder(jsonCommand);
-
-        builder.insert(0, COMMAND_PREFIX);
-
-        return String.valueOf(builder);
     }
 }

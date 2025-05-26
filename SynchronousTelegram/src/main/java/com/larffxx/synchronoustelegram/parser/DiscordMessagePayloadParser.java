@@ -18,7 +18,7 @@ public class DiscordMessagePayloadParser {
         this.packageFilesLoader = packageFilesLoader;
     }
 
-    public DiscordPayload parseDiscordPayload(JsonNode jsonPayload) {
+    public DiscordPayload parseDiscordMessage(JsonNode jsonPayload) {
         Long guildID = jsonPayload.get("guildId").asLong();
         String author = jsonPayload.get("authorName").asText();
         String message = jsonPayload.get("message").asText();
@@ -26,6 +26,6 @@ public class DiscordMessagePayloadParser {
 
         List<File> files = packageFilesLoader.getFilesFromURIs(uriFromJsonParser.uriParse(jsonPayload));
 
-        return new DiscordPayload(guildID, author, message, command, files);
+        return new DiscordPayload(guildID, author, message, files);
     }
 }
