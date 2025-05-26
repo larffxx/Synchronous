@@ -1,8 +1,7 @@
 package com.larffxx.synchronoustelegram.bot;
 
-import com.larffxx.synchronoustelegram.receivers.UpdateReceiver;
-import com.larffxx.synchronoustelegram.receivers.MessageReceiver;
-import com.larffxx.synchronoustelegram.holder.UpdateHolder;
+import com.larffxx.synchronoustelegram.application.handler.MessageHandler;
+import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,20 +24,20 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
     @Value("${token}")
     private String botToken;
     private TelegramClient telegramClient;
-    private UpdateHolder updateHolder;
-    private MessageReceiver messageReceiver;
+    private MessageHandler messageHandler;
+    private UpdateHandler updateHandler;
 
     @Autowired
-    public TelegramBot(MessageReceiver messageReceiver, UpdateHolder updateHolder) {
-        this.messageReceiver = messageReceiver;
-        this.updateHolder = updateHolder;
+    public TelegramBot(MessageHandler messageHandler, UpdateHandler updateHandler) {
+        this.messageHandler = messageHandler;
+        this.updateHandler = updateHandler;
     }
 
 
     @PostConstruct
     public void initClient() {
         telegramClient = new OkHttpTelegramClient(botToken);
-        updateHolder.setTelegramClient(telegramClient);
+        updateHandler.setTelegramClient(telegramClient);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
 
     @Override
     public void consume(Update update) {
-        messageReceiver.receiveMessage(update);
+        messageHandler.handleMessage(update);
     }
 }
 

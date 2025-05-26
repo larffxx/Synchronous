@@ -1,7 +1,7 @@
 package com.larffxx.synchronoustelegram.config;
 
-import com.larffxx.synchronoustelegram.payload.CommandPayload;
-import com.larffxx.synchronoustelegram.payload.MessagePayload;
+import com.larffxx.synchronoustelegram.infrastructure.payload.CommandPayload;
+import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
