@@ -1,10 +1,8 @@
 package com.larffxx.synchronoustelegram.executor;
 
 import com.larffxx.synchronoustelegram.commands.Command;
-import com.larffxx.synchronoustelegram.dao.UsersConnectDAO;
 import com.larffxx.synchronoustelegram.exception.TelegramException;
 import com.larffxx.synchronoustelegram.holder.UpdateHolder;
-import com.larffxx.synchronoustelegram.model.UsersConnect;
 import com.larffxx.synchronoustelegram.preprocessors.CommandPreProcessor;
 import lombok.Getter;
 import lombok.Setter;

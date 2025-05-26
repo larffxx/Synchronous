@@ -32,9 +32,4 @@ public class ServersConnectDAO {
     public void updateTelegramChannel(String telegramChatId, String telegramChatTitle){
         serversConnectRepository.updateByTelegramChannel(telegramChatId, telegramChatTitle);
     }
-
-    public void saveServer(String telegramGuild){
-        ServersConnect serversConnect = new ServersConnect(telegramGuild);
-        serversConnectRepository.save(serversConnect);
-    }
 }

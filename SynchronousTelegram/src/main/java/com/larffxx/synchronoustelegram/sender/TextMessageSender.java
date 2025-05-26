@@ -50,7 +50,7 @@ public class TextMessageSender {
     }
 
     private void setMatcher(String msg){
-        String USERNAME_PATTER = "@([a-zA-Z0-9\\._\\-]{3,})";
+        String USERNAME_PATTER = "@([a-zA-Z0-9._\\-]{3,})";
         matcher = Pattern.compile(USERNAME_PATTER).matcher(msg);
     }
 

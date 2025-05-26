@@ -20,7 +20,7 @@ public class DiscordToTelegramMessageService {
     private final PhotoMessageSender photoMessageSender;
     private final TextMessageSender textMessageSender;
 
-    public DiscordToTelegramMessageService(TextMessageSender textMessageSender, PhotoMessageSender photoMessageSender, URIFromJsonParser uriFromJsonParser, PackageFilesLoader packageFilesLoader, DiscordMessagePayloadParser discordMessagePayloadParser) {
+    public DiscordToTelegramMessageService(TextMessageSender textMessageSender, PhotoMessageSender photoMessageSender, DiscordMessagePayloadParser discordMessagePayloadParser) {
         this.textMessageSender = textMessageSender;
         this.photoMessageSender = photoMessageSender;
         this.discordMessagePayloadParser = discordMessagePayloadParser;

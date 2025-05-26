@@ -22,7 +22,6 @@ public class DiscordMessagePayloadParser {
         Long guildID = jsonPayload.get("guildId").asLong();
         String author = jsonPayload.get("authorName").asText();
         String message = jsonPayload.get("message").asText();
-        String command = jsonPayload.get("command").asText();
 
         List<File> files = packageFilesLoader.getFilesFromURIs(uriFromJsonParser.uriParse(jsonPayload));
 
