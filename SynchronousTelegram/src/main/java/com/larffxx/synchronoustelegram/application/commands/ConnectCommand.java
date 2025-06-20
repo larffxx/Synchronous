@@ -5,7 +5,6 @@ import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.infrastructure.sender.TextMessageSender;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 public class ConnectCommand extends Command {
@@ -19,7 +18,7 @@ public class ConnectCommand extends Command {
     }
 
     @Override
-    public void execute(UpdateHandler updateHandler) throws TelegramApiException {
+    public void execute(UpdateHandler updateHandler) {
         if (serversConnectRepository.existsByTelegramChannel(updateHandler.getUpdate().getMessage().getChat().getTitle())) {
             serversConnectRepository.updateByTelegramChannel(updateHandler.getChatId(), updateHandler.getUpdate().getMessage().getChat().getTitle());
 
@@ -30,7 +29,7 @@ public class ConnectCommand extends Command {
     }
 
     @Override
-    public void execute(DiscordPayload discordPayload) throws TelegramApiException {
+    public void execute(DiscordPayload discordPayload) {
         String telegramChannelName = discordPayload.getCommand().getOptions().get(0);
 
         if (serversConnectRepository.existsByTelegramChannel(telegramChannelName)) {

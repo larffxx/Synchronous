@@ -7,7 +7,6 @@ import com.larffxx.synchronoustelegram.infrastructure.sender.TextMessageSender;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 @Getter
@@ -23,12 +22,12 @@ public class PlayCommand extends Command{
     }
 
     @Override
-    public void execute(UpdateHandler updateHandler) throws TelegramApiException {
+    public void execute(UpdateHandler updateHandler){
         textMessageSender.send(Long.valueOf(updateHandler.getChatId()), "Music added");
     }
 
     @Override
-    public void execute(DiscordPayload discordPayload) throws TelegramApiException {
+    public void execute(DiscordPayload discordPayload) {
         Long telegramChatId = Long.valueOf(serversConnectRepository.findByDiscordGuild(String.valueOf(discordPayload.getGuildID())).getTelegramChannel());
 
         textMessageSender.send(telegramChatId, "Music added");

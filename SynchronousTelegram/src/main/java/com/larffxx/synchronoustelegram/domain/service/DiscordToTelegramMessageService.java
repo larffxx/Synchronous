@@ -8,7 +8,6 @@ import com.larffxx.synchronoustelegram.infrastructure.sender.TextMessageSender;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Getter
 @Setter
@@ -24,7 +23,7 @@ public class DiscordToTelegramMessageService {
         this.discordMessagePayloadParser = discordMessagePayloadParser;
     }
 
-    public void sendMessageToTelegramChannel(JsonNode data) throws TelegramApiException {
+    public void sendMessageToTelegramChannel(JsonNode data) {
         DiscordPayload payload = discordMessagePayloadParser.parseDiscordMessage(data);
 
         if (!payload.getFiles().isEmpty()) {

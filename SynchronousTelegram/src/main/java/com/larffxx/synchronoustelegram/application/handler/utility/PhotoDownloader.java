@@ -1,6 +1,8 @@
 package com.larffxx.synchronoustelegram.application.handler.utility;
 
 import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.domain.exception.data.input.AttachmentsDownloadException;
+import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.File;
@@ -23,8 +25,7 @@ public class PhotoDownloader {
 
             return telegramClient.downloadFile(file);
         } catch (TelegramApiException e) {
-            //TODO: Custom exception for downloading photo
-            throw new RuntimeException(e);
+            throw new AttachmentsDownloadException(InfExcMessage.DOWNLOAD_IMAGE_EXCEPTION);
         }
     }
 }

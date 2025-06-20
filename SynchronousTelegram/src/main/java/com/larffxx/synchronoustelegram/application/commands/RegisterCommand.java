@@ -6,7 +6,6 @@ import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.UsersConnectRepository;
 import com.larffxx.synchronoustelegram.infrastructure.sender.TextMessageSender;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 public class RegisterCommand extends Command {
@@ -20,7 +19,7 @@ public class RegisterCommand extends Command {
     }
 
     @Override
-    public void execute(UpdateHandler updateHandler) throws TelegramApiException {
+    public void execute(UpdateHandler updateHandler) {
         String[] discordName = updateHandler.getUpdate().getMessage().getText().split(" ");
         String telegramName = updateHandler.getUpdate().getMessage().getFrom().getUserName();
         UsersConnect usersConnect = new UsersConnect(discordName[1], updateHandler.getUpdate().getMessage().getFrom().getUserName());
@@ -35,7 +34,7 @@ public class RegisterCommand extends Command {
     }
 
     @Override
-    public void execute(DiscordPayload discordPayload) throws TelegramApiException {
+    public void execute(DiscordPayload discordPayload) {
         String discordName = discordPayload.getAuthor();
         String telegramName = discordPayload.getCommand().getOptions().get(0);
         UsersConnect usersConnect = new UsersConnect(discordName, telegramName);

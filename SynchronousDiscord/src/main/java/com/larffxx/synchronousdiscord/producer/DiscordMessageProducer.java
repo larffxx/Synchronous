@@ -1,5 +1,7 @@
 package com.larffxx.synchronousdiscord.producer;
 
+import com.larffxx.synchronousdiscord.exception.DownloadAttachmentException;
+import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,11 +15,8 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
 
 @Component
 @Getter
@@ -34,7 +33,7 @@ public class DiscordMessageProducer {
     public void send(MessageReceivedEvent event) {
         MessagePayload messagePayload = new MessagePayload(event.getAuthor().getName(), event.getMessage().getContentDisplay(), event.getGuild().getIdLong());
 
-        Message message = MessageBuilder
+        Message<MessagePayload> message = MessageBuilder
                 .withPayload(messagePayload)
                 .setHeader(KafkaHeaders.TOPIC, topic)
                 .build();
@@ -47,7 +46,7 @@ public class DiscordMessageProducer {
 
         MessagePayload messagePayload = new MessagePayload(event.getGuild().getIdLong(), event.getAuthor().getName(), event.getMessage().getContentDisplay(), downloadedAttachments(attachments));
 
-        Message message = MessageBuilder
+        Message<MessagePayload> message = MessageBuilder
                 .withPayload(messagePayload)
                 .setHeader(KafkaHeaders.TOPIC, topic)
                 .build();
@@ -58,14 +57,13 @@ public class DiscordMessageProducer {
     private List<File> downloadedAttachments(List<Attachment> attachments) {
         List<File> files = new ArrayList<>();
 
-        attachments.forEach(attachment -> {
-            attachment.getProxy().downloadToFile(new File("C:/Users/offic/Desktop/tempphotos/" + attachment.getFileName())).thenAccept(path-> {
-            }).exceptionally(throwable -> {
-                //TODO: custom exception
-                throw new RuntimeException();
+            attachments.forEach(attachment -> {
+                attachment.getProxy().downloadToFile(new File("C:/Users/offic/Desktop/tempphotos/" + attachment.getFileName())).thenAccept(path -> {
+                }).exceptionally(throwable -> {
+                    throw new DownloadAttachmentException(InfExcMessages.DOWNLOAD_ATTACHMENT_EXCEPTION);
+                });
+                files.add(new File("C:/Users/offic/Desktop/tempphotos/" + attachment.getFileName()));
             });
-            files.add(new File("C:/Users/offic/Desktop/tempphotos/" + attachment.getFileName()));
-        });
 
         return files;
     }

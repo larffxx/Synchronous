@@ -3,6 +3,8 @@ package com.larffxx.synchronoustelegram.application.handler.filehandler;
 import com.larffxx.synchronoustelegram.application.handler.utility.PhotoAlbumHolder;
 import com.larffxx.synchronoustelegram.application.handler.utility.PhotoDownloader;
 import com.larffxx.synchronoustelegram.application.handler.utility.TmpToJpgConverter;
+import com.larffxx.synchronoustelegram.domain.exception.data.input.ReceivingPhotoException;
+import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.util.constant.MessageType;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
 import lombok.Getter;
@@ -41,8 +43,7 @@ public class MediaGroupHandler {
         Optional<PhotoSize> lastDownloadedPhotoFromAlbum = photoAlbumHolder.getPhoto(mediaGroupId, photos);
 
         if(lastDownloadedPhotoFromAlbum.isEmpty()){
-            //TODO: custom exception for downloading from media group
-            throw new RuntimeException("No photo found for media group " + mediaGroupId);
+            throw new ReceivingPhotoException(String.format(InfExcMessage.RECEIVING_PHOTO_FROM_MEDIA_GROUP_EXCEPTION, mediaGroupId));
         }
         File photoFile = tmpToJpgConverter.tmpConvertToJpg(photoDownloader.downloadPhoto(lastDownloadedPhotoFromAlbum.get().getFileId()), Long.valueOf(message.getMessageId()));
 
