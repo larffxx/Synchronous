@@ -24,7 +24,7 @@ public class TextMessageSender {
     }
 
     public void send(Long id, String text) {
-        String telegramChatId = serversConnectRepository.findByDiscordGuild(String.valueOf(id)).getTelegramChannel();
+        String telegramChatId = serversConnectRepository.findByTelegramChannel(String.valueOf(id)).getTelegramChannel();
         updateHandler.setChatId(telegramChatId);
 
         SendMessage sm = SendMessage.builder().chatId(telegramChatId).text(text).build();

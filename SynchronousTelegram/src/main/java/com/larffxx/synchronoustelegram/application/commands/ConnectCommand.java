@@ -28,17 +28,11 @@ public class ConnectCommand extends Command {
         }
     }
 
+
+    //TODO: connection logic from discord
     @Override
     public void execute(DiscordPayload discordPayload) {
         String telegramChannelName = discordPayload.getCommand().getOptions().get(0);
-
-        if (serversConnectRepository.existsByTelegramChannel(telegramChannelName)) {
-            serversConnectRepository.updateByTelegramChannel(getUpdateHandler().getChatId(), telegramChannelName);
-
-            textMessageSender.send(Long.valueOf(getUpdateHandler().getChatId()), "connected");
-        } else {
-            textMessageSender.send(Long.valueOf(getUpdateHandler().getChatId()), "connected before");
-        }
     }
 
 

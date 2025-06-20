@@ -66,7 +66,7 @@ public class PlayCommand implements Command {
                 .getByTelegramChat(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);
 
-        VoiceChannel channel = guild.getVoiceChannelsByName("general", true).get(0);
+        VoiceChannel channel = guild.getVoiceChannelsByName("девчачий чат", true).get(0);
         AudioManager manager = guild.getAudioManager();
 
         manager.openAudioConnection(channel);
