@@ -30,5 +30,6 @@ public class CommandConstants {
     public static final String USER_REGISTER_UNSUCCESSFUL_MESSAGE = "You have been registered before";
     public static final String SKIP_SUCCESS_MESSAGE = "Skipped";
     public static final String STOP_SUCCESS_MESSAGE = "Stopped";
+    public static final String SHUFFLE_SUCCESS_MESSAGE = "Shuffled";
     public static final String DELETE_SUCCESS_MESSAGE = "Successfully deleted %s messages";
 }

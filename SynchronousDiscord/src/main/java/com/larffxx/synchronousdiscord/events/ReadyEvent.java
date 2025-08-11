@@ -21,6 +21,7 @@ public class ReadyEvent implements Event<net.dv8tion.jda.api.events.session.Read
                     Commands.slash("queue", "queue tracks"),
                     Commands.slash("skip", "skip track"),
                     Commands.slash("stop", "stop track"),
+                    Commands.slash("shuffle", "shuffle playlist"),
                     Commands.slash("loop", "loop track"),
                     Commands.slash("register", "register your telegram").addOption(OptionType.STRING, "telegram", "Enter your Telegram UserName"),
                     Commands.slash("connect", "Connect your servers")
