@@ -36,7 +36,7 @@ public class QueueCommand implements Command {
         GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
         queueSender(musicManager);
 
-        event.reply(CommandConstants.QUEUE_SUCCESS_MESSAGE).queue();
+        event.getHook().editOriginal(CommandConstants.QUEUE_SUCCESS_MESSAGE).queue();
     }
 
 
