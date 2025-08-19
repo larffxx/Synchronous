@@ -16,10 +16,10 @@ public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.e
     private final CommandExecutor commandExecutor;
     private final EventReceiver eventReceiver;
 
-    public SlashCommandInteractionEvent(DiscordCommandProducer discordCommandProducer, CommandExecutor commandExecutor, EventReceiver eventReceiver1) {
+    public SlashCommandInteractionEvent(DiscordCommandProducer discordCommandProducer, CommandExecutor commandExecutor, EventReceiver eventReceiver) {
         this.discordCommandProducer = discordCommandProducer;
         this.commandExecutor = commandExecutor;
-        this.eventReceiver = eventReceiver1;
+        this.eventReceiver = eventReceiver;
     }
 
     @Override
