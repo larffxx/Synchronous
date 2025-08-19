@@ -47,8 +47,8 @@ public class PhotoMessageSender implements Sender<JsonNode> {
         } else {
             textChannel
                     .sendMessage(data.findValue(SendersConstants.NAME_IN_TELEGRAM).asText() + ": ")
-                    .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build())
-                    .addFiles(FileUpload.fromData(inputFile, SendersConstants.PHOTO_NAME)).queue();
+                    .addFiles(FileUpload.fromData(inputFile, SendersConstants.PHOTO_NAME))
+                    .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build()).queue();
         }
     }
 
