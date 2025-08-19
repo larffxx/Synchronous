@@ -1,10 +1,10 @@
 package com.larffxx.synchronousdiscord.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 public abstract class RouteService<T> {
     private final PreProcessor<T> preProcessor;
     private final EventReceiver eventReceiver;
-    private final ServersConnectDAO serversConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
 
-    public RouteService(EventReceiver eventReceiver, ServersConnectDAO serversConnectDAO, PreProcessor<T> preProcessor) {
+    public RouteService(EventReceiver eventReceiver, PreProcessor<T> preProcessor, ServersConnectRepository serversConnectRepository) {
         this.eventReceiver = eventReceiver;
-        this.serversConnectDAO = serversConnectDAO;
+        this.serversConnectRepository = serversConnectRepository;
         this.preProcessor = preProcessor;
     }
     public abstract void send(JsonNode data) throws CommandException;

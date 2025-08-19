@@ -1,10 +1,10 @@
 package com.larffxx.synchronousdiscord.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.model.ServersConnect;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,23 +17,25 @@ import org.springframework.stereotype.Component;
 @Setter
 public class ConnectCommand implements Command{
     private final EventReceiver eventReceiver;
-    private final ServersConnectDAO serversConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
 
-    public ConnectCommand(ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
-        this.serversConnectDAO = serversConnectDAO;
+    public ConnectCommand(EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
+        this.serversConnectRepository = serversConnectRepository;
         this.eventReceiver = eventReceiver;
     }
 
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        serversConnectDAO.saveServer(event.getGuild().getId(), event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString());
+        ServersConnect serversConnect = new ServersConnect(event.getGuild().getId(), event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString());
+
+        serversConnectRepository.save(serversConnect);
         event.getHook().editOriginal(CommandConstants.CONNECT_SUCCESS_MESSAGE).queue();
     }
 
     @Override
     public void execute(JsonNode data) {
-        ServersConnect serversConnect = serversConnectDAO.getByTelegramChat(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        ServersConnect serversConnect = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
         Guild guildId = eventReceiver.getJda().getGuildById(serversConnect.getDiscordGuild());
         TextChannel textChannel = guildId.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL,true).get(0);
 

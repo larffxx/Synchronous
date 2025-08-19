@@ -1,9 +1,9 @@
 package com.larffxx.synchronousdiscord.sender.message;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.SendersConstants;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.sender.Sender;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,17 +20,16 @@ import java.io.File;
 @Setter
 public class PhotoMessageSender implements Sender<JsonNode> {
     private final EventReceiver eventReceiver;
-    private final ServersConnectDAO serversConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
 
-
-    public PhotoMessageSender(ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
-        this.serversConnectDAO = serversConnectDAO;
+    public PhotoMessageSender(EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
+        this.serversConnectRepository = serversConnectRepository;
         this.eventReceiver = eventReceiver;
     }
 
     @Override
     public void send(JsonNode data) {
-        Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
+        Guild guild = eventReceiver.getJda().getGuildById(serversConnectRepository.getConnectByTelegramChannel(data.findValue(SendersConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(SendersConstants.TEXT_CHANNEL_IN_DISCORD, true).get(0);
 
         sendFileMessage(data, textChannel);

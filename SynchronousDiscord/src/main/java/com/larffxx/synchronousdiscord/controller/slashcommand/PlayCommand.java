@@ -1,10 +1,10 @@
 package com.larffxx.synchronousdiscord.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.PlayerManager;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -19,15 +19,15 @@ import java.net.URL;
 
 @Component
 public class PlayCommand implements Command {
-    private final ServersConnectDAO serversConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
     private final PlayerManager playerManager;
     private final EventReceiver eventReceiver;
 
     private String link;
 
-    public PlayCommand(PlayerManager playerManager, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
+    public PlayCommand(PlayerManager playerManager, ServersConnectRepository serversConnectRepository, EventReceiver eventReceiver) {
         this.playerManager = playerManager;
-        this.serversConnectDAO = serversConnectDAO;
+        this.serversConnectRepository = serversConnectRepository;
         this.eventReceiver = eventReceiver;
     }
 
@@ -62,8 +62,8 @@ public class PlayCommand implements Command {
         if (!isUrl(link)) {
             link = "ytsearch:" + link;
         }
-        Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO
-                .getByTelegramChat(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
+        Guild guild = eventReceiver.getJda().getGuildById(
+                serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);
 
         VoiceChannel channel = guild.getVoiceChannelsByName("девчачий чат", true).get(0);

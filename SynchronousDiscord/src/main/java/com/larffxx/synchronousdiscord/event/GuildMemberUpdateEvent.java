@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.event;
 
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
+import com.larffxx.synchronousdiscord.repo.UsersConnectRepository;
 import com.larffxx.synchronousdiscord.updater.GuildProfileUpdater;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import lombok.Getter;
@@ -16,25 +16,25 @@ import java.util.List;
 @Getter
 @Setter
 public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent> {
-    private final ServersConnectDAO serversConnectDAO;
-    private final UsersConnectDAO usersConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
+    private final UsersConnectRepository usersConnectRepository;
     private final GuildProfileUpdater guildProfileUpdater;
 
 
-    public GuildMemberUpdateEvent(UsersConnectDAO usersConnectDAO, ServersConnectDAO serversConnectDAO, GuildProfileUpdater guildProfileUpdater) {
-        this.usersConnectDAO = usersConnectDAO;
-        this.serversConnectDAO = serversConnectDAO;
+    public GuildMemberUpdateEvent(ServersConnectRepository serversConnectRepository, UsersConnectRepository usersConnectRepository, GuildProfileUpdater guildProfileUpdater) {
+        this.usersConnectRepository = usersConnectRepository;
+        this.serversConnectRepository = serversConnectRepository;
         this.guildProfileUpdater = guildProfileUpdater;
     }
 
     @Override
     public void execute(net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent event) {
         Guild guild = event.getGuild();
-        if (serversConnectDAO.existsByDiscordGuildId(event.getGuild().getId())) {
+        if (serversConnectRepository.existsByDiscordGuild(event.getGuild().getId())) {
             List<Member> members =
                     guild.getMembers()
                             .stream()
-                            .filter(member -> usersConnectDAO.existsByDiscordId(member.getId()))
+                            .filter(member -> usersConnectRepository.existsByDiscordId(member.getId()))
                             .toList();
 
             if(members.isEmpty()){

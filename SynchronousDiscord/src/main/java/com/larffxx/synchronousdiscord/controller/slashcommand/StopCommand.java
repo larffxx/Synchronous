@@ -2,11 +2,11 @@ package com.larffxx.synchronousdiscord.controller.slashcommand;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
@@ -19,13 +19,13 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class StopCommand implements Command{
-    private final ServersConnectDAO serversConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
     private final ResultHandler resultHandler;
     private final EventReceiver eventReceiver;
 
-    public StopCommand(ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
+    public StopCommand(ResultHandler resultHandler, ServersConnectRepository serversConnectRepository, EventReceiver eventReceiver) {
         this.resultHandler = resultHandler;
-        this.serversConnectDAO = serversConnectDAO;
+        this.serversConnectRepository = serversConnectRepository;
         this.eventReceiver = eventReceiver;
     }
 
@@ -43,7 +43,7 @@ public class StopCommand implements Command{
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
+        String guildId = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
         Guild guild = eventReceiver.getJda().getGuildById(guildId);
         TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);
 

@@ -4,7 +4,6 @@ package com.larffxx.synchronousdiscord.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
 import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
 import com.larffxx.synchronousdiscord.routeservice.TelegramCommandRouteService;
 import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
@@ -20,13 +19,11 @@ import org.springframework.stereotype.Component;
 @Setter
 public class TelegramCommandConsumer {
     private final SlashCommandPreProcessor preProcessor;
-    private final GuildProfileDAO guildProfileDAO;
     private final TelegramCommandRouteService telegramCommandRouteService;
     private final CommandVerifier commandVerifier;
 
-    public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService, GuildProfileDAO guildProfileDAO, SlashCommandPreProcessor preProcessor, CommandVerifier commandVerifier) {
+    public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService,  SlashCommandPreProcessor preProcessor, CommandVerifier commandVerifier) {
         this.telegramCommandRouteService = telegramCommandRouteService;
-        this.guildProfileDAO = guildProfileDAO;
         this.preProcessor = preProcessor;
         this.commandVerifier = commandVerifier;
     }

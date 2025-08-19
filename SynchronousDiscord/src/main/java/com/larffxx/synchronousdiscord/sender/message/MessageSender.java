@@ -1,9 +1,9 @@
 package com.larffxx.synchronousdiscord.sender.message;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.SendersConstants;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.sender.Sender;
 import com.larffxx.synchronousdiscord.sender.utility.MessageFormatter;
 import lombok.Getter;
@@ -23,11 +23,11 @@ import java.util.regex.Pattern;
 public class MessageSender implements Sender<JsonNode> {
     private final String USERNAME_PATTER = "@([a-zA-Z0-9\\._\\-]{3,})";
     private final EventReceiver eventReceiver;
-    private final ServersConnectDAO serversConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
     private final MessageFormatter messageFormatter;
 
-    public MessageSender(ServersConnectDAO serversConnectDAO, MessageFormatter messageFormatter, EventReceiver eventReceiver) {
-        this.serversConnectDAO = serversConnectDAO;
+    public MessageSender(MessageFormatter messageFormatter, EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
+        this.serversConnectRepository = serversConnectRepository;
         this.messageFormatter = messageFormatter;
         this.eventReceiver = eventReceiver;
     }
@@ -36,7 +36,7 @@ public class MessageSender implements Sender<JsonNode> {
     public void send(JsonNode data) {
         Matcher matcher = Pattern.compile(USERNAME_PATTER).matcher(data.findValue(SendersConstants.MESSAGE_FROM_TELEGRAM).asText());
         Guild guild = getEventReceiver().getJda()
-                .getGuildById(serversConnectDAO.getByTelegramChat(data.findValue(SendersConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
+                .getGuildById(serversConnectRepository.getConnectByTelegramChannel(data.findValue(SendersConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
         TextChannel textChannel = guild.getTextChannelsByName(SendersConstants.TEXT_CHANNEL_IN_DISCORD, true).get(0);
 
         List<Member> memberList = textChannel.getMembers();

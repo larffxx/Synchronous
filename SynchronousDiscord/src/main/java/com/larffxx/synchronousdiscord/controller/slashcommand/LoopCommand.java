@@ -1,11 +1,11 @@
 package com.larffxx.synchronousdiscord.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.sender.embed.EmbedSender;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,14 +19,14 @@ import org.springframework.stereotype.Component;
 @Setter
 public class LoopCommand implements Command {
     private final EmbedSender embedSender;
-    private final ServersConnectDAO serversConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
     private final ResultHandler resultHandler;
     private final EventReceiver eventReceiver;
 
-    public LoopCommand(EmbedSender embedSender, ResultHandler resultHandler, ServersConnectDAO serversConnectDAO, EventReceiver eventReceiver) {
+    public LoopCommand(EmbedSender embedSender, ResultHandler resultHandler, ServersConnectRepository serversConnectRepository, EventReceiver eventReceiver) {
         this.embedSender = embedSender;
         this.resultHandler = resultHandler;
-        this.serversConnectDAO = serversConnectDAO;
+        this.serversConnectRepository = serversConnectRepository;
         this.eventReceiver = eventReceiver;
     }
 
@@ -45,7 +45,7 @@ public class LoopCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectDAO.getByTelegramChat(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
+        String guildId = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
         Guild guild = eventReceiver.getJda().getGuildById(guildId);
 
         GuildMusicManager musicManager = resultHandler.getMusicManager(guild);

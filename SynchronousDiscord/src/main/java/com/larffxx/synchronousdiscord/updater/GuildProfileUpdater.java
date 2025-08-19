@@ -1,8 +1,9 @@
 package com.larffxx.synchronousdiscord.updater;
 
-import com.larffxx.synchronousdiscord.dao.GuildProfileDAO;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
-import com.larffxx.synchronousdiscord.dao.UsersConnectDAO;
+import com.larffxx.synchronousdiscord.model.Profile;
+import com.larffxx.synchronousdiscord.repo.GuildProfileRepository;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
+import com.larffxx.synchronousdiscord.repo.UsersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
@@ -15,19 +16,19 @@ import java.util.List;
 @Getter
 @Setter
 public class GuildProfileUpdater {
-    private final ServersConnectDAO serversConnectDAO;
-    private final GuildProfileDAO guildProfileDAO;
-    private final UsersConnectDAO usersConnectDAO;
+    private final GuildProfileRepository guildProfileRepository;
+    private final ServersConnectRepository serversConnectRepository;
+    private final UsersConnectRepository usersConnectRepository;
 
-    public GuildProfileUpdater(ServersConnectDAO serversConnectDAO, GuildProfileDAO guildProfileDAO, UsersConnectDAO usersConnectDAO) {
-        this.serversConnectDAO = serversConnectDAO;
-        this.guildProfileDAO = guildProfileDAO;
-        this.usersConnectDAO = usersConnectDAO;
+    public GuildProfileUpdater(GuildProfileRepository guildProfileRepository, ServersConnectRepository serversConnectRepository, UsersConnectRepository usersConnectRepository) {
+        this.guildProfileRepository = guildProfileRepository;
+        this.serversConnectRepository = serversConnectRepository;
+        this.usersConnectRepository = usersConnectRepository;
     }
 
     public void update(List<Member> members, Guild guild){
         for(Member member : members){
-            if(!guildProfileDAO.existsByUserConnect(usersConnectDAO.getByDiscordId(member.getId()))) {
+            if(!guildProfileRepository.existsByUsersConnect(usersConnectRepository.findByDiscordId(member.getId()))) {
                 createProfile(member, guild);
             }else {
                 updateProfile(member);
@@ -36,13 +37,14 @@ public class GuildProfileUpdater {
     }
 
     private void createProfile(Member member, Guild guild){
-        guildProfileDAO.setGuildProfile(member.getNickname(),
-                usersConnectDAO.getByDiscordName(member.getUser().getName()),
-                serversConnectDAO.getByDiscordGuild(guild.getId()));
+        String nickname = member.getNickname();
+        Profile profile = new Profile(nickname, usersConnectRepository.findByDiscordName(nickname), serversConnectRepository.getConnectByDiscordGuild(guild.getId()));
+
+        guildProfileRepository.save(profile);
     }
 
     private void updateProfile(Member member){
-        usersConnectDAO.updateByDiscordId(member.getUser().getName(), member.getUser().getId());
-        guildProfileDAO.updateGuildProfile(member.getNickname(), usersConnectDAO.getByDiscordId(member.getId()));
+        usersConnectRepository.updateByDiscordId(member.getUser().getName(), member.getUser().getId());
+        guildProfileRepository.updateByUsersConnect(member.getNickname(), usersConnectRepository.findByDiscordId(member.getId()));
     }
 }

@@ -2,12 +2,12 @@ package com.larffxx.synchronousdiscord.verifier;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.dao.ServersConnectDAO;
 import com.larffxx.synchronousdiscord.exception.CommandException;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
+import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;
@@ -24,14 +24,14 @@ import java.util.List;
 @Getter
 @Setter
 public class CommandVerifier {
-    private final ServersConnectDAO serversConnectDAO;
+    private final ServersConnectRepository serversConnectRepository;
     private final SlashCommandPreProcessor slashCommandPreProcessor;
     private final EventReceiver eventReceiver;
 
-    public CommandVerifier(SlashCommandPreProcessor slashCommandPreProcessor, EventReceiver eventReceiver, ServersConnectDAO serversConnectDAO) {
+    public CommandVerifier(SlashCommandPreProcessor slashCommandPreProcessor, EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
         this.slashCommandPreProcessor = slashCommandPreProcessor;
         this.eventReceiver = eventReceiver;
-        this.serversConnectDAO = serversConnectDAO;
+        this.serversConnectRepository = serversConnectRepository;
     }
 
     public void verifyCommand(SlashCommandInteractionEvent t) throws CommandException {
@@ -60,7 +60,7 @@ public class CommandVerifier {
 
     public void verifyCommand(JsonNode data) throws CommandException {
         String telegramChatId = data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText();
-        Guild guild = eventReceiver.getJda().getGuildById(serversConnectDAO.getByTelegramChat(telegramChatId).getDiscordGuild());
+        Guild guild = eventReceiver.getJda().getGuildById(serversConnectRepository.getConnectByTelegramChannel(telegramChatId).getDiscordGuild());
         String discordTextChannel = CommandConstants.DISCORD_TEXT_CHANNEL;
         String strCommand = data.findValue(CommandConstants.COMMAND_VALUE).asText();
         Command discordCommand = guild.retrieveCommands().complete().stream()
