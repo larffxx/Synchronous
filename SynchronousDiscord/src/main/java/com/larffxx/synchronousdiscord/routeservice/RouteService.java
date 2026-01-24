@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.exception.RouteServiceException;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
@@ -22,5 +22,5 @@ public abstract class RouteService<T> {
         this.serversConnectRepository = serversConnectRepository;
         this.preProcessor = preProcessor;
     }
-    public abstract void send(JsonNode data) throws CommandException;
+    public abstract void send(JsonNode data) throws RouteServiceException;
 }

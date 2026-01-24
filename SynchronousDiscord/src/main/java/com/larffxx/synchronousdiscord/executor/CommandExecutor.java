@@ -1,7 +1,8 @@
 package com.larffxx.synchronousdiscord.executor;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.exception.interaction.DiscordSlashInteractionException;
+import com.larffxx.synchronousdiscord.exception.interaction.TelegramSlashInteractionException;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
 import com.larffxx.synchronousdiscord.controller.slashcommand.Command;
@@ -23,7 +24,7 @@ public class CommandExecutor {
         this.commandVerifier = commandVerifier;
     }
 
-    public void execute(SlashCommandInteractionEvent t) throws CommandException {
+    public void execute(SlashCommandInteractionEvent t) throws DiscordSlashInteractionException {
         t.deferReply().queue();
         commandVerifier.verifyCommand(t);
         Command command = slashCommandPreProcessor.getCommand(t.getInteraction().getName());
@@ -31,7 +32,7 @@ public class CommandExecutor {
         command.execute(t);
     }
 
-    public void execute(JsonNode data) throws CommandException {
+    public void execute(JsonNode data) throws TelegramSlashInteractionException {
         String strCommand = data.findValue(CommandConstants.COMMAND_VALUE).asText();
 
         commandVerifier.verifyCommand(data);

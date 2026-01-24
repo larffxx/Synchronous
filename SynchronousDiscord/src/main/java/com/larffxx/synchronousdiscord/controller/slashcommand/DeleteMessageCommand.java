@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.controller.slashcommand;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.exception.command.DeleteMessageException;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -21,7 +21,7 @@ public class DeleteMessageCommand implements Command {
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) throws CommandException {
+    public void execute(SlashCommandInteractionEvent event) throws DeleteMessageException {
         MessageChannel messageChannel = eventReceiver.getMessageChannel();
         int amount = eventReceiver.getOptionMappings().get(0).getAsInt();
 

@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.event;
 
-import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.exception.interaction.DiscordSlashInteractionException;
 import com.larffxx.synchronousdiscord.executor.CommandExecutor;
 import com.larffxx.synchronousdiscord.producer.DiscordCommandProducer;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
@@ -27,7 +27,7 @@ public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.e
         eventReceiver.setTextChannel(event.getChannel().asTextChannel());
         try {
             commandExecutor.execute(event);
-        } catch (CommandException e) {
+        } catch (DiscordSlashInteractionException e) {
             event.reply(e.getMessage()).queue();
         }
         discordCommandProducer.send(event);

@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.exception.command.CommandException;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 

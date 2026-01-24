@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.exception.RouteServiceException;
 import com.larffxx.synchronousdiscord.executor.CommandExecutor;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
@@ -37,7 +37,7 @@ public class TelegramCommandRouteService extends RouteService<Command>{
 
         try {
             executor.execute(data);
-        } catch (CommandException e) {
+        } catch (RouteServiceException e) {
             System.out.println(e.getMessage());
         }
     }

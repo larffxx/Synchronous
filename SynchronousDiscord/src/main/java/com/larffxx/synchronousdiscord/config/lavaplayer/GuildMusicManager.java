@@ -8,11 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GuildMusicManager {
-
     private final AudioPlayer audioPlayer;
     private final TrackScheduler scheduler;
     private final AudioPlayerSendHandler sendHandler;
-
 
     public GuildMusicManager(AudioPlayerManager manager) {
         audioPlayer = manager.createPlayer();
@@ -20,9 +18,4 @@ public class GuildMusicManager {
         audioPlayer.addListener(scheduler);
         sendHandler = new AudioPlayerSendHandler(audioPlayer);
     }
-
-    public AudioPlayerSendHandler getSendHandler(){
-        return sendHandler;
-    }
-
 }

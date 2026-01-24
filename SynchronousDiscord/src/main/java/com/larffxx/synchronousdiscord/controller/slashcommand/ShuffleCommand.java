@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.controller.slashcommand;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
-import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.exception.command.ShuffleException;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
@@ -24,7 +24,7 @@ public class ShuffleCommand implements Command{
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent t) throws CommandException {
+    public void execute(SlashCommandInteractionEvent t) throws ShuffleException {
         GuildMusicManager manager = resultHandler.getMusicManager(t.getGuild());
 
         manager.getScheduler().shuffle();
@@ -33,7 +33,7 @@ public class ShuffleCommand implements Command{
     }
 
     @Override
-    public void execute(JsonNode data) throws CommandException {
+    public void execute(JsonNode data) throws ShuffleException {
         String guildId = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
         Guild guild = eventReceiver.getJda().getGuildById(guildId);
         TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);

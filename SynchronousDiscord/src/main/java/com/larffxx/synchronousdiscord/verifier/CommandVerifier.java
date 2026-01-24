@@ -2,7 +2,8 @@ package com.larffxx.synchronousdiscord.verifier;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.exception.CommandException;
+import com.larffxx.synchronousdiscord.exception.command.CommandException;
+import com.larffxx.synchronousdiscord.exception.VerifyException;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
@@ -34,12 +35,12 @@ public class CommandVerifier {
         this.serversConnectRepository = serversConnectRepository;
     }
 
-    public void verifyCommand(SlashCommandInteractionEvent t) throws CommandException {
+    public void verifyCommand(SlashCommandInteractionEvent t) throws VerifyException {
         List<Command.Option> commandOptions = t.getGuild().retrieveCommandById(t.getCommandId()).complete().getOptions();
         List<OptionMapping> options = t.getInteraction().getOptions();
 
         if (commandOptions.size() > t.getOptions().size()) {
-            throw new CommandException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
+            throw new VerifyException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
         }
 
         eventReceiver.setMessageChannel(t.getMessageChannel());
@@ -48,17 +49,17 @@ public class CommandVerifier {
         for (OptionMapping option : options) {
             for (Command.Option providedOption : commandOptions) {
                 if (option != null && providedOption != null && !option.getType().equals(providedOption.getType())) {
-                    throw new CommandException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+                    throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
                 }
             }
 
             if (option != null && option.getType().equals(OptionType.INTEGER) && option.getAsInt() < 0) {
-                throw new CommandException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+                throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
             }
         }
     }
 
-    public void verifyCommand(JsonNode data) throws CommandException {
+    public void verifyCommand(JsonNode data) throws VerifyException {
         String telegramChatId = data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText();
         Guild guild = eventReceiver.getJda().getGuildById(serversConnectRepository.getConnectByTelegramChannel(telegramChatId).getDiscordGuild());
         String discordTextChannel = CommandConstants.DISCORD_TEXT_CHANNEL;
@@ -74,7 +75,7 @@ public class CommandVerifier {
 
 
         if (providedOptions.size() > commandOptions.size()) {
-            throw new CommandException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
+            throw new VerifyException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
         }
 
         eventReceiver.setMessageChannel(guild.getTextChannelsByName(discordTextChannel, true).get(0));
@@ -82,7 +83,7 @@ public class CommandVerifier {
         verifyMappedValues(commandOptions,providedOptions);
     }
 
-    private static void verifyMappedValues(List<Command.Option> options, List<String> providedOptions) throws CommandException {
+    private static void verifyMappedValues(List<Command.Option> options, List<String> providedOptions) throws VerifyException {
         for (Command.Option option : options) {
             for (String providedOption : providedOptions) {
                 switch (option.getType()) {
@@ -91,9 +92,9 @@ public class CommandVerifier {
                         long number;
                         try {
                             number = Long.parseLong(providedOption);
-                            if (number < 0) throw new CommandException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+                            if (number < 0) throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
                         } catch (NumberFormatException e) {
-                            throw new CommandException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+                            throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
                         }
                         break;
                     default:
