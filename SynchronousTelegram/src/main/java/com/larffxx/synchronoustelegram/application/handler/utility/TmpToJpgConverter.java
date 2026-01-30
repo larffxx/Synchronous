@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 @Component
 public class TmpToJpgConverter {
@@ -18,7 +19,9 @@ public class TmpToJpgConverter {
         try {
             BufferedImage bufferedImage = ImageIO.read(inputFile);
 
-            pngOutput = new java.io.File("C:/Users/offic/Desktop/tempphotos/photo" + fileID + ".jpg");
+            pngOutput = new java.io.File(Paths.get(
+                    System.getProperty("user.home"), "Documents", "tempphotos","photo" + fileID +".jpg").toUri());
+
             ImageIO.write(bufferedImage, "jpg", pngOutput);
         } catch (IOException e) {
             throw new PhotoConversionException(String.format(InfExcMessage.CONVERSION_PHOTO_EXCEPTION, e.getMessage()));
