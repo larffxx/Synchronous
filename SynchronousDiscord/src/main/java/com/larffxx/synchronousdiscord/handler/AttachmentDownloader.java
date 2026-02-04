@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class AttachmentHandler {
+public class AttachmentDownloader {
 
-    public List<File> downloadedAttachments(List<Message.Attachment> attachments) {
+    public List<File> downloadAttachments(List<Message.Attachment> attachments) {
         List<File> files = new ArrayList<>();
 
         attachments.forEach(attachment -> {

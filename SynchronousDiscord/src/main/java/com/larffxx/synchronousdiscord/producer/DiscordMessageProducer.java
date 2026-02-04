@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.producer;
 
 
-import com.larffxx.synchronousdiscord.handler.AttachmentHandler;
+import com.larffxx.synchronousdiscord.handler.AttachmentDownloader;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,11 +23,11 @@ public class DiscordMessageProducer {
     @Value("${dMTopic}")
     private String topic;
     private final KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate;
-    private final AttachmentHandler attachmentHandler;
+    private final AttachmentDownloader attachmentDownloader;
 
-    public DiscordMessageProducer(KafkaTemplate<String, MessagePayload> kafkaTemplate, AttachmentHandler attachmentHandler) {
+    public DiscordMessageProducer(KafkaTemplate<String, MessagePayload> kafkaTemplate, AttachmentDownloader attachmentDownloader) {
         this.messagePayloadKafkaTemplate = kafkaTemplate;
-        this.attachmentHandler = attachmentHandler;
+        this.attachmentDownloader = attachmentDownloader;
     }
 
     public void send(MessageReceivedEvent event) {
@@ -45,7 +45,7 @@ public class DiscordMessageProducer {
         List<Attachment> attachments = event.getMessage().getAttachments();
 
         MessagePayload messagePayload = new MessagePayload(event.getGuild().getIdLong(), event.getAuthor().getName(),
-                event.getMessage().getContentDisplay(), attachmentHandler.downloadedAttachments(attachments));
+                event.getMessage().getContentDisplay(), attachmentDownloader.downloadAttachments(attachments));
 
         Message<MessagePayload> message = MessageBuilder
                 .withPayload(messagePayload)
