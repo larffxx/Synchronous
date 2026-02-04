@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.verifier;
+package com.larffxx.synchronousdiscord.util.verifier;
 
 
 import com.fasterxml.jackson.databind.JsonNode;

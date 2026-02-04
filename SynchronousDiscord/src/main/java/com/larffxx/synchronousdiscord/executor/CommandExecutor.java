@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.exception.interaction.DiscordSlashInteractionException;
 import com.larffxx.synchronousdiscord.exception.interaction.TelegramSlashInteractionException;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
-import com.larffxx.synchronousdiscord.verifier.CommandVerifier;
+import com.larffxx.synchronousdiscord.util.verifier.CommandVerifier;
 import com.larffxx.synchronousdiscord.controller.slashcommand.Command;
 import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
 import lombok.Getter;

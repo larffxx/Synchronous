@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.addition;
+package com.larffxx.synchronousdiscord.util.addition;
 
 import org.springframework.stereotype.Component;
 

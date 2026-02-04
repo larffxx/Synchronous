@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.addition;
+package com.larffxx.synchronousdiscord.util.addition;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;

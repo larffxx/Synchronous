@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.event;
 
-import com.larffxx.synchronousdiscord.addition.Addable;
+import com.larffxx.synchronousdiscord.util.addition.Addable;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import org.springframework.stereotype.Component;
 

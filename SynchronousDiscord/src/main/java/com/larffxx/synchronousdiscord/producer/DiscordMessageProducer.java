@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.producer;
 
 
-import com.larffxx.synchronousdiscord.handler.AttachmentDownloader;
+import com.larffxx.synchronousdiscord.util.downloader.AttachmentDownloader;
 import com.larffxx.synchronousdiscord.payload.MessagePayload;
 import lombok.Getter;
 import lombok.Setter;
