@@ -17,13 +17,16 @@ public class AttachmentDownloader {
         List<File> files = new ArrayList<>();
 
         attachments.forEach(attachment -> {
-            attachment.getProxy().downloadToFile(new File(Paths.get(System.getProperty("user.home"),
-                    "Documents", "tempphotos", "photo" + attachment.getFileName()).toUri()))
-                    .exceptionally(throwable -> {
-                        throw new DownloadAttachmentException(InfExcMessages.DOWNLOAD_ATTACHMENT_EXCEPTION);
-                    });
-            files.add(new File(Paths.get(System.getProperty("user.home"),
-                    "Documents", "tempphotos", "photo" + attachment.getFileName()).toUri()));
+            File file;
+            try {
+                file = attachment.getProxy().downloadToFile(new File(Paths.get(System.getProperty("user.home"),
+                                "Documents", "tempphotos", "photo" + attachment.getFileName()).toUri()))
+                        .join();
+
+                files.add(file);
+            } catch (DownloadAttachmentException e) {
+                throw new DownloadAttachmentException(InfExcMessages.DOWNLOAD_ATTACHMENT_EXCEPTION);
+            }
         });
 
         return files;
