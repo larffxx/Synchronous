@@ -1,0 +1,57 @@
+package com.larffxx.synchronousdiscord.application.controller.slashcommand;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
+import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
+import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
+import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
+import com.larffxx.synchronousdiscord.infrastructure.sender.embed.EmbedSender;
+import com.larffxx.synchronousdiscord.domain.service.QueueEmbedService;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import org.springframework.stereotype.Component;
+
+
+@Component
+public class QueueCommand implements Command {
+    private final ServersConnectRepository serversConnectRepository;
+    private final ResultHandler resultHandler;
+    private final EventReceiver eventReceiver;
+    private final QueueEmbedService queueEmbedService;
+
+    public QueueCommand(ResultHandler resultHandler, ServersConnectRepository serversConnectRepository, EventReceiver eventReceiver, EmbedSender embedSender, QueueEmbedService queueEmbedService) {
+        this.resultHandler = resultHandler;
+        this.serversConnectRepository = serversConnectRepository;
+        this.queueEmbedService = queueEmbedService;
+        this.eventReceiver = eventReceiver;
+    }
+
+
+    @Override
+    public void execute(SlashCommandInteractionEvent event) {
+        GuildMusicManager musicManager = resultHandler.getMusicManager(event.getGuild());
+
+        queueEmbedService.sendQueueEmbed(musicManager);
+
+        event.getHook().editOriginal(CommandConstants.QUEUE_SUCCESS_MESSAGE).queue();
+    }
+
+
+    @Override
+    public void execute(JsonNode data) {
+        String guildId = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
+        Guild guild = eventReceiver.getJda().getGuildById(guildId);
+
+        GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
+
+        queueEmbedService.sendQueueEmbed(musicManager);
+    }
+
+    @Override
+    public String getCommand() {
+        return "queue";
+    }
+
+
+}

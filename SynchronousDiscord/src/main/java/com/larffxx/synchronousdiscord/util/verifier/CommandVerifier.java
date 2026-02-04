@@ -2,13 +2,12 @@ package com.larffxx.synchronousdiscord.util.verifier;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.exception.command.CommandException;
-import com.larffxx.synchronousdiscord.exception.VerifyException;
+import com.larffxx.synchronousdiscord.domain.exception.VerifyException;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.preprocessor.SlashCommandPreProcessor;
-import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
+import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;

@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.preprocessor;
 
-import com.larffxx.synchronousdiscord.sender.Sender;
+import com.larffxx.synchronousdiscord.infrastructure.sender.Sender;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

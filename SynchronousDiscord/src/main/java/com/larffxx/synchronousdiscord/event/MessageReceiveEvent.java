@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.event;
 
-import com.larffxx.synchronousdiscord.producer.DiscordMessageProducer;
+import com.larffxx.synchronousdiscord.infrastructure.producer.DiscordMessageProducer;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;

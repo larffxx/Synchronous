@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.util.downloader;
 
-import com.larffxx.synchronousdiscord.exception.DownloadAttachmentException;
+import com.larffxx.synchronousdiscord.domain.exception.DownloadAttachmentException;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import net.dv8tion.jda.api.entities.Message;
 import org.springframework.stereotype.Component;

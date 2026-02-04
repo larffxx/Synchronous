@@ -1,8 +1,8 @@
 package com.larffxx.synchronousdiscord.event;
 
-import com.larffxx.synchronousdiscord.repo.ServersConnectRepository;
-import com.larffxx.synchronousdiscord.repo.UsersConnectRepository;
-import com.larffxx.synchronousdiscord.updater.GuildProfileUpdater;
+import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
+import com.larffxx.synchronousdiscord.infrastructure.repo.UsersConnectRepository;
+import com.larffxx.synchronousdiscord.util.updater.GuildProfileUpdater;
 import com.larffxx.synchronousdiscord.infexc.InfExcMessages;
 import lombok.Getter;
 import lombok.Setter;

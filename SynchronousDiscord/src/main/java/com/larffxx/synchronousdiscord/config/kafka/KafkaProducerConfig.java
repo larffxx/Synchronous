@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.config.kafka;
 
-import com.larffxx.synchronousdiscord.payload.CommandPayload;
-import com.larffxx.synchronousdiscord.payload.MessagePayload;
+import com.larffxx.synchronousdiscord.infrastructure.payload.CommandPayload;
+import com.larffxx.synchronousdiscord.infrastructure.payload.MessagePayload;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

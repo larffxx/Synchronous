@@ -1,8 +1,8 @@
 package com.larffxx.synchronousdiscord.event;
 
-import com.larffxx.synchronousdiscord.exception.interaction.DiscordSlashInteractionException;
-import com.larffxx.synchronousdiscord.executor.CommandExecutor;
-import com.larffxx.synchronousdiscord.producer.DiscordCommandProducer;
+import com.larffxx.synchronousdiscord.domain.exception.interaction.DiscordSlashInteractionException;
+import com.larffxx.synchronousdiscord.application.executor.CommandExecutor;
+import com.larffxx.synchronousdiscord.infrastructure.producer.DiscordCommandProducer;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
