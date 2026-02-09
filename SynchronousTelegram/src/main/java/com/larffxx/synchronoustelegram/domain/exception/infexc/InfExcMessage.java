@@ -9,4 +9,5 @@ public class InfExcMessage {
     public static String CONVERSION_PHOTO_EXCEPTION = "Conversion photo exception: %s";
     public static String SENDING_ALBUM_WITH_MESSAGE_EXCEPTION = "Sending album exception";
     public static String SENDING_ALBUM_WITHOUT_MESSAGE_EXCEPTION = "Sending album exception";
+    public static String TELEGRAM_CHANNEL_NAME_PARSING_EXCEPTION = "Telegram channel name parsing exception";
 }
