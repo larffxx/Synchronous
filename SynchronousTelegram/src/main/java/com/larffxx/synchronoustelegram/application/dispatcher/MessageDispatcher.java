@@ -1,5 +1,6 @@
-package com.larffxx.synchronoustelegram.application.handler;
+package com.larffxx.synchronoustelegram.application.dispatcher;
 
+import com.larffxx.synchronoustelegram.application.handler.MessageHandler;
 import com.larffxx.synchronoustelegram.application.handler.utility.MessageDefiner;
 import com.larffxx.synchronoustelegram.preprocessors.MessagePreProcessor;
 import org.springframework.stereotype.Component;

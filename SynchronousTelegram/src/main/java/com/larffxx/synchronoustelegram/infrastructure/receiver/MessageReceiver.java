@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.infrastructure.receiver;
 
-import com.larffxx.synchronoustelegram.application.handler.MessageDispatcher;
+import com.larffxx.synchronoustelegram.application.dispatcher.MessageDispatcher;
 import com.larffxx.synchronoustelegram.application.handler.utility.MessageDefiner;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import lombok.Getter;
