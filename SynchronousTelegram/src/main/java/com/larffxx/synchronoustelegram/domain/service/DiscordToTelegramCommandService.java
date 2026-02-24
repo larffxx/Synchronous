@@ -21,7 +21,7 @@ public class DiscordToTelegramCommandService {
     }
 
     public void execute(DiscordPayload payload){
-        Command command = commandPreProcessor.getCommand(payload.getCommand().getCommandName());
+        Command command = commandPreProcessor.get(payload.getCommand().getCommandName());
         try {
             command.execute(payload);
         } catch (TelegramApiException e) {

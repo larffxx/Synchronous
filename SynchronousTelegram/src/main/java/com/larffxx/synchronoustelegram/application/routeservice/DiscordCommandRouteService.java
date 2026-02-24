@@ -1,7 +1,7 @@
 package com.larffxx.synchronoustelegram.application.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.service.DiscordToTelegramCommandService;
 import com.larffxx.synchronoustelegram.infrastructure.parser.DiscordCommandPayloadParser;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
@@ -17,13 +17,13 @@ public class DiscordCommandRouteService {
     private final DiscordToTelegramCommandService discordToTelegramCommandService;
     private final DiscordCommandPayloadParser discordCommandPayloadParser;
     private final CommandPreProcessor preProcessor;
-    private final UpdateHandler updateHolder;
+    private final UpdateReceiver updateHolder;
 
-    public DiscordCommandRouteService(DiscordToTelegramCommandService discordToTelegramCommandService, DiscordCommandPayloadParser discordCommandPayloadParser, CommandPreProcessor preProcessor, UpdateHandler updateHandler) {
+    public DiscordCommandRouteService(DiscordToTelegramCommandService discordToTelegramCommandService, DiscordCommandPayloadParser discordCommandPayloadParser, CommandPreProcessor preProcessor, UpdateReceiver updateReceiver) {
         this.discordToTelegramCommandService = discordToTelegramCommandService;
         this.discordCommandPayloadParser = discordCommandPayloadParser;
         this.preProcessor = preProcessor;
-        this.updateHolder = updateHandler;
+        this.updateHolder = updateReceiver;
     }
 
     public void send(JsonNode data){

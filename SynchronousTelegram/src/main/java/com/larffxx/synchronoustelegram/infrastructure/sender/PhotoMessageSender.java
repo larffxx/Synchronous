@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.infrastructure.sender;
 
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.exception.execution.SendingPhotoException;
 import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
@@ -15,17 +15,17 @@ import java.util.List;
 
 @Component
 public class PhotoMessageSender implements PhotoSender {
-    private final UpdateHandler updateHandler;
+    private final UpdateReceiver updateReceiver;
     private final ServersConnectRepository serversConnectRepository;
 
-    public PhotoMessageSender(UpdateHandler updateHandler, ServersConnectRepository serversConnectRepository) {
-        this.updateHandler = updateHandler;
+    public PhotoMessageSender(UpdateReceiver updateReceiver, ServersConnectRepository serversConnectRepository) {
+        this.updateReceiver = updateReceiver;
         this.serversConnectRepository = serversConnectRepository;
     }
 
     public void sendPhoto(DiscordPayload payload) {
-        updateHandler.setChatId(serversConnectRepository.findByDiscordGuild(String.valueOf(payload.getGuildID())).getTelegramChannel());
-        Long chatID = Long.valueOf(updateHandler.getChatId());
+        updateReceiver.setChatId(serversConnectRepository.findByDiscordGuild(String.valueOf(payload.getGuildID())).getTelegramChannel());
+        Long chatID = Long.valueOf(updateReceiver.getChatId());
 
         if (payload.getMessage() == null || payload.getMessage().equals("null")) {
             sendPhotoAlbumWithoutMessage(chatID, payload.getAuthor(), payload.getFiles());
@@ -43,7 +43,7 @@ public class PhotoMessageSender implements PhotoSender {
                         .caption(String.format("From: %s\nMessage: %s", author, message))
                         .build();
 
-                updateHandler.getTelegramClient().execute(sendPhoto);
+                updateReceiver.getTelegramClient().execute(sendPhoto);
             }
         } catch (TelegramApiException e) {
             throw new SendingPhotoException(InfExcMessage.SENDING_ALBUM_WITH_MESSAGE_EXCEPTION);
@@ -59,7 +59,7 @@ public class PhotoMessageSender implements PhotoSender {
                         .caption(String.format("From: %s", author))
                         .build();
 
-                updateHandler.getTelegramClient().execute(sendPhoto);
+                updateReceiver.getTelegramClient().execute(sendPhoto);
             }
         } catch (TelegramApiException e) {
             throw new SendingPhotoException(InfExcMessage.SENDING_ALBUM_WITHOUT_MESSAGE_EXCEPTION);

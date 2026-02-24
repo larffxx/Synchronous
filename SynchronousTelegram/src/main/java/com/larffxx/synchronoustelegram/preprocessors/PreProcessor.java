@@ -1,11 +1,11 @@
 package com.larffxx.synchronoustelegram.preprocessors;
 
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import org.springframework.stereotype.Component;
 
 @Component
 public interface PreProcessor<T> {
-    T getCommand(String command);
+    T get(String t);
 
-    T getCommand(UpdateHandler updateHandler);
+    T get(UpdateReceiver updateReceiver);
 }

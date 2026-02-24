@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.application.commands;
 
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.exception.command.ConnectCommandException;
 import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
@@ -16,20 +16,20 @@ public class ConnectCommand extends Command {
     private final TextMessageSender textMessageSender;
     private final ServersConnectRepository serversConnectRepository;
 
-    public ConnectCommand(UpdateHandler updateHandler, TextMessageSender textMessageSender, ServersConnectRepository serversConnectRepository) {
-        super(updateHandler);
+    public ConnectCommand(UpdateReceiver updateReceiver, TextMessageSender textMessageSender, ServersConnectRepository serversConnectRepository) {
+        super(updateReceiver);
         this.textMessageSender = textMessageSender;
         this.serversConnectRepository = serversConnectRepository;
     }
 
     @Override
-    public void execute(UpdateHandler updateHandler) {
-        if (serversConnectRepository.existsByTelegramChannel(updateHandler.getUpdate().getMessage().getChat().getTitle())) {
-            serversConnectRepository.updateByTelegramChannel(updateHandler.getChatId(), updateHandler.getUpdate().getMessage().getChat().getTitle());
+    public void execute(UpdateReceiver updateReceiver) {
+        if (serversConnectRepository.existsByTelegramChannel(updateReceiver.getUpdate().getMessage().getChat().getTitle())) {
+            serversConnectRepository.updateByTelegramChannel(updateReceiver.getChatId(), updateReceiver.getUpdate().getMessage().getChat().getTitle());
 
-            textMessageSender.send(Long.valueOf(updateHandler.getChatId()), "connected");
+            textMessageSender.send(Long.valueOf(updateReceiver.getChatId()), "connected");
         } else {
-            textMessageSender.send(Long.valueOf(updateHandler.getChatId()), "connected before");
+            textMessageSender.send(Long.valueOf(updateReceiver.getChatId()), "connected before");
         }
     }
 
@@ -40,7 +40,7 @@ public class ConnectCommand extends Command {
         Chat chat;
 
         try {
-            chat = getUpdateHandler().getTelegramClient().execute(new GetChat("@"+telegramChannelName));
+            chat = getUpdateReceiver().getTelegramClient().execute(new GetChat("@"+telegramChannelName));
         } catch (TelegramApiException e) {
             throw new ConnectCommandException(InfExcMessage.TELEGRAM_CHANNEL_NAME_PARSING_EXCEPTION);
         }

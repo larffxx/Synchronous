@@ -32,7 +32,7 @@ public class TelegramKafkaMessageProducer {
     }
 
     public void sendKafkaMessage(Update update) {
-        MessagePayload messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getText(), update.getMessage().getChatId(), MessageType.chatMessage);
+        MessagePayload messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getText(), update.getMessage().getChatId(), MessageType.textMessage);
         Message message = MessageBuilder.withPayload(messagePayload).setHeader("kafka_topic", topic).build();
         kafkaTemplate.send(message);
     }

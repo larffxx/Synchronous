@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.application.commands;
 
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.model.UsersConnect;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.UsersConnectRepository;
@@ -12,24 +12,24 @@ public class RegisterCommand extends Command {
     private final TextMessageSender textMessageSender;
     private final UsersConnectRepository usersConnectRepository;
 
-    public RegisterCommand(UpdateHandler updateHandler, TextMessageSender textMessageSender, UsersConnectRepository usersConnectRepository) {
-        super(updateHandler);
+    public RegisterCommand(UpdateReceiver updateReceiver, TextMessageSender textMessageSender, UsersConnectRepository usersConnectRepository) {
+        super(updateReceiver);
         this.textMessageSender = textMessageSender;
         this.usersConnectRepository = usersConnectRepository;
     }
 
     @Override
-    public void execute(UpdateHandler updateHandler) {
-        String[] discordName = updateHandler.getUpdate().getMessage().getText().split(" ");
-        String telegramName = updateHandler.getUpdate().getMessage().getFrom().getUserName();
-        UsersConnect usersConnect = new UsersConnect(discordName[1], updateHandler.getUpdate().getMessage().getFrom().getUserName());
+    public void execute(UpdateReceiver updateReceiver) {
+        String[] discordName = updateReceiver.getUpdate().getMessage().getText().split(" ");
+        String telegramName = updateReceiver.getUpdate().getMessage().getFrom().getUserName();
+        UsersConnect usersConnect = new UsersConnect(discordName[1], updateReceiver.getUpdate().getMessage().getFrom().getUserName());
 
         if (usersConnectRepository.findByTelegramName(telegramName).getTelegramName() != null) {
-            textMessageSender.send(Long.valueOf(updateHandler.getChatId()), "You have been registered before");
+            textMessageSender.send(Long.valueOf(updateReceiver.getChatId()), "You have been registered before");
         } else {
             usersConnectRepository.save(usersConnect);
 
-            textMessageSender.send(Long.valueOf(updateHandler.getChatId()), "registered");
+            textMessageSender.send(Long.valueOf(updateReceiver.getChatId()), "registered");
         }
     }
 

@@ -1,7 +1,7 @@
 package com.larffxx.synchronoustelegram.preprocessors;
 
 import com.larffxx.synchronoustelegram.application.commands.Command;
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +22,12 @@ public class CommandPreProcessor implements PreProcessor<Command> {
 
     }
 
-    public Command getCommand(String command) {
+    public Command get(String command) {
         return commandMap.get(command);
     }
 
-    public Command getCommand(UpdateHandler updateHandler) {
-        return commandMap.get(updateHandler.getUpdate().getCallbackQuery().getData());
+    public Command get(UpdateReceiver updateReceiver) {
+        return commandMap.get(updateReceiver.getUpdate().getCallbackQuery().getData());
     }
 
     public CommandPreProcessor(final Collection<Command> commands, final Map<String, Command> commandMap) {

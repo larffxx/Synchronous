@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.application.commands;
 
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.infrastructure.sender.TextMessageSender;
@@ -15,15 +15,15 @@ public class PlayCommand extends Command{
     private final ServersConnectRepository serversConnectRepository;
     private final TextMessageSender textMessageSender;
 
-    public PlayCommand(UpdateHandler updateHandler, ServersConnectRepository serversConnectRepository, TextMessageSender textMessageSender) {
-        super(updateHandler);
+    public PlayCommand(UpdateReceiver updateReceiver, ServersConnectRepository serversConnectRepository, TextMessageSender textMessageSender) {
+        super(updateReceiver);
         this.serversConnectRepository = serversConnectRepository;
         this.textMessageSender = textMessageSender;
     }
 
     @Override
-    public void execute(UpdateHandler updateHandler){
-        textMessageSender.send(Long.valueOf(updateHandler.getChatId()), "Music added");
+    public void execute(UpdateReceiver updateReceiver){
+        textMessageSender.send(Long.valueOf(updateReceiver.getChatId()), "Music added");
     }
 
     @Override

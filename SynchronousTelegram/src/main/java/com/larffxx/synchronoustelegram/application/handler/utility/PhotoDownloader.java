@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.application.handler.utility;
 
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.exception.data.input.AttachmentsDownloadException;
 import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
 import org.springframework.stereotype.Component;
@@ -11,14 +11,14 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Component
 public class PhotoDownloader {
-    private final UpdateHandler updateHandler;
+    private final UpdateReceiver updateReceiver;
 
-    public PhotoDownloader(UpdateHandler updateHolder) {
-        this.updateHandler = updateHolder;
+    public PhotoDownloader(UpdateReceiver updateHolder) {
+        this.updateReceiver = updateHolder;
     }
 
     public java.io.File downloadPhoto(String fileID) {
-        TelegramClient telegramClient = updateHandler.getTelegramClient();
+        TelegramClient telegramClient = updateReceiver.getTelegramClient();
 
         try {
             File file = telegramClient.execute(new GetFile(fileID));

@@ -1,7 +1,7 @@
 package com.larffxx.synchronoustelegram.preprocessors;
 
 import com.larffxx.synchronoustelegram.application.commands.ui.buttons.Button;
-import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
+import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +22,12 @@ public class ButtonPreProcessor implements PreProcessor<Button> {
 
     }
 
-    public Button getCommand(String button) {
+    public Button get(String button) {
         return buttonMap.get(button);
     }
 
-    public Button getCommand(UpdateHandler updateHandler) {
-        return buttonMap.get(updateHandler.getUpdate().getCallbackQuery().getData());
+    public Button get(UpdateReceiver updateReceiver) {
+        return buttonMap.get(updateReceiver.getUpdate().getCallbackQuery().getData());
     }
 
     public ButtonPreProcessor(final Collection<Button> buttons, final Map<String, Button> buttonMap) {
