@@ -1,7 +1,7 @@
 package com.larffxx.synchronoustelegram.application.commands;
 
 import com.larffxx.synchronoustelegram.application.handler.UpdateHandler;
-import com.larffxx.synchronoustelegram.domain.exception.command.CommandException;
+import com.larffxx.synchronoustelegram.domain.exception.command.ConnectCommandException;
 import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
@@ -42,7 +42,7 @@ public class ConnectCommand extends Command {
         try {
             chat = getUpdateHandler().getTelegramClient().execute(new GetChat("@"+telegramChannelName));
         } catch (TelegramApiException e) {
-            throw new CommandException(InfExcMessage.TELEGRAM_CHANNEL_NAME_PARSING_EXCEPTION);
+            throw new ConnectCommandException(InfExcMessage.TELEGRAM_CHANNEL_NAME_PARSING_EXCEPTION);
         }
 
         serversConnectRepository.updateByTelegramChannel(String.valueOf(chat.getId()), telegramChannelName);
