@@ -22,7 +22,7 @@ public class MessageReceiver {
     }
 
 
-    public void handleMessage(Update update) {
+    public void consumeMessage(Update update) {
         updateReceiver.receiveUpdate(update);
 
         if (update.getMessage().getFrom().getIsBot()) {

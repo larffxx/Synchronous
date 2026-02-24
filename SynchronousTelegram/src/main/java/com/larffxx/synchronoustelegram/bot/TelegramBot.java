@@ -48,7 +48,7 @@ public class TelegramBot implements SpringLongPollingBot, LongPollingSingleThrea
 
     @Override
     public void consume(Update update) {
-        messageReceiver.handleMessage(update);
+        messageReceiver.consumeMessage(update);
     }
 }
 
