@@ -1,5 +1,6 @@
 package com.larffxx.synchronoustelegram.application.commands;
 
+import com.larffxx.synchronoustelegram.domain.model.ServersConnect;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.exception.command.ConnectCommandException;
 import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
@@ -24,8 +25,8 @@ public class ConnectCommand extends Command {
 
     @Override
     public void execute(UpdateReceiver updateReceiver) {
-        if (serversConnectRepository.existsByTelegramChannel(updateReceiver.getUpdate().getMessage().getChat().getTitle())) {
-            serversConnectRepository.updateByTelegramChannel(updateReceiver.getChatId(), updateReceiver.getUpdate().getMessage().getChat().getTitle());
+        if (!serversConnectRepository.existsByTelegramChannel(updateReceiver.getUpdate().getMessage().getChat().getTitle())) {
+            serversConnectRepository.save(new ServersConnect(updateReceiver.getOption(), updateReceiver.getChatId()));
 
             textMessageSender.send(Long.valueOf(updateReceiver.getChatId()), "connected");
         } else {

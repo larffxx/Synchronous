@@ -15,6 +15,7 @@ public class UpdateReceiver {
     private TelegramClient telegramClient;
     private Update update;
     private String chatId;
+    private String option;
 
     public void receiveUpdate(Update update) {
         this.update = update;

@@ -23,8 +23,11 @@ public class TelegramClientCommandExecutor {
     }
 
     public void execute(Update update){
-        String[] s = update.getMessage().getText().split(" ");
-        Command command = commandPreProcessor.get(s[0]);
+        String[] options = update.getMessage().getText().split(" ");
+
+        Command command = commandPreProcessor.get(options[0]);
+
+        updateReceiver.setOption(options[1]);
 
         try {
             command.execute(updateReceiver);

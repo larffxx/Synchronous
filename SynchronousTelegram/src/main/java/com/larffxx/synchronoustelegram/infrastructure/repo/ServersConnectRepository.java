@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ServersConnectRepository extends JpaRepository<ServersConnect, Long> {
-    ServersConnect getConnectByTelegramChannel(String telegramChat);
     ServersConnect findByTelegramChannel(String telegramChannel);
     ServersConnect findByDiscordGuild(String discordGuild);
     boolean existsByTelegramChannel(String telegramChatName);
