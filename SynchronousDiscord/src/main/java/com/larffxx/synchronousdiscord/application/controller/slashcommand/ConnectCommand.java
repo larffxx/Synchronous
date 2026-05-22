@@ -1,6 +1,9 @@
 package com.larffxx.synchronousdiscord.application.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.domain.mapper.Mapper;
+import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
+import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
@@ -18,16 +21,23 @@ import org.springframework.stereotype.Component;
 public class ConnectCommand implements Command{
     private final EventReceiver eventReceiver;
     private final ServersConnectRepository serversConnectRepository;
+    private final ServersConnectMapper serversConnectMapper;
 
-    public ConnectCommand(EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
+    public ConnectCommand(EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository, ServersConnectMapper serversConnectMapper) {
         this.serversConnectRepository = serversConnectRepository;
         this.eventReceiver = eventReceiver;
+        this.serversConnectMapper = serversConnectMapper;
     }
 
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
-        ServersConnect serversConnect = new ServersConnect(event.getGuild().getId(), event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString());
+        ServersConnectDTO dto = new ServersConnectDTO(
+                event.getGuild().getId(),
+                event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString()
+        );
+
+        ServersConnect serversConnect = serversConnectMapper.toEntity(dto);
 
         serversConnectRepository.save(serversConnect);
         event.getHook().editOriginal(CommandConstants.CONNECT_SUCCESS_MESSAGE).queue();
@@ -35,9 +45,12 @@ public class ConnectCommand implements Command{
 
     @Override
     public void execute(JsonNode telegramPayload) {
-        ServersConnect serversConnect = serversConnectRepository.getConnectByTelegramChannel(telegramPayload.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
-        Guild guildId = eventReceiver.getJda().getGuildById(serversConnect.getDiscordGuild());
-        TextChannel textChannel = guildId.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL,true).get(0);
+        String telegramId = telegramPayload.get(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).asText();
+        ServersConnect serversConnect = serversConnectRepository.getConnectByTelegramChannel(telegramId);
+        ServersConnectDTO dto = serversConnectMapper.toDTO(serversConnect);
+
+        Guild guild = eventReceiver.getJda().getGuildById(dto.getDiscordGuild());
+        TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL,true).get(0);
 
         textChannel.sendMessage(CommandConstants.CONNECT_SUCCESS_MESSAGE).queue();
     }

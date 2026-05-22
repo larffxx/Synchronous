@@ -14,4 +14,7 @@ public class InfExcMessages {
     public static final String COMMAND_EXCEPTION = "Command exception";
     public static final String DELETE_MESSAGE_EXCEPTION = "Delete message exception";
     public static final String SHUFFLE_EXCEPTION = "Shuffle exception";
+    public static final String GUILD_NOT_FOUND_EXCEPTION = "Guild not found";
+    public static final String NO_CONNECTION_BETWEEN_SERVERS = "No connection between servers";
+    public static final String TEXT_CHANNEL_NOT_FOUND_EXCEPTION = "Text channel not found";
 }

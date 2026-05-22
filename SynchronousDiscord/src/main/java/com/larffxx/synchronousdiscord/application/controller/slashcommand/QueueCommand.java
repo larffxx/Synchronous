@@ -1,6 +1,11 @@
 package com.larffxx.synchronousdiscord.application.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
+import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
+import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
@@ -15,16 +20,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class QueueCommand implements Command {
-    private final ServersConnectRepository serversConnectRepository;
     private final ResultHandler resultHandler;
-    private final EventReceiver eventReceiver;
     private final QueueEmbedService queueEmbedService;
+    private final DiscordMusicService discordMusicService;
 
-    public QueueCommand(ResultHandler resultHandler, ServersConnectRepository serversConnectRepository, EventReceiver eventReceiver, EmbedSender embedSender, QueueEmbedService queueEmbedService) {
+    public QueueCommand(ResultHandler resultHandler, QueueEmbedService queueEmbedService, DiscordMusicService discordMusicService) {
         this.resultHandler = resultHandler;
-        this.serversConnectRepository = serversConnectRepository;
         this.queueEmbedService = queueEmbedService;
-        this.eventReceiver = eventReceiver;
+        this.discordMusicService = discordMusicService;
     }
 
 
@@ -40,12 +43,9 @@ public class QueueCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
-        Guild guild = eventReceiver.getJda().getGuildById(guildId);
+        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
 
-        GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
-
-        queueEmbedService.sendQueueEmbed(musicManager);
+        queueEmbedService.sendQueueEmbed(context.guildMusicManager());
     }
 
     @Override

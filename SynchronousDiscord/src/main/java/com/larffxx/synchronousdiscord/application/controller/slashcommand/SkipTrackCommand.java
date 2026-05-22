@@ -1,6 +1,11 @@
 package com.larffxx.synchronousdiscord.application.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
+import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
+import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
@@ -19,12 +24,12 @@ import org.springframework.stereotype.Component;
 public class SkipTrackCommand implements Command{
     private final ResultHandler resultHandler;
     private final EventReceiver eventReceiver;
-    private final ServersConnectRepository serversConnectRepository;
+    private final DiscordMusicService discordMusicService;
 
-    public SkipTrackCommand(ResultHandler resultHandler, EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
+    public SkipTrackCommand(ResultHandler resultHandler, EventReceiver eventReceiver, DiscordMusicService discordMusicService) {
         this.resultHandler = resultHandler;
         this.eventReceiver = eventReceiver;
-        this.serversConnectRepository = serversConnectRepository;
+        this.discordMusicService = discordMusicService;
     }
 
 
@@ -38,13 +43,10 @@ public class SkipTrackCommand implements Command{
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
-        Guild guild = eventReceiver.getJda().getGuildById(guildId);
-        TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);
+        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        TextChannel textChannel = context.textChannel();
 
-        GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
-
-        musicManager.getScheduler().nextTrack();
+        context.guildMusicManager().getScheduler().nextTrack();
         textChannel.sendMessage(CommandConstants.SKIP_SUCCESS_MESSAGE).queue();
     }
 

@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.application.handler;
 
-import com.larffxx.synchronousdiscord.dto.ErrorResponse;
+import com.larffxx.synchronousdiscord.domain.record.ErrorResponse;
 import com.larffxx.synchronousdiscord.domain.exception.DiscordSynchronousException;
 import com.larffxx.synchronousdiscord.domain.exception.DownloadAttachmentException;
 import com.larffxx.synchronousdiscord.domain.exception.RouteServiceException;

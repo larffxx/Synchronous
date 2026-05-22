@@ -1,6 +1,11 @@
 package com.larffxx.synchronousdiscord.application.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
+import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
+import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.domain.model.UsersConnect;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
@@ -15,12 +20,14 @@ import org.springframework.stereotype.Component;
 public class UserRegisterCommand implements Command {
     private final UsersConnectRepository usersConnectRepository;
     private final ServersConnectRepository serversConnectRepository;
+    private final DiscordMusicService discordMusicService;
     private final EventReceiver eventReceiver;
 
 
-    public UserRegisterCommand(UsersConnectRepository usersConnectRepository, ServersConnectRepository serversConnectRepository, EventReceiver eventReceiver) {
+    public UserRegisterCommand(UsersConnectRepository usersConnectRepository, ServersConnectRepository serversConnectRepository, DiscordMusicService discordMusicService, EventReceiver eventReceiver) {
         this.usersConnectRepository = usersConnectRepository;
         this.serversConnectRepository = serversConnectRepository;
+        this.discordMusicService = discordMusicService;
         this.eventReceiver = eventReceiver;
     }
 
@@ -44,10 +51,9 @@ public class UserRegisterCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        Guild guild = eventReceiver.getJda().getGuildById(serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.GUILD_ID_FROM_TELEGRAM).asText()).getDiscordGuild());
-        TextChannel telegramChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);
+        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
 
-        telegramChannel.sendMessage(data.findValue(CommandConstants.NAME_FROM_TELEGRAM).asText() + CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
+        context.textChannel().sendMessage(data.findValue(CommandConstants.NAME_FROM_TELEGRAM).asText() + CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
     }
 
     @Override

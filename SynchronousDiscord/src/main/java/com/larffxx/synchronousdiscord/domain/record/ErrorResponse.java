@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.dto;
+package com.larffxx.synchronousdiscord.domain.record;
 
 public record ErrorResponse(
     String code,

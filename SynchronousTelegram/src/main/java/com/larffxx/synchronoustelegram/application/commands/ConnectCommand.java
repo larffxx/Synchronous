@@ -25,7 +25,7 @@ public class ConnectCommand extends Command {
 
     @Override
     public void execute(UpdateReceiver updateReceiver) {
-        if (!serversConnectRepository.existsByTelegramChannel(updateReceiver.getUpdate().getMessage().getChat().getTitle())) {
+        if (!serversConnectRepository.existsByTelegramChannel(String.valueOf(updateReceiver.getUpdate().getMessage().getChat().getId()))) {
             serversConnectRepository.save(new ServersConnect(updateReceiver.getOption(), updateReceiver.getChatId()));
 
             textMessageSender.send(Long.valueOf(updateReceiver.getChatId()), "connected");

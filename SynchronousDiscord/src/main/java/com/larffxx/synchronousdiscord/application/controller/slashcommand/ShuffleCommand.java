@@ -4,6 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.domain.exception.command.ShuffleException;
+import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
+import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
+import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
@@ -16,11 +21,12 @@ import org.springframework.stereotype.Component;
 public class ShuffleCommand implements Command{
     private final ResultHandler resultHandler;
     private final EventReceiver eventReceiver;
-    private final ServersConnectRepository serversConnectRepository;
-    public ShuffleCommand(ResultHandler resultHandler, EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
+    private final DiscordMusicService discordMusicService;
+
+    public ShuffleCommand(ResultHandler resultHandler, EventReceiver eventReceiver, DiscordMusicService discordMusicService) {
         this.resultHandler = resultHandler;
         this.eventReceiver = eventReceiver;
-        this.serversConnectRepository = serversConnectRepository;
+        this.discordMusicService = discordMusicService;
     }
 
     @Override
@@ -34,12 +40,10 @@ public class ShuffleCommand implements Command{
 
     @Override
     public void execute(JsonNode data) throws ShuffleException {
-        String guildId = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
-        Guild guild = eventReceiver.getJda().getGuildById(guildId);
-        TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);
+        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
 
-        GuildMusicManager manager = resultHandler.getMusicManager(guild);
-        manager.getScheduler().shuffle();
+        TextChannel textChannel = context.textChannel();
+        context.guildMusicManager().getScheduler().shuffle();
 
         textChannel.sendMessage(CommandConstants.SHUFFLE_SUCCESS_MESSAGE).queue();
     }

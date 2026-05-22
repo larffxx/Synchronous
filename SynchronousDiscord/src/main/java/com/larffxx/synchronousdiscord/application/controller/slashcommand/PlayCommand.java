@@ -1,6 +1,11 @@
 package com.larffxx.synchronousdiscord.application.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
+import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
+import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.PlayerManager;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
@@ -19,16 +24,15 @@ import java.net.URL;
 
 @Component
 public class PlayCommand implements Command {
-    private final ServersConnectRepository serversConnectRepository;
     private final PlayerManager playerManager;
     private final EventReceiver eventReceiver;
-
+    private final DiscordMusicService discordMusicService;
     private String link;
 
-    public PlayCommand(PlayerManager playerManager, ServersConnectRepository serversConnectRepository, EventReceiver eventReceiver) {
+    public PlayCommand(PlayerManager playerManager, EventReceiver eventReceiver, DiscordMusicService discordMusicService) {
         this.playerManager = playerManager;
-        this.serversConnectRepository = serversConnectRepository;
         this.eventReceiver = eventReceiver;
+        this.discordMusicService = discordMusicService;
     }
 
 
@@ -58,15 +62,16 @@ public class PlayCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
+        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+
         link = String.valueOf(data.findValues(CommandConstants.PLAY_LINK_FROM_TELEGRAM).get(0).get(0).asText());
         if (!isUrl(link)) {
             link = "ytsearch:" + link;
         }
-        Guild guild = eventReceiver.getJda().getGuildById(
-                serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild());
-        TextChannel textChannel = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true).get(0);
+        Guild guild = context.guild();
+        TextChannel textChannel = context.textChannel();
 
-        VoiceChannel channel = guild.getVoiceChannelsByName("девчачий чат", true).get(0);
+        VoiceChannel channel = guild.getVoiceChannelsByName("General", true).get(0);
         AudioManager manager = guild.getAudioManager();
 
         manager.openAudioConnection(channel);

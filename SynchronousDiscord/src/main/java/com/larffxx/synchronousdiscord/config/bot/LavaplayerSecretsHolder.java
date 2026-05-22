@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class LavaplayerSecretsHolder {
-    @Value("${clientId}")
+    @Value("${spotifyClientId}")
     private String spotifyClientId;
-    @Value("${clientSecret}")
+    @Value("${spotifyClientSecret}")
     private String spotifyClientSecret;
     @Value("${yandexToken}")
     private String yandexAccessToken;

@@ -1,6 +1,11 @@
 package com.larffxx.synchronousdiscord.application.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
+import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
+import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
@@ -19,15 +24,13 @@ import org.springframework.stereotype.Component;
 @Setter
 public class LoopCommand implements Command {
     private final EmbedSender embedSender;
-    private final ServersConnectRepository serversConnectRepository;
     private final ResultHandler resultHandler;
-    private final EventReceiver eventReceiver;
+    private final DiscordMusicService discordMusicService;
 
-    public LoopCommand(EmbedSender embedSender, ResultHandler resultHandler, ServersConnectRepository serversConnectRepository, EventReceiver eventReceiver) {
+    public LoopCommand(EmbedSender embedSender, ResultHandler resultHandler, DiscordMusicService discordMusicService) {
         this.embedSender = embedSender;
         this.resultHandler = resultHandler;
-        this.serversConnectRepository = serversConnectRepository;
-        this.eventReceiver = eventReceiver;
+        this.discordMusicService = discordMusicService;
     }
 
 
@@ -45,10 +48,9 @@ public class LoopCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        String guildId = serversConnectRepository.getConnectByTelegramChannel(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText()).getDiscordGuild();
-        Guild guild = eventReceiver.getJda().getGuildById(guildId);
+        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        GuildMusicManager musicManager = context.guildMusicManager();
 
-        GuildMusicManager musicManager = resultHandler.getMusicManager(guild);
         EmbedBuilder eb = new EmbedBuilder();
 
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
