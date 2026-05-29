@@ -38,17 +38,15 @@ public class PhotoMessageSender implements Sender<JsonNode> {
     private void sendFileMessage(JsonNode data, TextChannel textChannel) {
         File inputFile = new File(data.findValue(SendersConstants.FILE_FROM_TELEGRAM).asText());
 
-        if (!data.findValue(SendersConstants.MESSAGE_FROM_TELEGRAM).asText().equals("null") && !data.findValue(SendersConstants.FILE_FROM_TELEGRAM).asText().equals("null")) {
-            textChannel
-                    .sendMessage(data.findValue(SendersConstants.NAME_IN_TELEGRAM).asText() + ": " + data.findValue(SendersConstants.MESSAGE_FROM_TELEGRAM).asText())
-                    .addFiles(FileUpload.fromData(inputFile, SendersConstants.PHOTO_NAME))
-                    .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build()).queue();
-        } else {
-            textChannel
-                    .sendMessage(data.findValue(SendersConstants.NAME_IN_TELEGRAM).asText() + ": ")
-                    .addFiles(FileUpload.fromData(inputFile, SendersConstants.PHOTO_NAME))
-                    .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build()).queue();
+        String message = "";
+        if (!data.findValue(SendersConstants.MESSAGE_FROM_TELEGRAM).asText().equals("null")) {
+            message = data.findValue(SendersConstants.MESSAGE_FROM_TELEGRAM).asText();
         }
+
+        textChannel
+                .sendMessage(data.findValue(SendersConstants.NAME_IN_TELEGRAM).asText() + ": " + message)
+                .addFiles(FileUpload.fromData(inputFile, SendersConstants.PHOTO_NAME))
+                .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build()).queue();
     }
 
     @Override
