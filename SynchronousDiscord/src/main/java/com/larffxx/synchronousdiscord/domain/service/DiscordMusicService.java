@@ -15,6 +15,7 @@ import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectReposito
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -34,26 +35,40 @@ public class DiscordMusicService {
     }
 
     public DiscordMusicContext resolveMusicContext(String telegramChatID) {
-        ServersConnect serversConnect = serversConnectRepository.getConnectByTelegramChannel(telegramChatID);
-        if (serversConnect == null) {
-            throw new NoConnectionBetweenServersException(InfExcMessages.NO_CONNECTION_BETWEEN_SERVERS);
-        }
-        ServersConnectDTO dto = serversConnectMapper.toDTO(serversConnect);
-        String guildID = dto.getDiscordGuild();
-        Guild guild = eventReceiver.getJda().getGuildById(guildID);
-        if (guild == null) {
-            throw new GuildNotFoundException(InfExcMessages.GUILD_NOT_FOUND_EXCEPTION);
-        }
+        String guildID = resolveGuildId(telegramChatID);
+        Guild guild = resolveGuild(guildID);
+        TextChannel textChannel = resolveTextChannel(guild);
+        GuildMusicManager manager = resultHandler.getMusicManager(guild);
 
+        return new DiscordMusicContext(guild, textChannel, manager);
+    }
+
+    private static TextChannel resolveTextChannel(Guild guild) {
         List<TextChannel> channels = guild.getTextChannelsByName(CommandConstants.DISCORD_TEXT_CHANNEL, true);
         if (channels.isEmpty()) {
             throw new TextChannelNotFoundException(InfExcMessages.TEXT_CHANNEL_NOT_FOUND_EXCEPTION);
         }
 
-        TextChannel textChannel = channels.get(0);
+        return channels.get(0);
+    }
 
-        GuildMusicManager manager = resultHandler.getMusicManager(guild);
+    @NotNull
+    private Guild resolveGuild(String guildID) {
+        Guild guild = eventReceiver.getJda().getGuildById(guildID);
+        if (guild == null) {
+            throw new GuildNotFoundException(InfExcMessages.GUILD_NOT_FOUND_EXCEPTION);
+        }
+        return guild;
+    }
 
-        return new DiscordMusicContext(guild, textChannel, manager);
+    private String resolveGuildId(String telegramChatID) {
+        ServersConnect serversConnect = serversConnectRepository.getConnectByTelegramChannel(telegramChatID);
+
+        if (serversConnect == null) {
+            throw new NoConnectionBetweenServersException(InfExcMessages.NO_CONNECTION_BETWEEN_SERVERS);
+        }
+        ServersConnectDTO dto = serversConnectMapper.toDTO(serversConnect);
+
+        return dto.getDiscordGuild();
     }
 }
