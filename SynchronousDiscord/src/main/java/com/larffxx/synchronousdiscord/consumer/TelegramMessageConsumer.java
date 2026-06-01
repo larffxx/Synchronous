@@ -23,7 +23,7 @@ public class TelegramMessageConsumer {
 
     @KafkaListener(topics = "${tMTopic}", groupId = "${groupId}")
     public void listener(@Payload String message) {
-        JsonNode data = null;
+        JsonNode data;
         try {
             data = new ObjectMapper().readTree(message);
 

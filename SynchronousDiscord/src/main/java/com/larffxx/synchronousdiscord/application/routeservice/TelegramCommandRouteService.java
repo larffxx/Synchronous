@@ -16,11 +16,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class TelegramCommandRouteService extends RouteService<Command>{
+public class TelegramCommandRouteService extends RouteService{
     private final CommandExecutor executor;
 
-    public TelegramCommandRouteService(EventReceiver eventReceiver, PreProcessor<Command> preProcessor, CommandExecutor executor, ServersConnectRepository serversConnectRepository) {
-        super(eventReceiver, preProcessor, serversConnectRepository);
+    public TelegramCommandRouteService(EventReceiver eventReceiver, CommandExecutor executor, ServersConnectRepository serversConnectRepository) {
+        super(eventReceiver,  serversConnectRepository);
         this.executor = executor;
     }
 

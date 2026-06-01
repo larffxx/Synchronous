@@ -12,15 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public abstract class RouteService<T> {
-    private final PreProcessor<T> preProcessor;
+public abstract class RouteService {
     private final EventReceiver eventReceiver;
     private final ServersConnectRepository serversConnectRepository;
 
-    public RouteService(EventReceiver eventReceiver, PreProcessor<T> preProcessor, ServersConnectRepository serversConnectRepository) {
+    public RouteService(EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
         this.eventReceiver = eventReceiver;
         this.serversConnectRepository = serversConnectRepository;
-        this.preProcessor = preProcessor;
     }
     public abstract void send(JsonNode data) throws RouteServiceException;
 }

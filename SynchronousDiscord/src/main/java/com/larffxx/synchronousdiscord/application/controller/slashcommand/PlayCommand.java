@@ -34,7 +34,7 @@ public class PlayCommand implements Command {
         Guild guild = event.getGuild();
         Member member = event.getMember();
 
-        if (member.getVoiceState().getChannel().asVoiceChannel() == null) {
+        if (!member.getVoiceState().inAudioChannel()) {
             event.reply("You are not in a voice channel").queue();
             return;
         }

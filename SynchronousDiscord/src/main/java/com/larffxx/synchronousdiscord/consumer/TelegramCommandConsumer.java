@@ -30,7 +30,7 @@ public class TelegramCommandConsumer {
 
     @KafkaListener(topics = "${tCTopic}", groupId = "${groupId}")
     public void listener(@Payload String command) {
-        JsonNode data = null;
+        JsonNode data;
         try {
             data = new ObjectMapper().readTree(command);
 
