@@ -1,15 +1,10 @@
 package com.larffxx.synchronousdiscord.application.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
-import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
-import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
-import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
-import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
+import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordContextResolveService;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.PlayerManager;
-import com.larffxx.synchronousdiscord.receiver.EventReceiver;
-import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -25,14 +20,12 @@ import java.net.URL;
 @Component
 public class PlayCommand implements Command {
     private final PlayerManager playerManager;
-    private final EventReceiver eventReceiver;
-    private final DiscordMusicService discordMusicService;
+    private final DiscordContextResolveService discordContextResolveService;
     private String link;
 
-    public PlayCommand(PlayerManager playerManager, EventReceiver eventReceiver, DiscordMusicService discordMusicService) {
+    public PlayCommand(PlayerManager playerManager, DiscordContextResolveService discordContextResolveService) {
         this.playerManager = playerManager;
-        this.eventReceiver = eventReceiver;
-        this.discordMusicService = discordMusicService;
+        this.discordContextResolveService = discordContextResolveService;
     }
 
 
@@ -62,7 +55,7 @@ public class PlayCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        DiscordContext context = discordContextResolveService.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
 
         link = String.valueOf(data.findValues(CommandConstants.PLAY_LINK_FROM_TELEGRAM).get(0).get(0).asText());
         if (!isUrl(link)) {

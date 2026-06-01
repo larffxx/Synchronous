@@ -4,15 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.domain.exception.command.ShuffleException;
-import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
-import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
-import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
-import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
-import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
+import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordContextResolveService;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
-import com.larffxx.synchronousdiscord.receiver.EventReceiver;
-import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
@@ -20,13 +14,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShuffleCommand implements Command{
     private final ResultHandler resultHandler;
-    private final EventReceiver eventReceiver;
-    private final DiscordMusicService discordMusicService;
+    private final DiscordContextResolveService discordContextResolveService;
 
-    public ShuffleCommand(ResultHandler resultHandler, EventReceiver eventReceiver, DiscordMusicService discordMusicService) {
+    public ShuffleCommand(ResultHandler resultHandler, DiscordContextResolveService discordContextResolveService) {
         this.resultHandler = resultHandler;
-        this.eventReceiver = eventReceiver;
-        this.discordMusicService = discordMusicService;
+        this.discordContextResolveService = discordContextResolveService;
     }
 
     @Override
@@ -40,7 +32,7 @@ public class ShuffleCommand implements Command{
 
     @Override
     public void execute(JsonNode data) throws ShuffleException {
-        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        DiscordContext context = discordContextResolveService.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
 
         TextChannel textChannel = context.textChannel();
         context.guildMusicManager().getScheduler().shuffle();

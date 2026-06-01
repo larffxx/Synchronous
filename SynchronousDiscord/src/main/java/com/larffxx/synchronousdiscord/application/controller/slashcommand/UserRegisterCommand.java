@@ -1,18 +1,12 @@
 package com.larffxx.synchronousdiscord.application.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
-import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
-import com.larffxx.synchronousdiscord.domain.record.DiscordMusicContext;
-import com.larffxx.synchronousdiscord.domain.service.DiscordMusicService;
-import com.larffxx.synchronousdiscord.dto.ServersConnectDTO;
+import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
+import com.larffxx.synchronousdiscord.domain.service.DiscordContextResolveService;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.domain.model.UsersConnect;
-import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.repo.UsersConnectRepository;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;
 
@@ -20,15 +14,12 @@ import org.springframework.stereotype.Component;
 public class UserRegisterCommand implements Command {
     private final UsersConnectRepository usersConnectRepository;
     private final ServersConnectRepository serversConnectRepository;
-    private final DiscordMusicService discordMusicService;
-    private final EventReceiver eventReceiver;
+    private final DiscordContextResolveService discordContextResolveService;
 
-
-    public UserRegisterCommand(UsersConnectRepository usersConnectRepository, ServersConnectRepository serversConnectRepository, DiscordMusicService discordMusicService, EventReceiver eventReceiver) {
+    public UserRegisterCommand(UsersConnectRepository usersConnectRepository, ServersConnectRepository serversConnectRepository, DiscordContextResolveService discordContextResolveService) {
         this.usersConnectRepository = usersConnectRepository;
         this.serversConnectRepository = serversConnectRepository;
-        this.discordMusicService = discordMusicService;
-        this.eventReceiver = eventReceiver;
+        this.discordContextResolveService = discordContextResolveService;
     }
 
 
@@ -51,7 +42,7 @@ public class UserRegisterCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        DiscordMusicContext context = discordMusicService.resolveMusicContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        DiscordContext context = discordContextResolveService.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
 
         context.textChannel().sendMessage(data.findValue(CommandConstants.NAME_FROM_TELEGRAM).asText() + CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
     }

@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.infrastructure.listener;
 
 import com.larffxx.synchronousdiscord.event.Event;
-import com.larffxx.synchronousdiscord.event.EventPreProcessor;
+import com.larffxx.synchronousdiscord.preprocessor.EventPreProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.GenericEvent;

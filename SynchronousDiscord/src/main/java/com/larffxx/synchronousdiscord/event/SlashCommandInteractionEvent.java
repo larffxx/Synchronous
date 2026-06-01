@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.event;
 
 import com.larffxx.synchronousdiscord.domain.exception.interaction.DiscordSlashInteractionException;
 import com.larffxx.synchronousdiscord.application.executor.CommandExecutor;
-import com.larffxx.synchronousdiscord.infrastructure.producer.DiscordCommandProducer;
+import com.larffxx.synchronousdiscord.infrastructure.producer.DiscordPayloadProducer;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent> {
-    private final DiscordCommandProducer discordCommandProducer;
+    private final DiscordPayloadProducer discordPayloadProducer;
     private final CommandExecutor commandExecutor;
     private final EventReceiver eventReceiver;
 
-    public SlashCommandInteractionEvent(DiscordCommandProducer discordCommandProducer, CommandExecutor commandExecutor, EventReceiver eventReceiver) {
-        this.discordCommandProducer = discordCommandProducer;
+    public SlashCommandInteractionEvent(DiscordPayloadProducer discordPayloadProducer, CommandExecutor commandExecutor, EventReceiver eventReceiver) {
+        this.discordPayloadProducer = discordPayloadProducer;
         this.commandExecutor = commandExecutor;
         this.eventReceiver = eventReceiver;
     }
@@ -30,7 +30,7 @@ public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.e
         } catch (DiscordSlashInteractionException e) {
             event.reply(e.getMessage()).queue();
         }
-        discordCommandProducer.send(event);
+        discordPayloadProducer.send(event);
     }
 
     @Override
