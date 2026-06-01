@@ -1,12 +1,10 @@
-package com.larffxx.synchronousdiscord.application.routeservice;
+package com.larffxx.synchronousdiscord.domain.service.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.exception.RouteServiceException;
 import com.larffxx.synchronousdiscord.application.executor.CommandExecutor;
 import com.larffxx.synchronousdiscord.infmsg.CommandConstants;
-import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
-import com.larffxx.synchronousdiscord.application.controller.slashcommand.Command;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;

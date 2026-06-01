@@ -1,13 +1,11 @@
-package com.larffxx.synchronousdiscord.application.routeservice;
+package com.larffxx.synchronousdiscord.domain.service.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.infmsg.SendersConstants;
-import com.larffxx.synchronousdiscord.preprocessor.PreProcessor;
 import com.larffxx.synchronousdiscord.preprocessor.SenderPreProcessor;
 import com.larffxx.synchronousdiscord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.sender.Sender;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
