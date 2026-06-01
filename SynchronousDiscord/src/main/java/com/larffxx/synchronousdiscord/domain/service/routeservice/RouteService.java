@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.application.routeservice;
+package com.larffxx.synchronousdiscord.domain.service.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.exception.RouteServiceException;
