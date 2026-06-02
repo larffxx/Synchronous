@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.infrastructure.discord;
 
-import com.larffxx.synchronousdiscord.domain.constants.infexc.InfExcMessages;
+import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.domain.exception.DownloadAttachmentException;
 import net.dv8tion.jda.api.entities.Message;
 

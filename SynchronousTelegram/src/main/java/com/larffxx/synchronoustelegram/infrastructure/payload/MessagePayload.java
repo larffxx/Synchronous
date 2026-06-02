@@ -1,6 +1,8 @@
 package com.larffxx.synchronoustelegram.infrastructure.payload;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.File;
@@ -8,6 +10,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MessagePayload{
     private Long chatId;
     private String name;

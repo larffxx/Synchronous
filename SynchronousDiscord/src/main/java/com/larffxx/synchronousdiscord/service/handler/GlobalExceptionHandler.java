@@ -16,7 +16,7 @@ import com.larffxx.synchronousdiscord.domain.exception.command.DeleteMessageExce
 import com.larffxx.synchronousdiscord.domain.exception.command.ShuffleException;
 import com.larffxx.synchronousdiscord.domain.exception.interaction.DiscordSlashInteractionException;
 import com.larffxx.synchronousdiscord.domain.exception.interaction.TelegramSlashInteractionException;
-import com.larffxx.synchronousdiscord.domain.constants.infexc.InfExcMessages;
+import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

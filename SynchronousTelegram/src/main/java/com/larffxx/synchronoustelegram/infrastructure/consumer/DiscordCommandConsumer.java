@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larffxx.synchronoustelegram.domain.exception.TelegramException;
-import com.larffxx.synchronoustelegram.application.routeservice.DiscordCommandRouteService;
+import com.larffxx.synchronoustelegram.service.routeservice.DiscordCommandRouteService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.kafka.annotation.KafkaListener;

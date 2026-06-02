@@ -6,7 +6,7 @@ import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
 import com.larffxx.synchronousdiscord.domain.exception.command.ShuffleException;
 import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
 import com.larffxx.synchronousdiscord.service.DiscordContextResolveService;
-import com.larffxx.synchronousdiscord.domain.constants.infmsg.CommandConstants;
+import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Component;

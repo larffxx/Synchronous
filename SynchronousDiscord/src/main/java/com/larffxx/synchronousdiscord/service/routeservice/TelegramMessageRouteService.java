@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.service.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.domain.constants.infmsg.SendersConstants;
+import com.larffxx.synchronousdiscord.domain.constant.infmsg.SendersConstants;
 import com.larffxx.synchronousdiscord.service.registry.SenderRegistry;
 import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;

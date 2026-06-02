@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.infrastructure.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.larffxx.synchronousdiscord.domain.constants.infexc.InfExcMessages;
+import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.domain.exception.consume.CommandConsumingException;
 import com.larffxx.synchronousdiscord.service.routeservice.TelegramMessageRouteService;
 import lombok.Getter;

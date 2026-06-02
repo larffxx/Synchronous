@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.exception.command.DeleteMessageException;
-import com.larffxx.synchronousdiscord.domain.constants.infmsg.CommandConstants;
+import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;

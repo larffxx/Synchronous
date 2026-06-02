@@ -4,8 +4,8 @@ import com.larffxx.synchronousdiscord.domain.exception.service.GuildNotFoundExce
 import com.larffxx.synchronousdiscord.domain.exception.service.NoConnectionBetweenServersException;
 import com.larffxx.synchronousdiscord.domain.exception.service.TextChannelNotFoundException;
 import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
-import com.larffxx.synchronousdiscord.domain.constants.infexc.InfExcMessages;
-import com.larffxx.synchronousdiscord.domain.constants.infmsg.CommandConstants;
+import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
+import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import net.dv8tion.jda.api.entities.Guild;

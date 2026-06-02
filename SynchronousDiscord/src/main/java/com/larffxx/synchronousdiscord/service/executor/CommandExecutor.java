@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.service.executor;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.exception.interaction.DiscordSlashInteractionException;
 import com.larffxx.synchronousdiscord.domain.exception.interaction.TelegramSlashInteractionException;
-import com.larffxx.synchronousdiscord.domain.constants.infmsg.CommandConstants;
+import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.service.controller.slashcommand.Command;
 import com.larffxx.synchronousdiscord.service.registry.SlashCommandRegistry;
 import lombok.Getter;

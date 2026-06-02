@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.mapper.ServersConnectMapper;
 import com.larffxx.synchronousdiscord.domain.dto.ServersConnectDTO;
-import com.larffxx.synchronousdiscord.domain.constants.infmsg.CommandConstants;
+import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
 import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;

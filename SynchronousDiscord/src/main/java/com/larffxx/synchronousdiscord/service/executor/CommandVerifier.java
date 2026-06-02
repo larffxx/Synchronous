@@ -3,8 +3,8 @@ package com.larffxx.synchronousdiscord.service.executor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.exception.VerifyException;
-import com.larffxx.synchronousdiscord.domain.constants.infexc.InfExcMessages;
-import com.larffxx.synchronousdiscord.domain.constants.infmsg.CommandConstants;
+import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
+import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.service.registry.SlashCommandRegistry;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;

@@ -1,8 +1,10 @@
 package com.larffxx.synchronoustelegram.infrastructure.parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronoustelegram.domain.constant.MessageType;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
-import com.larffxx.synchronoustelegram.infrastructure.sender.utility.PackageFilesLoader;
+import com.larffxx.synchronoustelegram.util.PackageFilesLoader;
+import com.larffxx.synchronoustelegram.util.URIFromJsonParser;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -22,8 +24,13 @@ public class DiscordMessagePayloadParser {
         Long guildID = jsonPayload.get("guildId").asLong();
         String author = jsonPayload.get("authorName").asText();
         String message = jsonPayload.get("message").asText();
+        String messageType = jsonPayload.get("messageType").asText();
 
         List<File> files = packageFilesLoader.getFilesFromURIs(uriFromJsonParser.uriParse(jsonPayload));
+
+        if(files.isEmpty()){
+            return new DiscordPayload(guildID,author,message,files, MessageType.valueOf(messageType));
+        }
 
         return new DiscordPayload(guildID, author, message, files);
     }

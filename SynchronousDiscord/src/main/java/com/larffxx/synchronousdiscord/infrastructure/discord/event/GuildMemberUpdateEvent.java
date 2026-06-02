@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.infrastructure.discord.event;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.repo.UsersConnectRepository;
 import com.larffxx.synchronousdiscord.service.GuildProfileUpdaterService;
-import com.larffxx.synchronousdiscord.domain.constants.infexc.InfExcMessages;
+import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.entities.Guild;

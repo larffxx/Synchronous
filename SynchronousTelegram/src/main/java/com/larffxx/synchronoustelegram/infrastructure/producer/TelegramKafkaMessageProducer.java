@@ -1,8 +1,8 @@
 package com.larffxx.synchronoustelegram.infrastructure.producer;
 
-import com.larffxx.synchronoustelegram.application.handler.utility.TmpToJpgConverter;
+import com.larffxx.synchronoustelegram.util.TmpToJpgConverter;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
-import com.larffxx.synchronoustelegram.util.constant.MessageType;
+import com.larffxx.synchronoustelegram.domain.constant.MessageType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +32,7 @@ public class TelegramKafkaMessageProducer {
     }
 
     public void sendKafkaMessage(Update update) {
-        MessagePayload messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getText(), update.getMessage().getChatId(), MessageType.textMessage);
+        MessagePayload messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getText(), update.getMessage().getChatId(), String.valueOf(MessageType.TEXT_MESSAGE));
         Message message = MessageBuilder.withPayload(messagePayload).setHeader("kafka_topic", topic).build();
         kafkaTemplate.send(message);
     }
