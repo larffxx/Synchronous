@@ -1,0 +1,28 @@
+package com.larffxx.synchronousdiscord.service.registry;
+
+import com.larffxx.synchronousdiscord.infrastructure.sender.Sender;
+import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.Map;
+
+@Component
+@AllArgsConstructor
+public class SenderRegistry implements Registry<Sender> {
+    private final Collection<Sender> senders;
+
+    private Map<String, Sender> senderMap;
+
+    @PostConstruct
+    public void mapCommands() {
+        for (Sender sender : senders) {
+            senderMap.put(sender.getSender(), sender);
+        }
+    }
+    @Override
+    public Sender<?> getCommand(String command) {
+        return senderMap.get(command);
+    }
+}

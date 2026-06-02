@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.infrastructure.parser;
 
 import com.larffxx.synchronousdiscord.infrastructure.payload.MessagePayload;
-import com.larffxx.synchronousdiscord.util.downloader.AttachmentDownloader;
+import com.larffxx.synchronousdiscord.infrastructure.discord.AttachmentDownloader;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Objects;
 

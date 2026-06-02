@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.domain.mapper;
 
 import com.larffxx.synchronousdiscord.domain.model.UsersConnect;
-import com.larffxx.synchronousdiscord.dto.UsersConnectDTO;
+import com.larffxx.synchronousdiscord.domain.dto.UsersConnectDTO;
 import org.springframework.stereotype.Component;
 
 @Component

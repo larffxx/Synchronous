@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.config.lavaplayer;
 import com.github.topi314.lavasrc.spotify.SpotifySourceManager;
 import com.github.topi314.lavasrc.yandexmusic.YandexMusicSourceManager;
 import com.larffxx.synchronousdiscord.config.bot.LavaplayerSecretsHolder;
-import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.infrastructure.sender.embed.EmbedSender;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;

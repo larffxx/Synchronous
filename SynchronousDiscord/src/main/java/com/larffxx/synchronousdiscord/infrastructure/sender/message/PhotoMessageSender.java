@@ -1,8 +1,8 @@
 package com.larffxx.synchronousdiscord.infrastructure.sender.message;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.infmsg.SendersConstants;
-import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.domain.constants.infmsg.SendersConstants;
+import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.sender.Sender;
 import lombok.Getter;

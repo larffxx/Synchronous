@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.infrastructure.sender.embed;
 
-import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import com.larffxx.synchronousdiscord.infrastructure.sender.Sender;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.stereotype.Component;

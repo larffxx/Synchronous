@@ -1,0 +1,55 @@
+package com.larffxx.synchronousdiscord.infrastructure.discord.event;
+
+import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
+import com.larffxx.synchronousdiscord.infrastructure.repo.UsersConnectRepository;
+import com.larffxx.synchronousdiscord.service.GuildProfileUpdaterService;
+import com.larffxx.synchronousdiscord.domain.constants.infexc.InfExcMessages;
+import lombok.Getter;
+import lombok.Setter;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+@Getter
+@Setter
+public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent> {
+    private final ServersConnectRepository serversConnectRepository;
+    private final UsersConnectRepository usersConnectRepository;
+    private final GuildProfileUpdaterService guildProfileUpdaterService;
+
+
+    public GuildMemberUpdateEvent(ServersConnectRepository serversConnectRepository, UsersConnectRepository usersConnectRepository, GuildProfileUpdaterService guildProfileUpdaterService) {
+        this.usersConnectRepository = usersConnectRepository;
+        this.serversConnectRepository = serversConnectRepository;
+        this.guildProfileUpdaterService = guildProfileUpdaterService;
+    }
+
+    @Override
+    public void execute(net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent event) {
+        Guild guild = event.getGuild();
+        if (serversConnectRepository.existsByDiscordGuild(event.getGuild().getId())) {
+            List<Member> members =
+                    guild.getMembers()
+                            .stream()
+                            .filter(member -> usersConnectRepository.existsByDiscordId(member.getId()))
+                            .toList();
+
+            if(members.isEmpty()){
+                guild.getTextChannelsByName("telegram", true).get(0).sendMessage(InfExcMessages.NO_REGISTERED_USERS).queue();
+            }
+
+            guildProfileUpdaterService.update(members,guild);
+
+        }else {
+            guild.getTextChannels().get(0).sendMessage(InfExcMessages.SERVER_IS_NOT_CONNECTED_TO_TELEGRAM).queue();
+        }
+    }
+
+    @Override
+    public Class getEvent() {
+        return net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent.class;
+    }
+}

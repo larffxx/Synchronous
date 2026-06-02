@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.infrastructure.listener;
 
-import com.larffxx.synchronousdiscord.event.Event;
-import com.larffxx.synchronousdiscord.preprocessor.EventPreProcessor;
+import com.larffxx.synchronousdiscord.infrastructure.discord.event.Event;
+import com.larffxx.synchronousdiscord.service.registry.EventRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -13,16 +13,16 @@ import org.springframework.stereotype.Component;
 @Setter
 public class EventsListener implements EventListener {
 
-    private final EventPreProcessor eventPreProcessor;
+    private final EventRegistry eventRegistry;
 
-    public EventsListener(EventPreProcessor eventPreProcessor) {
-        this.eventPreProcessor = eventPreProcessor;
+    public EventsListener(EventRegistry eventRegistry) {
+        this.eventRegistry = eventRegistry;
     }
 
     @Override
     public void onEvent(GenericEvent event) {
-        if (eventPreProcessor.getCommand(event.getClass()) != null) {
-            Event ev = eventPreProcessor.getCommand(event.getClass());
+        if (eventRegistry.getCommand(event.getClass()) != null) {
+            Event ev = eventRegistry.getCommand(event.getClass());
 
             ev.execute(event);
         }

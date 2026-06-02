@@ -1,6 +1,8 @@
 package com.larffxx.synchronousdiscord.domain.exception.service;
 
-public class TextChannelNotFoundException extends RuntimeException {
+import com.larffxx.synchronousdiscord.domain.exception.DiscordSynchronousException;
+
+public class TextChannelNotFoundException extends DiscordSynchronousException {
     public TextChannelNotFoundException(String message) {
         super(message);
     }

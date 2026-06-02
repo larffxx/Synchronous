@@ -1,6 +1,8 @@
 package com.larffxx.synchronousdiscord.domain.exception.service;
 
-public class NoConnectionBetweenServersException extends RuntimeException {
+import com.larffxx.synchronousdiscord.domain.exception.DiscordSynchronousException;
+
+public class NoConnectionBetweenServersException extends DiscordSynchronousException {
     public NoConnectionBetweenServersException(String message) {
         super(message);
     }

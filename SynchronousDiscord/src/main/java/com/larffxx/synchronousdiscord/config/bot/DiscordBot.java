@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.config.bot;
 
 import com.larffxx.synchronousdiscord.infrastructure.listener.EventsListener;
-import com.larffxx.synchronousdiscord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
