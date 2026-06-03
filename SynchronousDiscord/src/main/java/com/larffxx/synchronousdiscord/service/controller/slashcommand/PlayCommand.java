@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
-import com.larffxx.synchronousdiscord.service.DiscordContextResolveService;
+import com.larffxx.synchronousdiscord.infrastructure.DiscordContextResolver;
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.PlayerManager;
 import net.dv8tion.jda.api.entities.Guild;
@@ -11,21 +11,21 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 
-@Component
+@Service
 public class PlayCommand implements Command {
     private final PlayerManager playerManager;
-    private final DiscordContextResolveService discordContextResolveService;
+    private final DiscordContextResolver discordContextResolver;
     private String link;
 
-    public PlayCommand(PlayerManager playerManager, DiscordContextResolveService discordContextResolveService) {
+    public PlayCommand(PlayerManager playerManager, DiscordContextResolver discordContextResolver) {
         this.playerManager = playerManager;
-        this.discordContextResolveService = discordContextResolveService;
+        this.discordContextResolver = discordContextResolver;
     }
 
 
@@ -55,7 +55,7 @@ public class PlayCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        DiscordContext context = discordContextResolveService.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        DiscordContext context = discordContextResolver.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
 
         link = String.valueOf(data.findValues(CommandConstants.PLAY_LINK_FROM_TELEGRAM).get(0).get(0).asText());
         if (!isUrl(link)) {

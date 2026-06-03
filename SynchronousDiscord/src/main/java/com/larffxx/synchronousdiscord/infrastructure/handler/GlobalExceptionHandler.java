@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.service.handler;
+package com.larffxx.synchronousdiscord.infrastructure.handler;
 
 import com.larffxx.synchronousdiscord.domain.exception.consume.CommandConsumingException;
 import com.larffxx.synchronousdiscord.domain.exception.consume.ConsumingException;

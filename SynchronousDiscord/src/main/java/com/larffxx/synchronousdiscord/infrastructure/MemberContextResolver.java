@@ -1,0 +1,13 @@
+package com.larffxx.synchronousdiscord.infrastructure;
+
+import com.larffxx.synchronousdiscord.domain.record.MemberContext;
+import net.dv8tion.jda.api.entities.Member;
+import org.springframework.stereotype.Component;
+
+
+@Component
+public class MemberContextResolver {
+    public MemberContext resolveMemberContext(Member member) {
+        return new MemberContext(member.getId(), member.getUser().getEffectiveName(), member.getEffectiveName(), member.getGuild().getId());
+    }
+}

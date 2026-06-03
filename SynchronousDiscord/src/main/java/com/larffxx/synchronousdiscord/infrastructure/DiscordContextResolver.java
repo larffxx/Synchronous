@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.service;
+package com.larffxx.synchronousdiscord.infrastructure;
 
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 import static com.larffxx.synchronousdiscord.infrastructure.sender.utility.DiscordEntityResolver.resolveTextChannel;
 
 @Component
-public class DiscordContextResolveService {
+public class DiscordContextResolver {
     private final ResultHandler resultHandler;
     private final DiscordEntityResolver discordEntityResolver;
 
-    public DiscordContextResolveService(ResultHandler resultHandler, DiscordEntityResolver discordEntityResolver) {
+    public DiscordContextResolver(ResultHandler resultHandler, DiscordEntityResolver discordEntityResolver) {
         this.resultHandler = resultHandler;
         this.discordEntityResolver = discordEntityResolver;
     }

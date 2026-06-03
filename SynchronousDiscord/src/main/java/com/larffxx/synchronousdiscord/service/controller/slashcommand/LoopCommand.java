@@ -2,7 +2,7 @@ package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
-import com.larffxx.synchronousdiscord.service.DiscordContextResolveService;
+import com.larffxx.synchronousdiscord.infrastructure.DiscordContextResolver;
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
@@ -11,20 +11,20 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
 @Getter
 @Setter
+@Service
 public class LoopCommand implements Command {
     private final EmbedSender embedSender;
     private final ResultHandler resultHandler;
-    private final DiscordContextResolveService discordContextResolveService;
+    private final DiscordContextResolver discordContextResolver;
 
-    public LoopCommand(EmbedSender embedSender, ResultHandler resultHandler, DiscordContextResolveService discordContextResolveService) {
+    public LoopCommand(EmbedSender embedSender, ResultHandler resultHandler, DiscordContextResolver discordContextResolver) {
         this.embedSender = embedSender;
         this.resultHandler = resultHandler;
-        this.discordContextResolveService = discordContextResolveService;
+        this.discordContextResolver = discordContextResolver;
     }
 
 
@@ -42,7 +42,7 @@ public class LoopCommand implements Command {
 
     @Override
     public void execute(JsonNode data) {
-        DiscordContext context = discordContextResolveService.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        DiscordContext context = discordContextResolver.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
         GuildMusicManager musicManager = context.guildMusicManager();
 
         EmbedBuilder eb = new EmbedBuilder();

@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
-import com.larffxx.synchronousdiscord.service.DiscordContextResolveService;
+import com.larffxx.synchronousdiscord.infrastructure.DiscordContextResolver;
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
@@ -13,20 +13,20 @@ import lombok.Setter;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
 @Getter
 @Setter
+@Service
 public class StopCommand implements Command{
     private final ResultHandler resultHandler;
     private final EventReceiver eventReceiver;
-    private final DiscordContextResolveService discordContextResolveService;
+    private final DiscordContextResolver discordContextResolver;
 
-    public StopCommand(ResultHandler resultHandler, EventReceiver eventReceiver, DiscordContextResolveService discordContextResolveService) {
+    public StopCommand(ResultHandler resultHandler, EventReceiver eventReceiver, DiscordContextResolver discordContextResolver) {
         this.resultHandler = resultHandler;
         this.eventReceiver = eventReceiver;
-        this.discordContextResolveService = discordContextResolveService;
+        this.discordContextResolver = discordContextResolver;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class StopCommand implements Command{
 
     @Override
     public void execute(JsonNode data) {
-        DiscordContext context = discordContextResolveService.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+        DiscordContext context = discordContextResolver.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
         TextChannel textChannel = context.textChannel();
 
         context.guildMusicManager().getScheduler().stopTrack();
