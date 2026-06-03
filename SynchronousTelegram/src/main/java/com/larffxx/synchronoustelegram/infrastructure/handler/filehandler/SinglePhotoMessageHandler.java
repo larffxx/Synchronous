@@ -1,6 +1,6 @@
-package com.larffxx.synchronoustelegram.service.handler.filehandler;
+package com.larffxx.synchronoustelegram.infrastructure.handler.filehandler;
 
-import com.larffxx.synchronoustelegram.service.handler.utility.PhotoDownloadService;
+import com.larffxx.synchronoustelegram.service.utility.PhotoDownloadService;
 import com.larffxx.synchronoustelegram.util.TmpToJpgConverter;
 import com.larffxx.synchronoustelegram.domain.constant.MessageType;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;

@@ -8,12 +8,12 @@ import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
 import com.larffxx.synchronoustelegram.service.controller.Command;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.groupadministration.GetChat;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-@Component
+@Service
 public class ConnectCommand extends Command {
     private final TextMessageService textMessageService;
     private final ServersConnectRepository serversConnectRepository;
@@ -26,12 +26,14 @@ public class ConnectCommand extends Command {
 
     @Override
     public void execute(UpdateReceiver updateReceiver) {
-        if (!serversConnectRepository.existsByTelegramChannel(String.valueOf(updateReceiver.getUpdate().getMessage().getChat().getId()))) {
-            serversConnectRepository.save(new ServersConnect(updateReceiver.getOption(), updateReceiver.getChatId()));
+        Long chatID = updateReceiver.getUpdate().getMessage().getChatId();
 
-            textMessageService.send(Long.valueOf(updateReceiver.getChatId()), "connected");
+        if (!serversConnectRepository.existsByTelegramChannel(String.valueOf(updateReceiver.getUpdate().getMessage().getChat().getId()))) {
+            serversConnectRepository.save(new ServersConnect(updateReceiver.getOption(), String.valueOf(chatID)));
+
+            textMessageService.send(chatID, "connected");
         } else {
-            textMessageService.send(Long.valueOf(updateReceiver.getChatId()), "connected before");
+            textMessageService.send(chatID, "connected before");
         }
     }
 

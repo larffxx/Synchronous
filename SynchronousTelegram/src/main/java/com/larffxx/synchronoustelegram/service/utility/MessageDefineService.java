@@ -1,11 +1,11 @@
-package com.larffxx.synchronoustelegram.service.handler.utility;
+package com.larffxx.synchronoustelegram.service.utility;
 
 import com.larffxx.synchronoustelegram.domain.constant.MessageType;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-@Component
-public class MessageDefiner {
+@Service
+public class MessageDefineService {
     public String defineMessage(Update update) {
         if(update.getMessage().hasPhoto()){
             return String.valueOf(MessageType.PHOTO_MESSAGE);

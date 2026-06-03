@@ -1,4 +1,4 @@
-package com.larffxx.synchronoustelegram.service.handler;
+package com.larffxx.synchronoustelegram.infrastructure.handler.message;
 
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.GuildProfileRepository;

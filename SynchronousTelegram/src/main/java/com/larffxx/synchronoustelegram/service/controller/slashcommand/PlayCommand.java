@@ -7,11 +7,11 @@ import com.larffxx.synchronoustelegram.service.message.TextMessageService;
 import com.larffxx.synchronoustelegram.service.controller.Command;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
 @Getter
 @Setter
+@Service
 public class PlayCommand extends Command {
     private final ServersConnectRepository serversConnectRepository;
     private final TextMessageService textMessageService;
@@ -24,7 +24,7 @@ public class PlayCommand extends Command {
 
     @Override
     public void execute(UpdateReceiver updateReceiver){
-        textMessageService.send(Long.valueOf(updateReceiver.getChatId()), "Music added");
+        textMessageService.send(updateReceiver.getUpdate().getMessage().getChatId(), "Music added");
     }
 
     @Override

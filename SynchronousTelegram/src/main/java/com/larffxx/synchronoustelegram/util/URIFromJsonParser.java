@@ -11,12 +11,11 @@ public class URIFromJsonParser {
 
     public List<String> uriParse(JsonNode data) {
         List<JsonNode> rawUris = data.findValues("files").stream().toList();
-        List<String> formatedJsonFiles = rawUris.stream()
+
+        return rawUris.stream()
                 .flatMap(jsonnode-> StreamSupport.stream(jsonnode.spliterator(), false))
                 .map(JsonNode::asText)
                 .map(string -> string.replace("[", "").replace("]","").replace("\"", "").replace(" ",""))
                 .toList();
-
-        return formatedJsonFiles;
     }
 }

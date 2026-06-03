@@ -1,7 +1,7 @@
-package com.larffxx.synchronoustelegram.service.handler.message;
+package com.larffxx.synchronoustelegram.infrastructure.handler.message;
 
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
-import com.larffxx.synchronoustelegram.service.executor.TelegramClientCommandExecutor;
+import com.larffxx.synchronoustelegram.service.executor.TelegramClientCommandExecutorService;
 import com.larffxx.synchronoustelegram.infrastructure.producer.TelegramKafkaCommandProducer;
 import com.larffxx.synchronoustelegram.infrastructure.producer.TelegramKafkaMessageProducer;
 import com.larffxx.synchronoustelegram.domain.constant.MessageType;
@@ -12,11 +12,11 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 public class TextMessageHandler implements MessageHandler {
     private final MessageServiceRegistry messageServiceRegistry;
-    private final TelegramClientCommandExecutor clientCommandExecutor;
+    private final TelegramClientCommandExecutorService clientCommandExecutor;
     private final TelegramKafkaCommandProducer telegramKafkaCommandProducer;
     private final TelegramKafkaMessageProducer telegramKafkaMessageProducer;
 
-    public TextMessageHandler(MessageServiceRegistry messageServiceRegistry, TelegramClientCommandExecutor clientCommandExecutor, TelegramKafkaCommandProducer telegramKafkaCommandProducer, TelegramKafkaMessageProducer telegramKafkaMessageProducer) {
+    public TextMessageHandler(MessageServiceRegistry messageServiceRegistry, TelegramClientCommandExecutorService clientCommandExecutor, TelegramKafkaCommandProducer telegramKafkaCommandProducer, TelegramKafkaMessageProducer telegramKafkaMessageProducer) {
         this.messageServiceRegistry = messageServiceRegistry;
         this.clientCommandExecutor = clientCommandExecutor;
         this.telegramKafkaCommandProducer = telegramKafkaCommandProducer;

@@ -12,13 +12,12 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 @Component
 @NoArgsConstructor
 public class UpdateReceiver {
-    private TelegramClient telegramClient;
     private Update update;
     private String chatId;
     private String option;
+    private TelegramClient telegramClient;
 
     public void receiveUpdate(Update update) {
         this.update = update;
-        this.chatId = String.valueOf(update.getMessage().getChatId());
     }
 }

@@ -5,7 +5,7 @@ import com.larffxx.synchronoustelegram.infrastructure.parser.DiscordMessagePaylo
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
-import com.larffxx.synchronoustelegram.service.dispatcher.MessageDispatcher;
+import com.larffxx.synchronoustelegram.service.dispatcher.MessageDispatcherService;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Component;
 @Setter
 @Component
 public class DiscordMessageRouteService {
-    private final MessageDispatcher messageDispatcher;
+    private final MessageDispatcherService messageDispatcherService;
     private final DiscordMessagePayloadParser discordMessagePayloadParser;
     private final TextMessageService textMessageService;
 
-    public DiscordMessageRouteService(MessageDispatcher messageDispatcher, DiscordMessagePayloadParser discordMessagePayloadParser, TextMessageService textMessageService) {
-        this.messageDispatcher = messageDispatcher;
+    public DiscordMessageRouteService(MessageDispatcherService messageDispatcherService, DiscordMessagePayloadParser discordMessagePayloadParser, TextMessageService textMessageService) {
+        this.messageDispatcherService = messageDispatcherService;
         this.discordMessagePayloadParser = discordMessagePayloadParser;
         this.textMessageService = textMessageService;
     }
@@ -27,6 +27,6 @@ public class DiscordMessageRouteService {
     public void send(JsonNode data){
         DiscordPayload discordPayload = discordMessagePayloadParser.parseDiscordMessage(data);
 
-        messageDispatcher.dispatch(discordPayload);
+        messageDispatcherService.dispatch(discordPayload);
     }
 }

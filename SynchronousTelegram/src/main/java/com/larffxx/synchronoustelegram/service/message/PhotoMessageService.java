@@ -1,70 +1,31 @@
 package com.larffxx.synchronoustelegram.service.message;
 
+import com.larffxx.synchronoustelegram.domain.record.PayloadContext;
+import com.larffxx.synchronoustelegram.infrastructure.PayloadContextResolver;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
-import com.larffxx.synchronoustelegram.domain.exception.execution.SendingPhotoException;
-import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.infrastructure.sender.MediaSender;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
-import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
-import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-
-import java.io.File;
-import java.util.List;
+import org.springframework.stereotype.Service;
 
 
-@Component
+@Service
 public class PhotoMessageService implements MessageService {
+    private final PayloadContextResolver payloadContextResolver;
     private final UpdateReceiver updateReceiver;
-    private final ServersConnectRepository serversConnectRepository;
+    private final MediaSender mediaSender;
 
-    public PhotoMessageService(UpdateReceiver updateReceiver, ServersConnectRepository serversConnectRepository) {
+    public PhotoMessageService(PayloadContextResolver payloadContextResolver, UpdateReceiver updateReceiver, MediaSender mediaSender) {
+        this.payloadContextResolver = payloadContextResolver;
         this.updateReceiver = updateReceiver;
-        this.serversConnectRepository = serversConnectRepository;
+        this.mediaSender = mediaSender;
     }
 
     public void send(DiscordPayload payload) {
-        updateReceiver.setChatId(serversConnectRepository.findByDiscordGuild(String.valueOf(payload.getGuildID())).getTelegramChannel());
-        Long chatID = Long.valueOf(updateReceiver.getChatId());
+        PayloadContext payloadContext = payloadContextResolver.resolvePayloadContext(payload);
 
-        if (payload.getMessage() == null || payload.getMessage().equals("null")) {
-            sendPhotoAlbumWithoutMessage(chatID, payload.getAuthor(), payload.getFiles());
-        } else {
-            sendPhotoAlbumWithMessage(chatID, payload.getAuthor(), payload.getMessage(), payload.getFiles());
-        }
-    }
+        updateReceiver.setChatId(payloadContext.getChatID());
 
-    private void sendPhotoAlbumWithMessage(Long id, String author, String message, List<File> files) {
-        try {
-            for (File file : files) {
-                SendPhoto sendPhoto = SendPhoto.builder()
-                        .chatId(id)
-                        .photo(new InputFile(file))
-                        .caption(String.format("From: %s\nMessage: %s", author, message))
-                        .build();
-
-                updateReceiver.getTelegramClient().execute(sendPhoto);
-            }
-        } catch (TelegramApiException e) {
-            throw new SendingPhotoException(InfExcMessage.SENDING_ALBUM_WITH_MESSAGE_EXCEPTION);
-        }
-    }
-
-    private void sendPhotoAlbumWithoutMessage(Long id, String author, List<File> files) {
-        try {
-            for (File file : files) {
-                SendPhoto sendPhoto = SendPhoto.builder()
-                        .chatId(id)
-                        .photo(new InputFile(file))
-                        .caption(String.format("From: %s", author))
-                        .build();
-
-                updateReceiver.getTelegramClient().execute(sendPhoto);
-            }
-        } catch (TelegramApiException e) {
-            throw new SendingPhotoException(InfExcMessage.SENDING_ALBUM_WITHOUT_MESSAGE_EXCEPTION);
-        }
+        mediaSender.send(payload);
     }
 
     @Override

@@ -1,7 +1,7 @@
-package com.larffxx.synchronoustelegram.service.handler.filehandler;
+package com.larffxx.synchronoustelegram.infrastructure.handler.filehandler;
 
 import com.larffxx.synchronoustelegram.util.PhotoAlbumHolder;
-import com.larffxx.synchronoustelegram.service.handler.utility.PhotoDownloadService;
+import com.larffxx.synchronoustelegram.service.utility.PhotoDownloadService;
 import com.larffxx.synchronoustelegram.util.TmpToJpgConverter;
 import com.larffxx.synchronoustelegram.domain.exception.data.input.ReceivingPhotoException;
 import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;

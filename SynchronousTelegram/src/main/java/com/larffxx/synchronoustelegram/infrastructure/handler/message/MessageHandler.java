@@ -1,4 +1,4 @@
-package com.larffxx.synchronoustelegram.service.handler.message;
+package com.larffxx.synchronoustelegram.infrastructure.handler.message;
 
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import org.telegram.telegrambots.meta.api.objects.Update;

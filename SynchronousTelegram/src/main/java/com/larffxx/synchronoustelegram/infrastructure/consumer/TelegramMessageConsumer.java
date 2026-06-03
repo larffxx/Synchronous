@@ -1,8 +1,8 @@
 package com.larffxx.synchronoustelegram.infrastructure.consumer;
 
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
-import com.larffxx.synchronoustelegram.service.dispatcher.MessageDispatcher;
-import com.larffxx.synchronoustelegram.service.handler.utility.MessageDefiner;
+import com.larffxx.synchronoustelegram.service.dispatcher.MessageDispatcherService;
+import com.larffxx.synchronoustelegram.service.utility.MessageDefineService;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class TelegramMessageConsumer {
     private final UpdateReceiver updateReceiver;
-    private final MessageDefiner messageDefiner;
-    private final MessageDispatcher messageDispatcher;
+    private final MessageDefineService messageDefineService;
+    private final MessageDispatcherService messageDispatcherService;
 
-    public TelegramMessageConsumer(MessageDefiner messageDefiner, UpdateReceiver updateReceiver, MessageDispatcher messageDispatcher) {
-        this.messageDefiner = messageDefiner;
+    public TelegramMessageConsumer(MessageDefineService messageDefineService, UpdateReceiver updateReceiver, MessageDispatcherService messageDispatcherService) {
+        this.messageDefineService = messageDefineService;
         this.updateReceiver = updateReceiver;
-        this.messageDispatcher = messageDispatcher;
+        this.messageDispatcherService = messageDispatcherService;
     }
 
     public void consumeMessage(Update update) {
@@ -29,6 +29,6 @@ public class TelegramMessageConsumer {
             return;
         }
 
-        messageDispatcher.dispatch(update);
+        messageDispatcherService.dispatch(update);
     }
 }

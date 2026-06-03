@@ -1,15 +1,15 @@
-package com.larffxx.synchronoustelegram.service.handler.utility;
+package com.larffxx.synchronoustelegram.service.utility;
 
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.exception.data.input.AttachmentsDownloadException;
 import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.File;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-@Component
+@Service
 public class PhotoDownloadService {
     private final UpdateReceiver updateReceiver;
 

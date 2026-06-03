@@ -1,8 +1,8 @@
-package com.larffxx.synchronoustelegram.service.handler.message;
+package com.larffxx.synchronoustelegram.infrastructure.handler.message;
 
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
-import com.larffxx.synchronoustelegram.service.handler.filehandler.MediaGroupHandler;
-import com.larffxx.synchronoustelegram.service.handler.filehandler.SinglePhotoMessageHandler;
+import com.larffxx.synchronoustelegram.infrastructure.handler.filehandler.MediaGroupHandler;
+import com.larffxx.synchronoustelegram.infrastructure.handler.filehandler.SinglePhotoMessageHandler;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
 import com.larffxx.synchronoustelegram.infrastructure.producer.TelegramKafkaMessageProducer;
 import com.larffxx.synchronoustelegram.domain.constant.MessageType;
