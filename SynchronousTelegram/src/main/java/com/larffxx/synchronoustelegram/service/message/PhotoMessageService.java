@@ -23,7 +23,7 @@ public class PhotoMessageService implements MessageService {
     public void send(DiscordPayload payload) {
         PayloadContext payloadContext = payloadContextResolver.resolvePayloadContext(payload);
 
-        updateReceiver.setChatId(payloadContext.getChatID());
+        updateReceiver.setChatId(payloadContext.chatID());
 
         mediaSender.send(payload);
     }

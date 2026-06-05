@@ -33,11 +33,11 @@ public class MediaSender implements Sender {
         if(discordPayload.getFiles().size() >= 2){
             sendMedias(payloadContext);
         }else {
-            for (File file : payloadContext.getFiles()) {
+            for (File file : payloadContext.files()) {
                 SendPhoto sendPhoto = SendPhoto.builder()
-                        .chatId(payloadContext.getChatID())
+                        .chatId(payloadContext.chatID())
                         .photo(new InputFile(file))
-                        .caption(payloadContext.getCaption())
+                        .caption(payloadContext.caption())
                         .build();
 
                 try {
@@ -52,14 +52,14 @@ public class MediaSender implements Sender {
     private void sendMedias(PayloadContext payloadContext){
         List<InputMedia> mediaList = new LinkedList<>();
 
-        for (File file : payloadContext.getFiles()) {
+        for (File file : payloadContext.files()) {
             InputMediaPhoto media = new InputMediaPhoto(new InputFile(file).getNewMediaFile(), file.getName());
-            media.setCaption(payloadContext.getCaption());
+            media.setCaption(payloadContext.caption());
 
             mediaList.add(media);
         }
         SendMediaGroup sendMediaGroup = SendMediaGroup.builder()
-                .chatId(payloadContext.getChatID())
+                .chatId(payloadContext.chatID())
                 .medias(mediaList)
                 .build();
 

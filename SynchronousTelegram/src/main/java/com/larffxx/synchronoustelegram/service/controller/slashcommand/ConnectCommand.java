@@ -1,6 +1,7 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
 import com.larffxx.synchronoustelegram.domain.model.ServersConnect;
+import com.larffxx.synchronoustelegram.domain.record.CommandContext;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.exception.command.ConnectCommandException;
 import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
@@ -14,22 +15,27 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Service
-public class ConnectCommand extends Command {
+public class ConnectCommand implements Command {
+    private final UpdateReceiver updateReceiver;
     private final TextMessageService textMessageService;
     private final ServersConnectRepository serversConnectRepository;
 
     public ConnectCommand(UpdateReceiver updateReceiver, TextMessageService textMessageService, ServersConnectRepository serversConnectRepository) {
-        super(updateReceiver);
+        this.updateReceiver = updateReceiver;
         this.textMessageService = textMessageService;
         this.serversConnectRepository = serversConnectRepository;
     }
 
     @Override
-    public void execute(UpdateReceiver updateReceiver) {
-        Long chatID = updateReceiver.getUpdate().getMessage().getChatId();
+    public void execute(CommandContext commandContext) {
+        if(commandContext.options().size() > 1){
+            //TODO: exception
+            throw new RuntimeException();
+        }
+        Long chatID = commandContext.chatId();
 
-        if (!serversConnectRepository.existsByTelegramChannel(String.valueOf(updateReceiver.getUpdate().getMessage().getChat().getId()))) {
-            serversConnectRepository.save(new ServersConnect(updateReceiver.getOption(), String.valueOf(chatID)));
+        if (!serversConnectRepository.existsByTelegramChannel(String.valueOf(commandContext.chatId()))) {
+            serversConnectRepository.save(new ServersConnect(commandContext.options().get(0), String.valueOf(chatID)));
 
             textMessageService.send(chatID, "connected");
         } else {
@@ -44,7 +50,7 @@ public class ConnectCommand extends Command {
         Chat chat;
 
         try {
-            chat = getUpdateReceiver().getTelegramClient().execute(new GetChat("@"+telegramChannelName));
+            chat = updateReceiver.getTelegramClient().execute(new GetChat("@"+telegramChannelName));
         } catch (TelegramApiException e) {
             throw new ConnectCommandException(InfExcMessage.TELEGRAM_CHANNEL_NAME_PARSING_EXCEPTION);
         }
@@ -55,6 +61,6 @@ public class ConnectCommand extends Command {
 
     @Override
     public String getCommand() {
-        return "/connect";
+        return "connect";
     }
 }

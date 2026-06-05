@@ -26,7 +26,7 @@ public class TextMessageSender implements Sender {
     @Override
     public void send(DiscordPayload discordPayload) {
         PayloadContext context = payloadContextResolver.resolvePayloadContext(discordPayload);
-        Long chatID = Long.valueOf(context.getChatID());
+        Long chatID = Long.valueOf(context.chatID());
 
         String formattedMessage = userMentionHandler.convertMentionsToTelegramNames(discordPayload);
 

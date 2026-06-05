@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
-import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
+import com.larffxx.synchronoustelegram.domain.record.CommandContext;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
@@ -12,19 +12,18 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 @Service
-public class PlayCommand extends Command {
+public class PlayCommand implements Command {
     private final ServersConnectRepository serversConnectRepository;
     private final TextMessageService textMessageService;
 
-    public PlayCommand(UpdateReceiver updateReceiver, ServersConnectRepository serversConnectRepository, TextMessageService textMessageService) {
-        super(updateReceiver);
+    public PlayCommand(ServersConnectRepository serversConnectRepository, TextMessageService textMessageService) {
         this.serversConnectRepository = serversConnectRepository;
         this.textMessageService = textMessageService;
     }
 
     @Override
-    public void execute(UpdateReceiver updateReceiver){
-        textMessageService.send(updateReceiver.getUpdate().getMessage().getChatId(), "Music added");
+    public void execute(CommandContext commandContext){
+        textMessageService.send(commandContext.chatId(), "Music added");
     }
 
     @Override
@@ -36,6 +35,6 @@ public class PlayCommand extends Command {
 
     @Override
     public String getCommand() {
-        return "/play";
+        return "play";
     }
 }
