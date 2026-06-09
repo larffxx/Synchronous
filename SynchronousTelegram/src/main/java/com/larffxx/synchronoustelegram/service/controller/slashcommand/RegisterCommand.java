@@ -1,5 +1,8 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.exception.command.NoOptionsProvidedException;
+import com.larffxx.synchronoustelegram.domain.exception.command.TooManyOptionsException;
 import com.larffxx.synchronoustelegram.domain.record.CommandContext;
 import com.larffxx.synchronoustelegram.domain.model.UsersConnect;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
@@ -23,9 +26,12 @@ public class RegisterCommand implements Command {
 
     @Override
     public void execute(CommandContext commandContext) {
-        if(commandContext.options().isEmpty() || commandContext.options().size() > 2) {
-            //TODO: exception
-            throw new RuntimeException();
+        if(commandContext.options().isEmpty()){
+            throw new NoOptionsProvidedException(InfExcMessage.NO_OPTIONS_FOR_COMMAND_EXCEPTION);
+        }
+
+        if(commandContext.options().size() > 2) {
+            throw new TooManyOptionsException(InfExcMessage.TOO_MANY_OPTIONS_FOR_COMMAND_EXCEPTION);
         }
 
         Long chatID = commandContext.chatId();
@@ -45,7 +51,7 @@ public class RegisterCommand implements Command {
     @Override
     public void execute(DiscordPayload discordPayload) {
         String discordName = discordPayload.getAuthor();
-        String telegramName = discordPayload.getCommand().getOptions().get(0);
+        String telegramName = usersConnectRepository.findByDiscordName(discordName).getTelegramName();
         UsersConnect usersConnect = new UsersConnect(discordName, telegramName);
         Long telegramChatID = Long.valueOf(serversConnectRepository.findByDiscordGuild(String.valueOf(discordPayload.getGuildID())).getTelegramChannel());
 

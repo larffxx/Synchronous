@@ -1,5 +1,6 @@
 package com.larffxx.synchronoustelegram.service.message;
 
+import com.larffxx.synchronoustelegram.domain.record.CommandContext;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;

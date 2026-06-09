@@ -2,7 +2,7 @@ package com.larffxx.synchronoustelegram.service.utility;
 
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.exception.data.input.AttachmentsDownloadException;
-import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.objects.File;

@@ -1,7 +1,6 @@
 package com.larffxx.synchronoustelegram.infrastructure.payload;
 
 import com.larffxx.synchronoustelegram.domain.constant.MessageType;
-import com.larffxx.synchronoustelegram.infrastructure.payload.utility.Command;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,7 @@ public class DiscordPayload {
     private Long guildID;
     private String author;
     private String message;
-    private Command command;
+    private CommandPayload commandPayload;
     private List<File> files;
     private MessageType messageType;
 
@@ -30,10 +29,10 @@ public class DiscordPayload {
         this.messageType = MessageType.PHOTO_MESSAGE;
     }
 
-    public DiscordPayload(Long guildID, String author, Command command) {
+    public DiscordPayload(Long guildID, String author, CommandPayload command) {
         this.guildID = guildID;
         this.author = author;
-        this.command = command;
+        this.commandPayload = command;
     }
 
     public DiscordPayload(Long guildID, String author, String message, List<File> files, MessageType messageType) {

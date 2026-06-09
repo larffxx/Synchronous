@@ -1,7 +1,7 @@
 package com.larffxx.synchronoustelegram.util;
 
 import com.larffxx.synchronoustelegram.domain.exception.data.mutation.PhotoConversionException;
-import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;

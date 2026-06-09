@@ -1,9 +1,10 @@
 package com.larffxx.synchronoustelegram.service.executor;
 
 import com.larffxx.synchronoustelegram.domain.exception.execution.StringCommandExecutingException;
-import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.domain.record.CommandContext;
 import com.larffxx.synchronoustelegram.infrastructure.CommandContextResolver;
+import com.larffxx.synchronoustelegram.infrastructure.payload.CommandPayload;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.service.controller.Command;
 import com.larffxx.synchronoustelegram.domain.exception.TelegramException;
@@ -38,7 +39,9 @@ public class TelegramClientCommandExecutorService {
     }
 
     public void execute(DiscordPayload payload){
-        Command command = commandRegistry.get(payload.getCommand().getCommandName());
+        CommandPayload commandPayload = payload.getCommandPayload();
+
+        Command command = commandRegistry.get(commandPayload.getCommand());
         try {
             command.execute(payload);
         } catch (TelegramApiException e) {

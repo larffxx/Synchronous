@@ -4,7 +4,7 @@ import com.larffxx.synchronoustelegram.util.PhotoAlbumHolder;
 import com.larffxx.synchronoustelegram.service.utility.PhotoDownloadService;
 import com.larffxx.synchronoustelegram.util.TmpToJpgConverter;
 import com.larffxx.synchronoustelegram.domain.exception.data.input.ReceivingPhotoException;
-import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.domain.constant.MessageType;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
 import lombok.Getter;

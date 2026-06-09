@@ -1,10 +1,11 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
+import com.larffxx.synchronoustelegram.domain.exception.command.TooManyOptionsException;
 import com.larffxx.synchronoustelegram.domain.model.ServersConnect;
 import com.larffxx.synchronoustelegram.domain.record.CommandContext;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.domain.exception.command.ConnectCommandException;
-import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
@@ -29,8 +30,7 @@ public class ConnectCommand implements Command {
     @Override
     public void execute(CommandContext commandContext) {
         if(commandContext.options().size() > 1){
-            //TODO: exception
-            throw new RuntimeException();
+            throw new TooManyOptionsException(InfExcMessage.TOO_MANY_OPTIONS_FOR_COMMAND_EXCEPTION);
         }
         Long chatID = commandContext.chatId();
 
@@ -46,16 +46,16 @@ public class ConnectCommand implements Command {
 
     @Override
     public void execute(DiscordPayload discordPayload) {
-        String telegramChannelName = discordPayload.getCommand().getOptions().get(0);
+        String telegramChatId = serversConnectRepository.findByDiscordGuild(String.valueOf(discordPayload.getGuildID())).getTelegramChannel();
         Chat chat;
 
         try {
-            chat = updateReceiver.getTelegramClient().execute(new GetChat("@"+telegramChannelName));
+            chat = updateReceiver.getTelegramClient().execute(new GetChat("@"+telegramChatId));
         } catch (TelegramApiException e) {
             throw new ConnectCommandException(InfExcMessage.TELEGRAM_CHANNEL_NAME_PARSING_EXCEPTION);
         }
 
-        serversConnectRepository.updateByTelegramChannel(String.valueOf(chat.getId()), telegramChannelName);
+        serversConnectRepository.updateByTelegramChannel(String.valueOf(chat.getId()), telegramChatId);
     }
 
 

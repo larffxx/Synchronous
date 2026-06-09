@@ -1,8 +1,9 @@
 package com.larffxx.synchronoustelegram.infrastructure.parser;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronoustelegram.infrastructure.payload.CommandPayload;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
-import com.larffxx.synchronoustelegram.infrastructure.payload.utility.Command;
+import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,6 +11,11 @@ import java.util.stream.StreamSupport;
 
 @Component
 public class DiscordCommandPayloadParser {
+    private final ServersConnectRepository serversConnectRepository;
+
+    public DiscordCommandPayloadParser(ServersConnectRepository serversConnectRepository) {
+        this.serversConnectRepository = serversConnectRepository;
+    }
 
     public DiscordPayload parseDiscordCommand(JsonNode data) {
         Long guildID = data.get("guildId").asLong();
@@ -19,18 +25,9 @@ public class DiscordCommandPayloadParser {
                 .map(JsonNode::asText)
                 .toList();
 
-        Command command = new Command(createSlashCommand(commandName), options);
+        String telegramChatId = serversConnectRepository.findByDiscordGuild(String.valueOf(guildID)).getTelegramChannel();
+        CommandPayload commandPayload = new CommandPayload(telegramChatId, author, commandName, options);
 
-        return new DiscordPayload(guildID, author, command);
+        return new DiscordPayload(guildID, author, commandPayload);
     }
-
-    private String createSlashCommand(String command) {
-        StringBuilder builder = new StringBuilder(command);
-
-        Character COMMAND_PREFIX = '/';
-        builder.insert(0, COMMAND_PREFIX);
-
-        return String.valueOf(builder);
-    }
-
 }

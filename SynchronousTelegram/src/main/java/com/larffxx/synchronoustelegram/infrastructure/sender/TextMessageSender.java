@@ -1,7 +1,8 @@
 package com.larffxx.synchronoustelegram.infrastructure.sender;
 
 import com.larffxx.synchronoustelegram.domain.exception.execution.SendingMessageToTelegramException;
-import com.larffxx.synchronoustelegram.domain.exception.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.record.CommandContext;
 import com.larffxx.synchronoustelegram.domain.record.PayloadContext;
 import com.larffxx.synchronoustelegram.infrastructure.PayloadContextResolver;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
