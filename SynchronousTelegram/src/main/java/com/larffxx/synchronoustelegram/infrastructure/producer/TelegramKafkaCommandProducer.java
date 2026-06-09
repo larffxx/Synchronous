@@ -25,6 +25,8 @@ public class TelegramKafkaCommandProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+
+    //TODO: produce with ServersConnectPayload and 1 producer
     public void sendKafkaMessage(Update update) {
         CommandPayload commandPayload = new CommandPayload(update.getMessage().getChatId().toString(), update.getMessage().getFrom().getUserName(), update.getMessage().getText().split(" ")[0].replace("/", ""),
                 new ArrayList<>(List.of(update.getMessage().getText().split(" ")[1])));

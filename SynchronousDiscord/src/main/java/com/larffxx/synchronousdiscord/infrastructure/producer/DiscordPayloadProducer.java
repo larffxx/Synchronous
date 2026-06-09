@@ -33,10 +33,12 @@ public class DiscordPayloadProducer {
     }
 
 
+    //TODO: produce with ServersConnectPayload with sending ids of telegram chat and guild id
     public void send(SlashCommandInteractionEvent event) {
         produceKafkaMessage(new CommandPayloadParser().parse(event), cTopic, commandPayloadKafkaTemplate);
     }
 
+    //TODO: produce with ServersConnectPayload with sending ids of telegram chat and guild id
     public void send(MessageReceivedEvent event) {
         MessagePayloadParser messagePayloadParser = new MessagePayloadParser();
 

@@ -1,4 +1,4 @@
-package com.larffxx.synchronoustelegram.infrastructure.consumer;
+package com.larffxx.synchronoustelegram.infrastructure.consumer.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,6 +21,7 @@ public class DiscordCommandConsumer {
         this.discordCommandRouteService = discordCommandRouteService;
     }
 
+    //TODO: integrate JsonNodeMapper and sending it to route service
     @KafkaListener(topics = {"${dCTopic}"}, groupId = "${groupId}")
     public void listener(@Payload String command){
         try {

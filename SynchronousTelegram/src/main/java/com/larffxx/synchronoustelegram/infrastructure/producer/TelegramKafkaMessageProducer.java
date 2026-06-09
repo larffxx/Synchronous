@@ -26,11 +26,13 @@ public class TelegramKafkaMessageProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    //TODO: produce with ServersConnectPayload with sending ids of telegram chat and guild id
     public void sendKafkaMessage(MessagePayload messagePayload) {
         Message message = MessageBuilder.withPayload(messagePayload).setHeader("kafka_topic", topic).build();
         kafkaTemplate.send(message);
     }
 
+    //TODO: produce with ServersConnectPayload with sending ids of telegram chat and guild id
     public void sendKafkaMessage(Update update) {
         MessagePayload messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getText(), update.getMessage().getChatId(), String.valueOf(MessageType.TEXT_MESSAGE));
         Message message = MessageBuilder.withPayload(messagePayload).setHeader("kafka_topic", topic).build();

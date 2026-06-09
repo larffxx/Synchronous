@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.util.List;
 
+//TODO: DELETE
 @Component
 public class DiscordMessagePayloadParser {
     private final URIFromJsonParser uriFromJsonParser;

@@ -1,6 +1,8 @@
 package com.larffxx.synchronoustelegram.service.routeservice;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronoustelegram.domain.record.CommandContext;
+import com.larffxx.synchronoustelegram.domain.record.MessageContext;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.infrastructure.parser.DiscordCommandPayloadParser;
 import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
@@ -16,19 +18,24 @@ import org.springframework.stereotype.Component;
 public class DiscordCommandRouteService {
     private final TelegramClientCommandExecutorService telegramClientCommandExecutorService;
     private final DiscordCommandPayloadParser discordCommandPayloadParser;
-    private final CommandRegistry preProcessor;
-    private final UpdateReceiver updateHolder;
 
-    public DiscordCommandRouteService(TelegramClientCommandExecutorService telegramClientCommandExecutorService, DiscordCommandPayloadParser discordCommandPayloadParser, CommandRegistry preProcessor, UpdateReceiver updateReceiver) {
+    public DiscordCommandRouteService(TelegramClientCommandExecutorService telegramClientCommandExecutorService, DiscordCommandPayloadParser discordCommandPayloadParser) {
         this.telegramClientCommandExecutorService = telegramClientCommandExecutorService;
         this.discordCommandPayloadParser = discordCommandPayloadParser;
-        this.preProcessor = preProcessor;
-        this.updateHolder = updateReceiver;
     }
 
     public void send(JsonNode data){
         DiscordPayload payload = discordCommandPayloadParser.parseDiscordCommand(data);
 
         telegramClientCommandExecutorService.execute(payload);
+    }
+
+    //TODO: route methods
+    public void send(CommandContext commandContext){
+
+    }
+
+    public void send(MessageContext messageContext){
+
     }
 }

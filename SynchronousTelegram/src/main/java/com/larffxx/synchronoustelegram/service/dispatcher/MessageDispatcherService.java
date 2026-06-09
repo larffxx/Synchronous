@@ -25,6 +25,7 @@ public class MessageDispatcherService {
         messageHandler.handle(update);
     }
 
+    //TODO: param MessageContext
     public void dispatch(DiscordPayload discordPayload){
         String messageType = discordPayload.getMessageType().toString();
 

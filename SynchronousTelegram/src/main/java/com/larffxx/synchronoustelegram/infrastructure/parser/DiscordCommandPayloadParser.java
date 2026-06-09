@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
+//TODO: Delete
 @Component
 public class DiscordCommandPayloadParser {
     private final ServersConnectRepository serversConnectRepository;
