@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.infrastructure.handler.message;
 
-import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
+import com.larffxx.synchronoustelegram.domain.context.MessageContext;
 import com.larffxx.synchronoustelegram.infrastructure.repo.GuildProfileRepository;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,13 +20,13 @@ public class UserMentionHandler {
         this.guildProfileRepository = guildProfileRepository;
     }
 
-    public String convertMentionsToTelegramNames(DiscordPayload payload) {
-        setMatcher(payload.getMessage());
+    public String convertMentionsToTelegramNames(MessageContext messageContext) {
+        setMatcher(messageContext.getMessage());
 
         if(matcher.find()) {
-           return formatMessageWithMention(payload.getMessage());
+           return formatMessageWithMention(messageContext.getMessage());
         }
-        return String.format("%s: %s", payload.getAuthor(), payload.getMessage());
+        return String.format("%s: %s", messageContext.getAuthor(), messageContext.getMessage());
     }
 
     private String formatMessageWithMention(String msg){

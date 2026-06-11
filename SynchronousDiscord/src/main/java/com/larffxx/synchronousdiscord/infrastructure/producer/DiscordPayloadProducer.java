@@ -26,22 +26,24 @@ public class DiscordPayloadProducer {
     private String mTopic;
     private final KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate;
     private final KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate;
+    private final CommandPayloadParser commandPayloadParser;
+    private final MessagePayloadParser messagePayloadParser;
 
-    public DiscordPayloadProducer(KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate) {
+    public DiscordPayloadProducer(KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate, CommandPayloadParser commandPayloadParser, MessagePayloadParser messagePayloadParser) {
         this.commandPayloadKafkaTemplate = commandPayloadKafkaTemplate;
         this.messagePayloadKafkaTemplate = messagePayloadKafkaTemplate;
+        this.commandPayloadParser = commandPayloadParser;
+        this.messagePayloadParser = messagePayloadParser;
     }
 
 
     //TODO: produce with ServersConnectPayload with sending ids of telegram chat and guild id
     public void send(SlashCommandInteractionEvent event) {
-        produceKafkaMessage(new CommandPayloadParser().parse(event), cTopic, commandPayloadKafkaTemplate);
+        produceKafkaMessage(commandPayloadParser.parse(event), cTopic, commandPayloadKafkaTemplate);
     }
 
     //TODO: produce with ServersConnectPayload with sending ids of telegram chat and guild id
     public void send(MessageReceivedEvent event) {
-        MessagePayloadParser messagePayloadParser = new MessagePayloadParser();
-
         MessagePayload messagePayload = messagePayloadParser.parse(event);
 
         produceKafkaMessage(messagePayload,mTopic,messagePayloadKafkaTemplate);

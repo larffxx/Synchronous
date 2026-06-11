@@ -3,6 +3,8 @@ package com.larffxx.synchronoustelegram.infrastructure.consumer.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.larffxx.synchronoustelegram.domain.context.MessageContext;
+import com.larffxx.synchronoustelegram.infrastructure.mapper.JsonNodeToMessageContextMapper;
 import com.larffxx.synchronoustelegram.service.routeservice.DiscordMessageRouteService;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,13 +22,15 @@ public class DiscordMessageConsumer {
         this.discordMessageRouteService = discordMessageRouteService;
     }
 
-    //TODO: integrate JsonNodeMapper and sending it to route service
     @KafkaListener(topics = {"${dMTopic}"}, groupId = "${groupId}")
     public void listener(@Payload String message) {
         try {
             JsonNode data = new ObjectMapper().readTree(message);
 
-            discordMessageRouteService.send(data);
+            JsonNodeToMessageContextMapper contextMapper = new JsonNodeToMessageContextMapper();
+            MessageContext context = contextMapper.toMessageContext(data);
+
+            discordMessageRouteService.send(context);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

@@ -1,19 +1,20 @@
 package com.larffxx.synchronoustelegram.infrastructure.mapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronoustelegram.domain.record.CommandContext;
+import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 public class JsonNodeToCommandContextMapper {
 
-    //TODO: mapping
     public CommandContext toCommandContext(JsonNode jsonNode) {
-        Long chatId = 0L;
-        String commandName = "";
-        String commandAuthor = "";
-        List<String> options = new ArrayList<>();
+        Long chatId = jsonNode.get("telegramChatId").asLong();
+        String commandName = jsonNode.get("commandName").asText();
+        String commandAuthor = jsonNode.get("authorName").asText();
+        List<String> options = StreamSupport.stream(jsonNode.get("options").spliterator(), false)
+                .map(JsonNode::asText)
+                .toList();
 
 
         return new CommandContext(chatId, commandAuthor, commandName, options);

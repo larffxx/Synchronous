@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.infrastructure.handler.message;
 
-import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
+import com.larffxx.synchronoustelegram.domain.context.MessageContext;
 import com.larffxx.synchronoustelegram.infrastructure.handler.filehandler.MediaGroupHandler;
 import com.larffxx.synchronoustelegram.infrastructure.handler.filehandler.SinglePhotoMessageHandler;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
@@ -34,8 +34,8 @@ public class PhotoMessageHandler implements MessageHandler {
     }
 
     @Override
-    public void handle(DiscordPayload discordPayload) {
-        messageServiceRegistry.get(String.valueOf(MessageType.PHOTO_MESSAGE)).send(discordPayload);
+    public void handle(MessageContext messageContext) {
+        messageServiceRegistry.get(String.valueOf(MessageType.PHOTO_MESSAGE)).send(messageContext);
     }
 
     @Override

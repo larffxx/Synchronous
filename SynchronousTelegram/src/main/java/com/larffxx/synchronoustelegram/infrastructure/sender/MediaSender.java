@@ -1,8 +1,6 @@
 package com.larffxx.synchronoustelegram.infrastructure.sender;
 
-import com.larffxx.synchronoustelegram.domain.record.PayloadContext;
-import com.larffxx.synchronoustelegram.infrastructure.PayloadContextResolver;
-import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
+import com.larffxx.synchronoustelegram.domain.context.MessageContext;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
@@ -19,25 +17,22 @@ import java.util.List;
 @Component
 public class MediaSender implements Sender {
     private final UpdateReceiver updateReceiver;
-    private final PayloadContextResolver payloadContextResolver;
 
-    public MediaSender(UpdateReceiver updateReceiver, PayloadContextResolver payloadContextResolver) {
+    public MediaSender(UpdateReceiver updateReceiver) {
         this.updateReceiver = updateReceiver;
-        this.payloadContextResolver = payloadContextResolver;
     }
 
 
-    public void send(DiscordPayload discordPayload){
-        PayloadContext payloadContext = payloadContextResolver.resolvePayloadContext(discordPayload);
+    public void send(MessageContext messageContext){
 
-        if(discordPayload.getFiles().size() >= 2){
-            sendMedias(payloadContext);
+        if(messageContext.getFileList().size() >= 2){
+            sendMedias(messageContext);
         }else {
-            for (File file : payloadContext.files()) {
+            for (File file : messageContext.getFileList()) {
                 SendPhoto sendPhoto = SendPhoto.builder()
-                        .chatId(payloadContext.chatID())
+                        .chatId(messageContext.getTelegramChatId())
                         .photo(new InputFile(file))
-                        .caption(payloadContext.caption())
+                        .caption(messageContext.getMessage())
                         .build();
 
                 try {
@@ -49,17 +44,17 @@ public class MediaSender implements Sender {
         }
     }
 
-    private void sendMedias(PayloadContext payloadContext){
+    private void sendMedias(MessageContext messageContext){
         List<InputMedia> mediaList = new LinkedList<>();
 
-        for (File file : payloadContext.files()) {
+        for (File file : messageContext.getFileList()) {
             InputMediaPhoto media = new InputMediaPhoto(new InputFile(file).getNewMediaFile(), file.getName());
-            media.setCaption(payloadContext.caption());
+            media.setCaption(messageContext.getMessage());
 
             mediaList.add(media);
         }
         SendMediaGroup sendMediaGroup = SendMediaGroup.builder()
-                .chatId(payloadContext.chatID())
+                .chatId(messageContext.getTelegramChatId())
                 .medias(mediaList)
                 .build();
 

@@ -27,21 +27,6 @@ public class MessagePayload{
         this.messageType = type;
     }
 
-    public MessagePayload(Long chatId, String name, List<File> file, String type) {
-        this.name = name;
-        this.files = file;
-        this.chatId = chatId;
-        this.messageType = type;
-    }
-
-    public MessagePayload(Long chatId, String name, String message, List<File> file, String type) {
-        this.name = name;
-        this.files = file;
-        this.message = message;
-        this.chatId = chatId;
-        this.messageType = type;
-    }
-
     public MessagePayload(Long chatId, String name, String message, File file, String type) {
         this.name = name;
         this.file = file;

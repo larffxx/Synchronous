@@ -2,26 +2,25 @@ package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
 import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import com.larffxx.synchronoustelegram.service.controller.Command;
-
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-public class LoopCommand implements Command {
+public class StopCommand implements Command {
     private final TextMessageService textMessageService;
 
-    public LoopCommand(TextMessageService textMessageService) {
+    public StopCommand(TextMessageService textMessageService) {
         this.textMessageService = textMessageService;
     }
 
     @Override
     public void execute(CommandContext commandContext) throws TelegramApiException {
-        textMessageService.send(commandContext.chatId(), "Music in Discord is looped");
+        textMessageService.send(commandContext.chatId(), "Music in Discord is stopped");
     }
 
     @Override
     public String getCommand() {
-        return "loop";
+        return "stop";
     }
 }

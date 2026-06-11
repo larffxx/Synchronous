@@ -1,9 +1,7 @@
 package com.larffxx.synchronoustelegram.service.message;
 
-import com.larffxx.synchronoustelegram.domain.record.CommandContext;
-import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
+import com.larffxx.synchronoustelegram.domain.context.MessageContext;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
-import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.infrastructure.sender.TextMessageSender;
 import org.springframework.stereotype.Component;
 
@@ -11,19 +9,17 @@ import org.springframework.stereotype.Component;
 public class TextMessageService implements MessageService {
     private final UpdateReceiver updateReceiver;
     private final TextMessageSender textMessageSender;
-    private final ServersConnectRepository serversConnectRepository;
 
-    public TextMessageService(UpdateReceiver updateReceiver, TextMessageSender textMessageSender, ServersConnectRepository serversConnectRepository) {
+    public TextMessageService(UpdateReceiver updateReceiver, TextMessageSender textMessageSender) {
         this.updateReceiver = updateReceiver;
         this.textMessageSender = textMessageSender;
-        this.serversConnectRepository = serversConnectRepository;
     }
 
     @Override
-    public void send(DiscordPayload payload) {
-        updateReceiver.setChatId(serversConnectRepository.findByDiscordGuild(String.valueOf(payload.getGuildID())).getTelegramChannel());
+    public void send(MessageContext messageContext) {
+        updateReceiver.setChatId(String.valueOf(messageContext.getTelegramChatId()));
 
-        textMessageSender.send(payload);
+        textMessageSender.send(messageContext);
     }
 
     public void send(Long chatId, String text) {

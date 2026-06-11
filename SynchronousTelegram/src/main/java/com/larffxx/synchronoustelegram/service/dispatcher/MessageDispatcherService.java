@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.service.dispatcher;
 
-import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
+import com.larffxx.synchronoustelegram.domain.context.MessageContext;
 import com.larffxx.synchronoustelegram.infrastructure.handler.message.MessageHandler;
 import com.larffxx.synchronoustelegram.service.utility.MessageDefineService;
 import com.larffxx.synchronoustelegram.service.registry.MessageHandlerRegistry;
@@ -25,12 +25,11 @@ public class MessageDispatcherService {
         messageHandler.handle(update);
     }
 
-    //TODO: param MessageContext
-    public void dispatch(DiscordPayload discordPayload){
-        String messageType = discordPayload.getMessageType().toString();
+    public void dispatch(MessageContext messageContext){
+        String messageType = messageContext.getMessageType().toString();
 
         MessageHandler messageHandler = messagePreProcessor.get(messageType);
 
-        messageHandler.handle(discordPayload);
+        messageHandler.handle(messageContext);
     }
 }

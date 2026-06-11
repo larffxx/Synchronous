@@ -1,5 +1,6 @@
-package com.larffxx.synchronoustelegram.domain.record;
+package com.larffxx.synchronoustelegram.domain.context;
 
+import com.larffxx.synchronoustelegram.domain.constant.MessageType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,16 +14,17 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageContext {
-        private String telegramChatId;
-        private String guildId;
+        private Long telegramChatId;
+        private Long guildId;
+        private String author;
         private String message;
-        private String messageType;
+        private MessageType messageType;
         private List<File> fileList;
 
-        //TODO: context in mapper
-        public MessageContext(String telegramChatId, String guildId, String message, String messageType) {
+        public MessageContext(Long telegramChatId, Long guildId, String author,  String message, MessageType messageType) {
             this.telegramChatId = telegramChatId;
             this.guildId = guildId;
+            this.author = author;
             this.message = message;
             this.messageType = messageType;
         }

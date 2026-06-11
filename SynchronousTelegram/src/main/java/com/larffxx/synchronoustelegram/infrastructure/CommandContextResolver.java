@@ -2,7 +2,7 @@ package com.larffxx.synchronoustelegram.infrastructure;
 
 import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.domain.exception.command.InvalidCommandException;
-import com.larffxx.synchronoustelegram.domain.record.CommandContext;
+import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 

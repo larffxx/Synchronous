@@ -1,7 +1,7 @@
 package com.larffxx.synchronoustelegram.infrastructure.sender;
 
-import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
+import com.larffxx.synchronoustelegram.domain.context.MessageContext;
 
 public interface Sender {
-    void send(DiscordPayload discordPayload);
+    void send(MessageContext messageContext);
 }

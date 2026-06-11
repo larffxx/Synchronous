@@ -1,4 +1,4 @@
-package com.larffxx.synchronoustelegram.domain.record;
+package com.larffxx.synchronoustelegram.domain.context;
 
 import java.util.List;
 

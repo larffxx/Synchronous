@@ -1,12 +1,10 @@
 package com.larffxx.synchronoustelegram.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-@Component
 public class URIFromJsonParser {
 
     public List<String> uriParse(JsonNode data) {

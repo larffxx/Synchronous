@@ -1,7 +1,6 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
-import com.larffxx.synchronoustelegram.domain.record.CommandContext;
-import com.larffxx.synchronoustelegram.infrastructure.payload.DiscordPayload;
+import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
 import com.larffxx.synchronoustelegram.service.controller.Command;
@@ -24,13 +23,6 @@ public class PlayCommand implements Command {
     @Override
     public void execute(CommandContext commandContext){
         textMessageService.send(commandContext.chatId(), "Music added");
-    }
-
-    @Override
-    public void execute(DiscordPayload discordPayload) {
-        Long telegramChatId = Long.valueOf(serversConnectRepository.findByDiscordGuild(String.valueOf(discordPayload.getGuildID())).getTelegramChannel());
-
-        textMessageService.send(telegramChatId, "Music added");
     }
 
     @Override
