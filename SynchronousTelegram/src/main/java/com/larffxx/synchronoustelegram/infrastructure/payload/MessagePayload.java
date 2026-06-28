@@ -14,18 +14,12 @@ import java.util.List;
 @NoArgsConstructor
 public class MessagePayload{
     private Long chatId;
+    private String guildId;
     private String name;
     private String message;
     private File file;
     private List<File> files;
     private String messageType;
-
-    public MessagePayload(String name, String message, Long chatId, String type) {
-        this.name = name;
-        this.message = message;
-        this.chatId = chatId;
-        this.messageType = type;
-    }
 
     public MessagePayload(Long chatId, String name, String message, File file, String type) {
         this.name = name;
@@ -34,9 +28,11 @@ public class MessagePayload{
         this.chatId = chatId;
         this.messageType = type;
     }
-    public MessagePayload(Long chatId, String name,  File file, String type) {
+
+    public MessagePayload(Long chatId, String guildId, String name, String message, String type) {
+        this.guildId = guildId;
         this.name = name;
-        this.file = file;
+        this.message = message;
         this.chatId = chatId;
         this.messageType = type;
     }

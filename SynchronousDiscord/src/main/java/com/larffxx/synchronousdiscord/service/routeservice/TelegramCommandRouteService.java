@@ -23,6 +23,7 @@ public class TelegramCommandRouteService extends RouteService{
         this.executor = executor;
     }
 
+    //TODO: 1 single route
     public void send(JsonNode data){
         String telegramChatID = data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText();
         String guildId = getServersConnectRepository().getConnectByTelegramChannel(telegramChatID).getDiscordGuild();

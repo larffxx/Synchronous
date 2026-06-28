@@ -23,6 +23,7 @@ public class TelegramMessageConsumer {
         this.telegramMessageRouteService = telegramMessageRouteService;
     }
 
+    //TODO: Consuming with mapping context
     @KafkaListener(topics = "${tMTopic}", groupId = "${groupId}")
     public void listener(@Payload String message) {
         JsonNode data;

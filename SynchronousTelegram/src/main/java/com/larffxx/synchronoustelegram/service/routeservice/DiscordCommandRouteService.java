@@ -1,7 +1,6 @@
 package com.larffxx.synchronoustelegram.service.routeservice;
 
 import com.larffxx.synchronoustelegram.domain.context.CommandContext;
-import com.larffxx.synchronoustelegram.domain.context.MessageContext;
 import com.larffxx.synchronoustelegram.service.executor.TelegramClientCommandExecutorService;
 import lombok.Getter;
 import lombok.Setter;

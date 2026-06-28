@@ -30,6 +30,7 @@ public class TelegramCommandConsumer {
         this.commandVerifier = commandVerifier;
     }
 
+    //TODO: Consuming with mapping context
     @KafkaListener(topics = "${tCTopic}", groupId = "${groupId}")
     public void listener(@Payload String command) {
         JsonNode data;

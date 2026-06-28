@@ -1,11 +1,12 @@
 package com.larffxx.synchronoustelegram.infrastructure.handler.filehandler;
 
+import com.larffxx.synchronoustelegram.infrastructure.mapper.UpdateToMessagePayloadMapper;
+import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.util.PhotoAlbumHolder;
 import com.larffxx.synchronoustelegram.service.utility.PhotoDownloadService;
 import com.larffxx.synchronoustelegram.util.TmpToJpgConverter;
 import com.larffxx.synchronoustelegram.domain.exception.data.input.ReceivingPhotoException;
 import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
-import com.larffxx.synchronoustelegram.domain.constant.MessageType;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,17 +26,21 @@ public class MediaGroupHandler {
     private final TmpToJpgConverter tmpToJpgConverter;
     private final PhotoDownloadService photoDownloadService;
     private final PhotoAlbumHolder photoAlbumHolder;
+    private final ServersConnectRepository serversConnectRepository;
 
-    public MediaGroupHandler(TmpToJpgConverter tmpToJpgConverter, PhotoDownloadService photoDownloadService, PhotoAlbumHolder photoAlbumHolder) {
+    public MediaGroupHandler(TmpToJpgConverter tmpToJpgConverter, PhotoDownloadService photoDownloadService, PhotoAlbumHolder photoAlbumHolder, ServersConnectRepository serversConnectRepository) {
         this.tmpToJpgConverter = tmpToJpgConverter;
         this.photoDownloadService = photoDownloadService;
         this.photoAlbumHolder = photoAlbumHolder;
+        this.serversConnectRepository = serversConnectRepository;
     }
 
     public MessagePayload handleAlbum(Update update){
+        UpdateToMessagePayloadMapper updateToMessagePayloadMapper = new UpdateToMessagePayloadMapper();
+
         Message message = update.getMessage();
         Long chatId = message.getChatId();
-        String userName = message.getFrom().getUserName();
+        String guildId = serversConnectRepository.findByTelegramChannel(String.valueOf(chatId)).getDiscordGuild();
         String caption = message.getCaption();
         String mediaGroupId = message.getMediaGroupId();
         List<PhotoSize> photos = message.getPhoto();
@@ -47,11 +52,14 @@ public class MediaGroupHandler {
         }
         File photoFile = tmpToJpgConverter.tmpConvertToJpg(photoDownloadService.downloadPhoto(lastDownloadedPhotoFromAlbum.get().getFileId()), Long.valueOf(message.getMessageId()));
 
+        MessagePayload messagePayload = updateToMessagePayloadMapper.mapToPayload(update, guildId, photoFile);
         photoAlbumHolder.clearAllAlbumPhotos();
-        if(caption == null){
-            return new MessagePayload(chatId,userName,photoFile, String.valueOf(MessageType.PHOTO_MESSAGE));
+
+        if(caption != null){
+            messagePayload.setMessage(caption);
+            return messagePayload;
         }
-        return new MessagePayload(chatId,userName,caption,photoFile,String.valueOf(MessageType.PHOTO_MESSAGE));
+        return messagePayload;
     }
 
 }

@@ -1,8 +1,9 @@
 package com.larffxx.synchronoustelegram.infrastructure.handler.filehandler;
 
+import com.larffxx.synchronoustelegram.infrastructure.mapper.UpdateToMessagePayloadMapper;
+import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.service.utility.PhotoDownloadService;
 import com.larffxx.synchronoustelegram.util.TmpToJpgConverter;
-import com.larffxx.synchronoustelegram.domain.constant.MessageType;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,23 +20,30 @@ import java.io.File;
 public class SinglePhotoMessageHandler {
     private final PhotoDownloadService photoDownloadService;
     private final TmpToJpgConverter tmpToJpgConverter;
+    private final ServersConnectRepository serversConnectRepository;
 
-    public SinglePhotoMessageHandler(PhotoDownloadService photoDownloadService, TmpToJpgConverter tmpToJpgConverter) {
+    public SinglePhotoMessageHandler(PhotoDownloadService photoDownloadService, TmpToJpgConverter tmpToJpgConverter, ServersConnectRepository serversConnectRepository) {
         this.photoDownloadService = photoDownloadService;
         this.tmpToJpgConverter = tmpToJpgConverter;
+        this.serversConnectRepository = serversConnectRepository;
     }
 
     public MessagePayload onSinglePhotoReceived(Update update) {
+        UpdateToMessagePayloadMapper updateToMessagePayloadMapper = new UpdateToMessagePayloadMapper();
         Message message = update.getMessage();
         Long chatId = message.getChatId();
-        String userName = message.getFrom().getUserName();
+        String guildId = serversConnectRepository.findByTelegramChannel(String.valueOf(chatId)).getDiscordGuild();
         String caption = message.getCaption();
         String getFileId = message.getPhoto().get(update.getMessage().getPhoto().size() - 1).getFileId();
-        File photo = photoDownloadService.downloadPhoto(getFileId);
 
+        File rawPhoto = photoDownloadService.downloadPhoto(getFileId);
+        File photo = tmpToJpgConverter.tmpConvertToJpg(rawPhoto, Long.valueOf(message.getMessageId()));
+
+        MessagePayload messagePayload = updateToMessagePayloadMapper.mapToPayload(update, guildId, photo);
         if(caption != null){
-            return new MessagePayload(chatId, userName, caption,tmpToJpgConverter.tmpConvertToJpg(photo, Long.valueOf(message.getMessageId())), String.valueOf(MessageType.PHOTO_MESSAGE));
+            messagePayload.setMessage(caption);
+            return messagePayload;
         }
-        return new MessagePayload(chatId,userName,tmpToJpgConverter.tmpConvertToJpg(photo, Long.valueOf(message.getMessageId())), String.valueOf(MessageType.PHOTO_MESSAGE));
+        return messagePayload;
     }
 }

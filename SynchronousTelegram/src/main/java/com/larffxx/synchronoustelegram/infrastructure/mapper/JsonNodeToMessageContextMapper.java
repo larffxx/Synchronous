@@ -9,9 +9,10 @@ import com.larffxx.synchronoustelegram.util.URIFromJsonParser;
 import java.io.File;
 import java.util.List;
 
-public class JsonNodeToMessageContextMapper {
+public class JsonNodeToMessageContextMapper implements ContextMapper<MessageContext> {
 
-    public MessageContext toMessageContext(JsonNode jsonNode) {
+    @Override
+    public MessageContext mapToContext(JsonNode jsonNode) {
         Long guildID = jsonNode.get("guildId").asLong();
         Long telegramChatId = jsonNode.get("telegramChatId").asLong();
         String author = jsonNode.get("authorName").asText();

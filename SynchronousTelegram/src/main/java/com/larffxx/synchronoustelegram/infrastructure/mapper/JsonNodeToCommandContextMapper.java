@@ -6,9 +6,10 @@ import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-public class JsonNodeToCommandContextMapper {
+public class JsonNodeToCommandContextMapper implements ContextMapper<CommandContext> {
 
-    public CommandContext toCommandContext(JsonNode jsonNode) {
+    @Override
+    public CommandContext mapToContext(JsonNode jsonNode) {
         Long chatId = jsonNode.get("telegramChatId").asLong();
         String commandName = jsonNode.get("commandName").asText();
         String commandAuthor = jsonNode.get("authorName").asText();

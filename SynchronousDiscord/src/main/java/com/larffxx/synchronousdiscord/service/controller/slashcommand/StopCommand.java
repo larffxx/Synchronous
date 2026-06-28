@@ -48,6 +48,7 @@ public class StopCommand implements Command{
 
         context.guildMusicManager().getScheduler().stopTrack();
         textChannel.sendMessage(CommandConstants.STOP_SUCCESS_MESSAGE).queue();
+        context.guild().getAudioManager().closeAudioConnection();
     }
 
     @Override

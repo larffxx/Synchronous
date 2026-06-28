@@ -18,6 +18,7 @@ public class TelegramMessageRouteService extends RouteService{
         this.senderRegistry = senderRegistry;
     }
 
+    //TODO: 1 single route
     public void send(JsonNode data) {
         getEventReceiver().setTextChannel(getEventReceiver()
                 .getJda()

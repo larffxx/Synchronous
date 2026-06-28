@@ -1,8 +1,10 @@
 package com.larffxx.synchronoustelegram.infrastructure.producer;
 
+import com.larffxx.synchronoustelegram.infrastructure.mapper.PayloadMapper;
+import com.larffxx.synchronoustelegram.infrastructure.mapper.UpdateToMessagePayloadMapper;
+import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.util.TmpToJpgConverter;
 import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
-import com.larffxx.synchronoustelegram.domain.constant.MessageType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,10 +22,12 @@ public class TelegramKafkaMessageProducer {
     private String topic;
     private final TmpToJpgConverter tmpToJpgConverter;
     private final KafkaTemplate<String, MessagePayload> kafkaTemplate;
+    private final ServersConnectRepository serversConnectRepository;
 
-    public TelegramKafkaMessageProducer(TmpToJpgConverter tmpToJpgConverter, KafkaTemplate<String, MessagePayload> kafkaTemplate) {
+    public TelegramKafkaMessageProducer(TmpToJpgConverter tmpToJpgConverter, KafkaTemplate<String, MessagePayload> kafkaTemplate, ServersConnectRepository serversConnectRepository) {
         this.tmpToJpgConverter = tmpToJpgConverter;
         this.kafkaTemplate = kafkaTemplate;
+        this.serversConnectRepository = serversConnectRepository;
     }
 
     public void sendKafkaMessage(MessagePayload messagePayload) {
@@ -32,7 +36,12 @@ public class TelegramKafkaMessageProducer {
     }
 
     public void sendKafkaMessage(Update update) {
-        MessagePayload messagePayload = new MessagePayload(update.getMessage().getFrom().getUserName(), update.getMessage().getText(), update.getMessage().getChatId(), String.valueOf(MessageType.TEXT_MESSAGE));
+        String chatId = update.getMessage().getChatId().toString();
+        String guildId = serversConnectRepository.findByTelegramChannel(chatId).getDiscordGuild();
+
+        PayloadMapper<MessagePayload> updateToMessagePayloadMapper = new UpdateToMessagePayloadMapper();
+        MessagePayload messagePayload = updateToMessagePayloadMapper.mapToPayload(update, guildId);
+
         Message message = MessageBuilder.withPayload(messagePayload).setHeader("kafka_topic", topic).build();
         kafkaTemplate.send(message);
     }

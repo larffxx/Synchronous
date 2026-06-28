@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larffxx.synchronoustelegram.domain.context.MessageContext;
+import com.larffxx.synchronoustelegram.infrastructure.mapper.ContextMapper;
 import com.larffxx.synchronoustelegram.infrastructure.mapper.JsonNodeToMessageContextMapper;
 import com.larffxx.synchronoustelegram.service.routeservice.DiscordMessageRouteService;
 import lombok.Getter;
@@ -27,8 +28,8 @@ public class DiscordMessageConsumer {
         try {
             JsonNode data = new ObjectMapper().readTree(message);
 
-            JsonNodeToMessageContextMapper contextMapper = new JsonNodeToMessageContextMapper();
-            MessageContext context = contextMapper.toMessageContext(data);
+            ContextMapper<MessageContext> contextMapper = new JsonNodeToMessageContextMapper();
+            MessageContext context = contextMapper.mapToContext(data);
 
             discordMessageRouteService.send(context);
         } catch (JsonProcessingException e) {

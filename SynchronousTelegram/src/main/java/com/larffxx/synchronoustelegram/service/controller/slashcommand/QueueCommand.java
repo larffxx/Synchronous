@@ -14,6 +14,7 @@ public class QueueCommand implements Command {
         this.textMessageService = textMessageService;
     }
 
+    //TODO: queue list for telegram
     @Override
     public void execute(CommandContext commandContext) throws TelegramApiException {
         textMessageService.send(commandContext.chatId(), "Queue");

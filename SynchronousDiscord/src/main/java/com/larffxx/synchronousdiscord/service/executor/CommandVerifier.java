@@ -18,6 +18,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 @Component
@@ -68,9 +70,11 @@ public class CommandVerifier {
                 .findFirst().get();
 
         List<Command.Option> commandOptions = discordCommand.getOptions();
-        List<String> providedOptions = data.findValues(CommandConstants.COMMAND_OPTIONS)
-                .stream()
-                .map(JsonNode::asText).toList();
+        List<String> providedOptions = StreamSupport
+                .stream(data.get(CommandConstants.COMMAND_OPTIONS).spliterator(), false)
+                .map(JsonNode::asText)
+                .filter(s -> s != null && !s.isBlank())
+                .collect(Collectors.toList());
 
 
         if (providedOptions.size() > commandOptions.size()) {
