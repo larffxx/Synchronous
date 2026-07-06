@@ -27,7 +27,6 @@ public class TelegramCommandConsumer {
         this.jsonNodeToTelegramCommandContextContextMapper = jsonNodeToTelegramCommandContextContextMapper;
     }
 
-    //TODO: Consuming with mapping context
     @KafkaListener(topics = "${tCTopic}", groupId = "${groupId}")
     public void listener(@Payload String command) {
         JsonNode data;
