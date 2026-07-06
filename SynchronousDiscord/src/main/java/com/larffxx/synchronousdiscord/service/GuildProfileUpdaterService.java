@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.service;
 
 import com.larffxx.synchronousdiscord.domain.model.Profile;
-import com.larffxx.synchronousdiscord.domain.record.MemberContext;
+import com.larffxx.synchronousdiscord.domain.context.MemberContext;
 import com.larffxx.synchronousdiscord.infrastructure.repo.GuildProfileRepository;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.repo.UsersConnectRepository;

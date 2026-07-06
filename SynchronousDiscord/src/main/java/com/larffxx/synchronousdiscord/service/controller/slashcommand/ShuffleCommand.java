@@ -1,10 +1,10 @@
 package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
+import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
 import com.larffxx.synchronousdiscord.domain.exception.command.ShuffleException;
-import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
+import com.larffxx.synchronousdiscord.domain.context.DiscordAudioContext;
 import com.larffxx.synchronousdiscord.infrastructure.DiscordContextResolver;
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -31,8 +31,8 @@ public class ShuffleCommand implements Command{
     }
 
     @Override
-    public void execute(JsonNode data) throws ShuffleException {
-        DiscordContext context = discordContextResolver.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+    public void execute(TelegramCommandContext telegramCommandContext) throws ShuffleException {
+        DiscordAudioContext context = discordContextResolver.resolveContext(telegramCommandContext);
 
         TextChannel textChannel = context.textChannel();
         context.guildMusicManager().getScheduler().shuffle();

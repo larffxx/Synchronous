@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
+import com.larffxx.synchronousdiscord.domain.context.DiscordAudioContext;
+import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
 import com.larffxx.synchronousdiscord.infrastructure.DiscordContextResolver;
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
@@ -34,8 +34,8 @@ public class SkipTrackCommand implements Command{
     }
 
     @Override
-    public void execute(JsonNode data) {
-        DiscordContext context = discordContextResolver.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
+    public void execute(TelegramCommandContext telegramCommandContext) {
+        DiscordAudioContext context = discordContextResolver.resolveContext(telegramCommandContext);
         TextChannel textChannel = context.textChannel();
 
         context.guildMusicManager().getScheduler().nextTrack();

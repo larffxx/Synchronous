@@ -1,8 +1,6 @@
 package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
-import com.larffxx.synchronousdiscord.infrastructure.DiscordContextResolver;
+import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.domain.model.UsersConnect;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
@@ -14,12 +12,10 @@ import org.springframework.stereotype.Service;
 public class UserRegisterCommand implements Command {
     private final UsersConnectRepository usersConnectRepository;
     private final ServersConnectRepository serversConnectRepository;
-    private final DiscordContextResolver discordContextResolver;
 
-    public UserRegisterCommand(UsersConnectRepository usersConnectRepository, ServersConnectRepository serversConnectRepository, DiscordContextResolver discordContextResolver) {
+    public UserRegisterCommand(UsersConnectRepository usersConnectRepository, ServersConnectRepository serversConnectRepository) {
         this.usersConnectRepository = usersConnectRepository;
         this.serversConnectRepository = serversConnectRepository;
-        this.discordContextResolver = discordContextResolver;
     }
 
 
@@ -41,10 +37,8 @@ public class UserRegisterCommand implements Command {
     }
 
     @Override
-    public void execute(JsonNode data) {
-        DiscordContext context = discordContextResolver.resolveContext(data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText());
-
-        context.textChannel().sendMessage(data.findValue(CommandConstants.NAME_FROM_TELEGRAM).asText() + CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
+    public void execute(TelegramCommandContext telegramCommandContext) {
+        telegramCommandContext.textChannel().sendMessage(telegramCommandContext.telegramUsername() + CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
     }
 
     @Override

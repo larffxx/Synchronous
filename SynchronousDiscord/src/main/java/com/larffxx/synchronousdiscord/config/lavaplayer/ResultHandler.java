@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.config.lavaplayer;
 import com.github.topi314.lavasrc.spotify.SpotifySourceManager;
 import com.github.topi314.lavasrc.yandexmusic.YandexMusicSourceManager;
 import com.larffxx.synchronousdiscord.config.bot.LavaplayerSecretsHolder;
-import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import com.larffxx.synchronousdiscord.infrastructure.sender.embed.EmbedSender;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
@@ -27,13 +27,13 @@ import java.util.Map;
 @Getter
 @Setter
 public class ResultHandler implements AudioLoadResultHandler {
-    private final EventReceiver eventReceiver;
+    private final EventContext eventContext;
     private AudioPlayerManager audioPlayerManager;
     private Map<Long, GuildMusicManager> musicManagers;
     private final LavaplayerSecretsHolder lavaplayerSecretsHolder;
     private final EmbedSender embedSender;
 
-    public ResultHandler(EventReceiver eventReceiver, LavaplayerSecretsHolder lavaplayerSecretsHolder, EmbedSender embedSender) {
+    public ResultHandler(EventContext eventContext, LavaplayerSecretsHolder lavaplayerSecretsHolder, EmbedSender embedSender) {
         this.lavaplayerSecretsHolder = lavaplayerSecretsHolder;
         this.musicManagers = new HashMap<>();
         this.audioPlayerManager = new DefaultAudioPlayerManager();
@@ -43,13 +43,13 @@ public class ResultHandler implements AudioLoadResultHandler {
 
         AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
-        this.eventReceiver = eventReceiver;
+        this.eventContext = eventContext;
         this.embedSender = embedSender;
     }
 
     @Override
     public void trackLoaded(AudioTrack track) {
-        this.getMusicManager(eventReceiver.getTextChannel().getGuild()).getScheduler().queue(track);
+        this.getMusicManager(eventContext.getTextChannel().getGuild()).getScheduler().queue(track);
         EmbedBuilder musicEB = new EmbedBuilder();
         musicEB.setDescription("A new music has been added to queue.");
         musicEB.addField("Music", track.getInfo().title, false);
@@ -63,7 +63,7 @@ public class ResultHandler implements AudioLoadResultHandler {
         EmbedBuilder playlistEb = new EmbedBuilder();
         playlistEb.addField("Playlist", playlist.getName(), false);
         for (AudioTrack track : tracks) {
-            getMusicManager(eventReceiver.getTextChannel().getGuild()).getScheduler().queue(track);
+            getMusicManager(eventContext.getTextChannel().getGuild()).getScheduler().queue(track);
         }
         embedSender.send(playlistEb);
     }

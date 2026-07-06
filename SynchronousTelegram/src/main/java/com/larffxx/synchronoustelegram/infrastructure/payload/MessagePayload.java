@@ -37,6 +37,15 @@ public class MessagePayload{
         this.messageType = type;
     }
 
+    public MessagePayload(Long chatId, String guildId, String username, String message, File photoFile, String messageType) {
+        this.chatId = chatId;
+        this.guildId = guildId;
+        this.name = username;
+        this.message = message;
+        this.file = photoFile;
+        this.messageType = messageType;
+    }
+
 
     public String toString() {
         return "Name: " + this.name + " Message: " + this.message;

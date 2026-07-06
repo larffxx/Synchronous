@@ -1,6 +1,6 @@
 package com.larffxx.synchronousdiscord.infrastructure.discord.event;
 
-import com.larffxx.synchronousdiscord.domain.record.MemberContext;
+import com.larffxx.synchronousdiscord.domain.context.MemberContext;
 import com.larffxx.synchronousdiscord.infrastructure.MemberContextResolver;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.repo.UsersConnectRepository;

@@ -2,30 +2,22 @@ package com.larffxx.synchronousdiscord.infrastructure;
 
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
 import com.larffxx.synchronousdiscord.config.lavaplayer.ResultHandler;
-import com.larffxx.synchronousdiscord.domain.record.DiscordContext;
-import com.larffxx.synchronousdiscord.infrastructure.sender.utility.DiscordEntityResolver;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import com.larffxx.synchronousdiscord.domain.context.DiscordAudioContext;
+import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
 import org.springframework.stereotype.Component;
 
-import static com.larffxx.synchronousdiscord.infrastructure.sender.utility.DiscordEntityResolver.resolveTextChannel;
 
 @Component
 public class DiscordContextResolver {
     private final ResultHandler resultHandler;
-    private final DiscordEntityResolver discordEntityResolver;
 
-    public DiscordContextResolver(ResultHandler resultHandler, DiscordEntityResolver discordEntityResolver) {
+    public DiscordContextResolver(ResultHandler resultHandler) {
         this.resultHandler = resultHandler;
-        this.discordEntityResolver = discordEntityResolver;
     }
 
-    public DiscordContext resolveContext(String telegramChatID) {
-        String guildID = discordEntityResolver.resolveGuildId(telegramChatID);
-        Guild guild = discordEntityResolver.resolveGuild(guildID);
-        TextChannel textChannel = resolveTextChannel(guild);
-        GuildMusicManager manager = resultHandler.getMusicManager(guild);
+    public DiscordAudioContext resolveContext(TelegramCommandContext telegramCommandContext) {
+        GuildMusicManager manager = resultHandler.getMusicManager(telegramCommandContext.guild());
 
-        return new DiscordContext(guild, textChannel, manager);
+        return new DiscordAudioContext(telegramCommandContext.guild(), telegramCommandContext.textChannel(), manager);
     }
 }

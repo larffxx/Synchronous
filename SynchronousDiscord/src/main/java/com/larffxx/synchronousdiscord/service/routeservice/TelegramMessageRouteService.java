@@ -1,35 +1,29 @@
 package com.larffxx.synchronousdiscord.service.routeservice;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.larffxx.synchronousdiscord.domain.constant.infmsg.SendersConstants;
+import com.larffxx.synchronousdiscord.domain.context.TelegramMessageContext;
 import com.larffxx.synchronousdiscord.service.registry.SenderRegistry;
-import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.sender.Sender;
 import org.springframework.stereotype.Component;
 
 
 @Component
-public class TelegramMessageRouteService extends RouteService{
+public class TelegramMessageRouteService extends RouteService<TelegramMessageContext> {
     private final SenderRegistry senderRegistry;
 
-    public TelegramMessageRouteService(EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository, SenderRegistry senderRegistry) {
-        super(eventReceiver, serversConnectRepository);
+    public TelegramMessageRouteService(EventContext eventContext, ServersConnectRepository serversConnectRepository, SenderRegistry senderRegistry) {
+        super(eventContext, serversConnectRepository);
         this.senderRegistry = senderRegistry;
     }
 
     //TODO: 1 single route
-    public void send(JsonNode data) {
-        getEventReceiver().setTextChannel(getEventReceiver()
-                .getJda()
-                .getGuildById(getServersConnectRepository()
-                        .getConnectByTelegramChannel(data.findValue(SendersConstants.TELEGRAM_CHAT_ID).asText())
-                        .getDiscordGuild())
-                .getTextChannelsByName(SendersConstants.TEXT_CHANNEL_IN_DISCORD, true)
-                .get(0));
-        Sender sender = senderRegistry.getCommand(data.findValue(SendersConstants.MESSAGE_TYPE).asText());
+    public void send(TelegramMessageContext telegramMessageContext) {
+        getEventContext().setTextChannel(telegramMessageContext.textChannel());
 
-        sender.send(data);
+        Sender sender = senderRegistry.getCommand(String.valueOf(telegramMessageContext.messageType()));
+
+        sender.send(telegramMessageContext);
     }
 }
 

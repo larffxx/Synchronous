@@ -1,16 +1,14 @@
 package com.larffxx.synchronousdiscord.service.executor;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
 import com.larffxx.synchronousdiscord.domain.exception.VerifyException;
 import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
-import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
-import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import com.larffxx.synchronousdiscord.service.registry.SlashCommandRegistry;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -18,8 +16,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 
 @Component
@@ -28,11 +24,11 @@ import java.util.stream.StreamSupport;
 public class CommandVerifier {
     private final ServersConnectRepository serversConnectRepository;
     private final SlashCommandRegistry slashCommandRegistry;
-    private final EventReceiver eventReceiver;
+    private final EventContext eventContext;
 
-    public CommandVerifier(SlashCommandRegistry slashCommandRegistry, EventReceiver eventReceiver, ServersConnectRepository serversConnectRepository) {
+    public CommandVerifier(SlashCommandRegistry slashCommandRegistry, EventContext eventContext, ServersConnectRepository serversConnectRepository) {
         this.slashCommandRegistry = slashCommandRegistry;
-        this.eventReceiver = eventReceiver;
+        this.eventContext = eventContext;
         this.serversConnectRepository = serversConnectRepository;
     }
 
@@ -44,8 +40,8 @@ public class CommandVerifier {
             throw new VerifyException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
         }
 
-        eventReceiver.setMessageChannel(t.getMessageChannel());
-        eventReceiver.setOptionMappings(options);
+        eventContext.setMessageChannel(t.getMessageChannel());
+        eventContext.setOptionMappings(options);
 
         for (OptionMapping option : options) {
             for (Command.Option providedOption : commandOptions) {
@@ -60,30 +56,21 @@ public class CommandVerifier {
         }
     }
 
-    public void verifyCommand(JsonNode data) throws VerifyException {
-        String telegramChatId = data.findValue(CommandConstants.TELEGRAM_CHAT_ID).asText();
-        Guild guild = eventReceiver.getJda().getGuildById(serversConnectRepository.getConnectByTelegramChannel(telegramChatId).getDiscordGuild());
-        String discordTextChannel = CommandConstants.DISCORD_TEXT_CHANNEL;
-        String strCommand = data.findValue(CommandConstants.COMMAND_VALUE).asText();
-        Command discordCommand = guild.retrieveCommands().complete().stream()
-                .filter(command -> command.getName().equals(strCommand))
+    public void verifyCommand(TelegramCommandContext telegramCommandContext) throws VerifyException {
+        Command discordCommand = telegramCommandContext.guild().retrieveCommands().complete().stream()
+                .filter(command -> command.getName().equals(telegramCommandContext.command()))
                 .findFirst().get();
 
         List<Command.Option> commandOptions = discordCommand.getOptions();
-        List<String> providedOptions = StreamSupport
-                .stream(data.get(CommandConstants.COMMAND_OPTIONS).spliterator(), false)
-                .map(JsonNode::asText)
-                .filter(s -> s != null && !s.isBlank())
-                .collect(Collectors.toList());
 
 
-        if (providedOptions.size() > commandOptions.size()) {
+        if (telegramCommandContext.options().size() > commandOptions.size()) {
             throw new VerifyException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
         }
 
-        eventReceiver.setMessageChannel(guild.getTextChannelsByName(discordTextChannel, true).get(0));
+        eventContext.setMessageChannel(telegramCommandContext.textChannel());
 
-        verifyMappedValues(commandOptions,providedOptions);
+        verifyMappedValues(commandOptions, telegramCommandContext.options());
     }
 
     private static void verifyMappedValues(List<Command.Option> options, List<String> providedOptions) throws VerifyException {

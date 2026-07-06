@@ -6,9 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.domain.exception.consume.CommandConsumingException;
-import com.larffxx.synchronousdiscord.service.executor.CommandVerifier;
+import com.larffxx.synchronousdiscord.infrastructure.mapper.JsonNodeToTelegramCommandContextContextMapper;
 import com.larffxx.synchronousdiscord.service.routeservice.TelegramCommandRouteService;
-import com.larffxx.synchronousdiscord.service.registry.SlashCommandRegistry;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,14 +19,12 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class TelegramCommandConsumer {
-    private final SlashCommandRegistry slashCommandRegistry;
     private final TelegramCommandRouteService telegramCommandRouteService;
-    private final CommandVerifier commandVerifier;
+    private final JsonNodeToTelegramCommandContextContextMapper jsonNodeToTelegramCommandContextContextMapper;
 
-    public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService, SlashCommandRegistry slashCommandRegistry, CommandVerifier commandVerifier) {
+    public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService, JsonNodeToTelegramCommandContextContextMapper jsonNodeToTelegramCommandContextContextMapper) {
         this.telegramCommandRouteService = telegramCommandRouteService;
-        this.slashCommandRegistry = slashCommandRegistry;
-        this.commandVerifier = commandVerifier;
+        this.jsonNodeToTelegramCommandContextContextMapper = jsonNodeToTelegramCommandContextContextMapper;
     }
 
     //TODO: Consuming with mapping context
@@ -37,7 +34,7 @@ public class TelegramCommandConsumer {
         try {
             data = new ObjectMapper().readTree(command);
 
-            telegramCommandRouteService.send(data);
+            telegramCommandRouteService.send(jsonNodeToTelegramCommandContextContextMapper.toContext(data));
         } catch (JsonProcessingException e) {
             throw new CommandConsumingException(InfExcMessages.COMMAND_CONSUMING_EXCEPTION);
         }

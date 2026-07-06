@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.config.bot;
 
 import com.larffxx.synchronousdiscord.infrastructure.listener.EventsListener;
-import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,12 +23,12 @@ import org.springframework.stereotype.Component;
 public class DiscordBot {
     @Value("${token}")
     private String token;
-    private final EventReceiver eventReceiver;
+    private final EventContext eventContext;
     private final EventsListener eventsListener;
     private JDA jda;
 
-    public DiscordBot(EventReceiver eventReceiver, EventsListener eventsListener) {
-        this.eventReceiver = eventReceiver;
+    public DiscordBot(EventContext eventContext, EventsListener eventsListener) {
+        this.eventContext = eventContext;
         this.eventsListener = eventsListener;
     }
 
@@ -43,6 +43,6 @@ public class DiscordBot {
                 .setAudioModuleConfig(new AudioModuleConfig()
                         .withDaveSessionFactory(daveSessionFactory))
                 .build();
-        eventReceiver.setJda(jda);
+        eventContext.setJda(jda);
     }
 }

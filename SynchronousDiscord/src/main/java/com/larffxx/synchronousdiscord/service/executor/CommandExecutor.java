@@ -1,9 +1,8 @@
 package com.larffxx.synchronousdiscord.service.executor;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
 import com.larffxx.synchronousdiscord.domain.exception.interaction.DiscordSlashInteractionException;
 import com.larffxx.synchronousdiscord.domain.exception.interaction.TelegramSlashInteractionException;
-import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.service.controller.slashcommand.Command;
 import com.larffxx.synchronousdiscord.service.registry.SlashCommandRegistry;
 import lombok.Getter;
@@ -31,12 +30,10 @@ public class CommandExecutor {
         command.execute(t);
     }
 
-    public void execute(JsonNode data) throws TelegramSlashInteractionException {
-        String strCommand = data.findValue(CommandConstants.COMMAND_VALUE).asText();
+    public void execute(TelegramCommandContext telegramCommandContext) throws TelegramSlashInteractionException {
+        commandVerifier.verifyCommand(telegramCommandContext);
+        Command command = slashCommandRegistry.getCommand(telegramCommandContext.command());
 
-        commandVerifier.verifyCommand(data);
-        Command command = slashCommandRegistry.getCommand(strCommand);
-
-        command.execute(data);
+        command.execute(telegramCommandContext);
     }
 }

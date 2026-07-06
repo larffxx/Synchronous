@@ -1,4 +1,4 @@
-package com.larffxx.synchronousdiscord.infrastructure.discord.receiver;
+package com.larffxx.synchronousdiscord.domain.context;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,9 +14,9 @@ import java.util.List;
 @Component
 @Getter
 @Setter
-public class EventReceiver {
+public class EventContext {
+    private JDA jda;
     private TextChannel textChannel;
     private MessageChannel messageChannel;
     private List<OptionMapping> optionMappings;
-    private JDA jda;
 }

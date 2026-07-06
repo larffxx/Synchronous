@@ -3,7 +3,7 @@ package com.larffxx.synchronousdiscord.infrastructure.discord.event;
 import com.larffxx.synchronousdiscord.domain.exception.interaction.DiscordSlashInteractionException;
 import com.larffxx.synchronousdiscord.service.executor.CommandExecutor;
 import com.larffxx.synchronousdiscord.infrastructure.producer.DiscordPayloadProducer;
-import com.larffxx.synchronousdiscord.infrastructure.discord.receiver.EventReceiver;
+import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -14,17 +14,17 @@ import org.springframework.stereotype.Component;
 public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent> {
     private final DiscordPayloadProducer discordPayloadProducer;
     private final CommandExecutor commandExecutor;
-    private final EventReceiver eventReceiver;
+    private final EventContext eventContext;
 
-    public SlashCommandInteractionEvent(DiscordPayloadProducer discordPayloadProducer, CommandExecutor commandExecutor, EventReceiver eventReceiver) {
+    public SlashCommandInteractionEvent(DiscordPayloadProducer discordPayloadProducer, CommandExecutor commandExecutor, EventContext eventContext) {
         this.discordPayloadProducer = discordPayloadProducer;
         this.commandExecutor = commandExecutor;
-        this.eventReceiver = eventReceiver;
+        this.eventContext = eventContext;
     }
 
     @Override
     public void execute(net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent event) {
-        eventReceiver.setTextChannel(event.getChannel().asTextChannel());
+        eventContext.setTextChannel(event.getChannel().asTextChannel());
         try {
             commandExecutor.execute(event);
         } catch (DiscordSlashInteractionException e) {

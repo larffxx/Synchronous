@@ -16,14 +16,14 @@ public class UpdateToMessagePayloadMapper implements PayloadMapper<MessagePayloa
     public MessagePayload mapToPayload(Update update, String guildId, File photoFile) {
         Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
+        String message = update.getMessage().getText();
 
         if (photoFile != null) {
-            return new MessagePayload(chatId, guildId, username, photoFile,
+            return new MessagePayload(chatId, guildId, username, message, photoFile,
                     String.valueOf(MessageType.PHOTO_MESSAGE));
         }
 
-        return new MessagePayload(chatId, guildId, username,
-                update.getMessage().getText(),
+        return new MessagePayload(chatId, guildId, username, message,
                 String.valueOf(MessageType.TEXT_MESSAGE));
     }
 }

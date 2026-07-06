@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.domain.exception.consume.CommandConsumingException;
+import com.larffxx.synchronousdiscord.infrastructure.mapper.JsonNodeToTelegramMessageContextContextMapper;
 import com.larffxx.synchronousdiscord.service.routeservice.TelegramMessageRouteService;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,9 +19,11 @@ import org.springframework.stereotype.Component;
 @Setter
 public class TelegramMessageConsumer {
     private final TelegramMessageRouteService telegramMessageRouteService;
+    private final JsonNodeToTelegramMessageContextContextMapper jsonNodeToTelegramMessageContextMapper;
 
-    public TelegramMessageConsumer(TelegramMessageRouteService telegramMessageRouteService) {
+    public TelegramMessageConsumer(TelegramMessageRouteService telegramMessageRouteService, JsonNodeToTelegramMessageContextContextMapper jsonNodeToTelegramMessageContextMapper) {
         this.telegramMessageRouteService = telegramMessageRouteService;
+        this.jsonNodeToTelegramMessageContextMapper = jsonNodeToTelegramMessageContextMapper;
     }
 
     //TODO: Consuming with mapping context
@@ -30,7 +33,7 @@ public class TelegramMessageConsumer {
         try {
             data = new ObjectMapper().readTree(message);
 
-            telegramMessageRouteService.send(data);
+            telegramMessageRouteService.send(jsonNodeToTelegramMessageContextMapper.toContext(data));
         } catch (JsonProcessingException e) {
             throw new CommandConsumingException(InfExcMessages.MESSAGE_CONSUMING_EXCEPTION);
         }

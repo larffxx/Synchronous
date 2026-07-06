@@ -6,7 +6,7 @@ import com.larffxx.synchronousdiscord.domain.exception.consume.MessageConsumingE
 import com.larffxx.synchronousdiscord.domain.exception.service.GuildNotFoundException;
 import com.larffxx.synchronousdiscord.domain.exception.service.NoConnectionBetweenServersException;
 import com.larffxx.synchronousdiscord.domain.exception.service.TextChannelNotFoundException;
-import com.larffxx.synchronousdiscord.domain.record.ErrorResponse;
+import com.larffxx.synchronousdiscord.domain.context.ErrorContext;
 import com.larffxx.synchronousdiscord.domain.exception.DiscordSynchronousException;
 import com.larffxx.synchronousdiscord.domain.exception.DownloadAttachmentException;
 import com.larffxx.synchronousdiscord.domain.exception.RouteServiceException;
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.SYNCHRONOUS_DISCORD_EXCEPTION,
                                 exception.getMessage())
                 );
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.DOWNLOAD_ATTACHMENT_EXCEPTION,
                                 exception.getMessage())
                 );
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(InfExcMessages.ROUTE_SERVICE_EXCEPTION,
+                        new ErrorContext(InfExcMessages.ROUTE_SERVICE_EXCEPTION,
                                 exception.getMessage())
                 );
     }
@@ -62,7 +62,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.VERIFY_EXCEPTION,
                                 exception.getMessage())
                 );
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.DISCORD_SLASH_INTERACTION_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.TELEGRAM_SLASH_INTERACTION_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -96,7 +96,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.COMMAND_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -108,7 +108,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.DELETE_MESSAGE_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -119,7 +119,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.SHUFFLE_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -130,7 +130,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.CONSUMING_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -142,7 +142,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.COMMAND_CONSUMING_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -154,7 +154,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.MESSAGE_CONSUMING_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -166,7 +166,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.GUILD_NOT_FOUND_EXCEPTION,
                                 exception.getMessage()
                         )
@@ -178,7 +178,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.NO_CONNECTION_BETWEEN_SERVERS,
                                 exception.getMessage()
                         )
@@ -190,7 +190,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(
-                        new ErrorResponse(
+                        new ErrorContext(
                                 InfExcMessages.TEXT_CHANNEL_NOT_FOUND_EXCEPTION,
                                 exception.getMessage()
                         )
