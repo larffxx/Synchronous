@@ -8,6 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class MemberContextResolver {
     public MemberContext resolveMemberContext(Member member) {
-        return new MemberContext(member.getId(), member.getUser().getEffectiveName(), member.getEffectiveName(), member.getGuild().getId());
+        return new MemberContext(member.getId(), member.getUser().getName(), member.getNickname(), member.getGuild().getId());
     }
 }

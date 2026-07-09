@@ -15,6 +15,6 @@ public class UserInDBChecker {
     }
 
     public boolean isUserInDB(Matcher matcher, Member member){
-        return matcher.group().replace("@", "").equals(usersConnectRepository.findByDiscordId(member.getId()).getTelegramName());
+        return matcher.group().replace("@", "").equals(usersConnectRepository.findByDiscordUserId(member.getId()).getTelegramName());
     }
 }

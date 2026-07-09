@@ -20,7 +20,7 @@ public class MessageFormatter {
 
     public String formatMessage(String message, Matcher matcher, List<Member> memberList) {
         for (Member member : memberList) {
-            if (usersConnectRepository.existsByDiscordId(member.getUser().getId())) {
+            if (usersConnectRepository.existsByDiscordUserId(member.getUser().getId())) {
                 if (userInDBChecker.isUserInDB(matcher, member)) {
                     return message.replace(matcher.group(), member.getUser().getAsMention());
                 }

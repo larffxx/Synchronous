@@ -12,4 +12,6 @@ import lombok.Setter;
 public class UsersConnectDTO {
     private String discordName;
     private String telegramName;
+    private String discordUserId;
+    private Long serversConnectId;
 }

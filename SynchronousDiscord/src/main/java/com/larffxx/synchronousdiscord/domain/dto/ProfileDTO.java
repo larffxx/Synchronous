@@ -11,6 +11,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ProfileDTO {
     private String username;
-    private String discordId;
-    private String discordGuild;
+    private Long usersConnectId;
+    private Long serversConnectId;
 }

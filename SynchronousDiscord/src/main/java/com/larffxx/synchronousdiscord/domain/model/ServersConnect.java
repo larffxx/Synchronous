@@ -21,4 +21,7 @@ public class ServersConnect {
         this.discordGuild = discordName;
         this.telegramChannel = telegramName;
     }
+    public ServersConnect(Long id){
+        this.id = id;
+    }
 }

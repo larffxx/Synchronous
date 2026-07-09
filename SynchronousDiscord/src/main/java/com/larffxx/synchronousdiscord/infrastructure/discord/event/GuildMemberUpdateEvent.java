@@ -40,7 +40,7 @@ public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.
             List<MemberContext> members = guild
                     .getMembers()
                     .stream()
-                    .filter(member -> usersConnectRepository.existsByDiscordId(member.getId()))
+                    .filter(member -> usersConnectRepository.existsByDiscordUserId(member.getId()))
                     .map(memberContextResolver::resolveMemberContext)
                     .collect(Collectors.toCollection(LinkedList::new));
 

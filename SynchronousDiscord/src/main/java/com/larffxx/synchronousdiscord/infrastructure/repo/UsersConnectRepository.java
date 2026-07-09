@@ -10,12 +10,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsersConnectRepository extends JpaRepository<UsersConnect, Long> {
     UsersConnect findByDiscordName(String discordName);
-    UsersConnect findByDiscordId(String discordId);
+    UsersConnect findByDiscordUserId(String discordId);
     UsersConnect findByTelegramName(String name);
     @Transactional
     @Modifying
-    @Query("update UsersConnect u set u.discordName = ?1 where u.discordId = ?2")
-    void updateByDiscordId(String discordName,String discordId);
+    @Query("update UsersConnect u set u.discordName = ?1 where u.discordUserId = ?2")
+    void updateByDiscordId(String discordName,String discordUserId);
 
-    boolean existsByDiscordId(String discordId);
+    boolean existsByDiscordUserId(String discordId);
+    boolean existsByDiscordName(String discordName);
 }
