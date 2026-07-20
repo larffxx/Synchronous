@@ -23,7 +23,7 @@ public class SlashCommandRegistry implements Registry<Command> {
     }
 
     @Override
-    public Command getCommand(String command) {
+    public Command getSender(String command) {
         return commandMap.get(command);
     }
 

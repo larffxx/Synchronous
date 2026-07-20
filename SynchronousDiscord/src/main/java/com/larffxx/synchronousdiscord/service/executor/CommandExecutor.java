@@ -25,14 +25,14 @@ public class CommandExecutor {
     public void execute(SlashCommandInteractionEvent t) throws DiscordSlashInteractionException {
         t.deferReply().queue();
         commandVerifier.verifyCommand(t);
-        Command command = slashCommandRegistry.getCommand(t.getInteraction().getName());
+        Command command = slashCommandRegistry.getSender(t.getInteraction().getName());
 
         command.execute(t);
     }
 
     public void execute(TelegramCommandContext telegramCommandContext) throws TelegramSlashInteractionException {
         commandVerifier.verifyCommand(telegramCommandContext);
-        Command command = slashCommandRegistry.getCommand(telegramCommandContext.command());
+        Command command = slashCommandRegistry.getSender(telegramCommandContext.command());
 
         command.execute(telegramCommandContext);
     }

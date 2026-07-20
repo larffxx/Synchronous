@@ -21,7 +21,6 @@ public class TelegramCommandRouteService extends RouteService<TelegramCommandCon
         this.executor = executor;
     }
 
-    //TODO: 1 single route
     public void send(TelegramCommandContext telegramCommandContext){
         getEventContext().setTextChannel(telegramCommandContext.textChannel());
         try {

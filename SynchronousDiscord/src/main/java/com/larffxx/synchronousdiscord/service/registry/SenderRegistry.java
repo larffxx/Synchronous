@@ -22,7 +22,7 @@ public class SenderRegistry implements Registry<Sender> {
         }
     }
     @Override
-    public Sender<?> getCommand(String command) {
+    public Sender<?> getSender(String command) {
         return senderMap.get(command);
     }
 }
