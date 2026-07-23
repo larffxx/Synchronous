@@ -16,6 +16,10 @@ public interface UsersConnectRepository extends JpaRepository<UsersConnect, Long
     @Modifying
     @Query("update UsersConnect u set u.discordName = ?1 where u.discordUserId = ?2")
     void updateByDiscordId(String discordName,String discordUserId);
+    @Transactional
+    @Modifying
+    @Query("update UsersConnect u set u.discordUserId = ?1 where u.telegramName = ?2")
+    void updateDiscordUserIdByTelegramName(String discordUserId, String telegramName);
 
     boolean existsByDiscordUserId(String discordId);
     boolean existsByDiscordName(String discordName);

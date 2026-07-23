@@ -9,4 +9,6 @@ public interface UsersConnectRepository extends JpaRepository<UsersConnect, Long
     UsersConnect findByTelegramName(String telegramName);
 
     UsersConnect findByDiscordName(String discordName);
+
+    boolean existsByTelegramName(String telegramName);
 }

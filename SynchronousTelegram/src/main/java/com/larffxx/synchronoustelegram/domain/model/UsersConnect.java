@@ -18,8 +18,7 @@ public class UsersConnect {
             name = "users_connect_id"
     )
     private Long id;
-    private String discordName;
-    private String telegramName;
+    private String discordName, telegramName, discordUserId;
 
     @ManyToOne
     @JoinColumn(name = "fk_servers_connect_id", referencedColumnName = "servers_connect_id")
@@ -29,7 +28,7 @@ public class UsersConnect {
         this.telegramName = telegramName;
     }
 
-    public UsersConnect(String discordName) {
-        this.discordName = discordName;
+    public UsersConnect(Long id){
+        this.id = id;
     }
 }

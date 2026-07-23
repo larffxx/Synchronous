@@ -8,6 +8,7 @@ import com.larffxx.synchronousdiscord.domain.mapper.UsersConnectMapper;
 import com.larffxx.synchronousdiscord.domain.model.UsersConnect;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.repo.UsersConnectRepository;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,14 @@ public class UserRegisterCommand implements Command {
 
     @Override
     public void execute(TelegramCommandContext telegramCommandContext) {
-        telegramCommandContext.textChannel().sendMessage(telegramCommandContext.telegramUsername() + CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
+        Mapper<UsersConnect, UsersConnectDTO> mapper = new UsersConnectMapper();
+        UsersConnectDTO usersConnectDTO = mapper.toDTO(usersConnectRepository.findByTelegramName(telegramCommandContext.telegramUsername()));
+        Member discordUser = telegramCommandContext.guild()
+                .getMembersByName(usersConnectDTO.getDiscordName(), false)
+                .stream()
+                .findFirst().get();
+        usersConnectRepository.updateDiscordUserIdByTelegramName(discordUser.getId(), telegramCommandContext.telegramUsername());
+        telegramCommandContext.textChannel().sendMessage(telegramCommandContext.telegramUsername() + " " +CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
     }
 
     @Override

@@ -1,6 +1,9 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
+import com.larffxx.synchronoustelegram.domain.dto.ServersConnectDTO;
 import com.larffxx.synchronoustelegram.domain.exception.command.TooManyOptionsException;
+import com.larffxx.synchronoustelegram.domain.mapper.Mapper;
+import com.larffxx.synchronoustelegram.domain.mapper.ServersConnectMapper;
 import com.larffxx.synchronoustelegram.domain.model.ServersConnect;
 import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
@@ -21,13 +24,15 @@ public class ConnectCommand implements Command {
 
     @Override
     public void execute(CommandContext commandContext) {
+        Mapper<ServersConnect, ServersConnectDTO> mapper = new ServersConnectMapper();
         if(commandContext.options().size() > 1){
             throw new TooManyOptionsException(InfExcMessage.TOO_MANY_OPTIONS_FOR_COMMAND_EXCEPTION);
         }
         Long chatID = commandContext.chatId();
 
         if (!serversConnectRepository.existsByTelegramChannel(String.valueOf(commandContext.chatId()))) {
-            serversConnectRepository.save(new ServersConnect(commandContext.options().get(0), String.valueOf(chatID)));
+            ServersConnectDTO serversConnectDTO = new ServersConnectDTO(commandContext.options().get(0), String.valueOf(chatID));
+            serversConnectRepository.save(mapper.toEntity(serversConnectDTO));
 
             textMessageService.send(chatID, "connected");
         } else {
