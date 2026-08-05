@@ -17,10 +17,6 @@ public class ServersConnect {
 
     private String discordGuild,telegramChannel;
 
-    public ServersConnect(String discordName, String telegramName){
-        this.discordGuild = discordName;
-        this.telegramChannel = telegramName;
-    }
     public ServersConnect(Long id){
         this.id = id;
     }

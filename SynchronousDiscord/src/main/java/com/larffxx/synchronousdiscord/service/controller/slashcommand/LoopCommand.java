@@ -1,6 +1,7 @@
 package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
 import com.larffxx.synchronousdiscord.domain.context.DiscordAudioContext;
+import com.larffxx.synchronousdiscord.domain.context.EmbedContext;
 import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
 import com.larffxx.synchronousdiscord.infrastructure.DiscordContextResolver;
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
@@ -49,13 +50,15 @@ public class LoopCommand implements Command {
 
         if(musicManager == null || musicManager.getAudioPlayer().getPlayingTrack() == null){
             eb.setDescription(CommandConstants.LOOP_UNSUCCESSFUL_MESSAGE);
-            embedSender.send(eb);
-        }else {
-            boolean loop = !musicManager.getScheduler().isRepeat();
-            musicManager.getScheduler().setRepeat(loop);
-            eb.setDescription(CommandConstants.LOOP_SUCCESS_MESSAGE);
-            embedSender.send(eb);
+            embedSender.send(new EmbedContext(eb, musicManager.getScheduler().getQueue().stream().map(t -> t.getInfo().title).toList()));
+            return;
         }
+
+        boolean loop = !musicManager.getScheduler().isRepeat();
+        musicManager.getScheduler().setRepeat(loop);
+        eb.setDescription(CommandConstants.LOOP_SUCCESS_MESSAGE);
+        embedSender.send(new EmbedContext(eb, musicManager.getScheduler().getQueue().stream().map(t -> t.getInfo().title).toList()));
+
     }
 
     @Override

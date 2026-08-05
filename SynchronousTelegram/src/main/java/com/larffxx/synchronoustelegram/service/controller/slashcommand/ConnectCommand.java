@@ -1,5 +1,6 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
+import com.larffxx.synchronoustelegram.domain.constant.infmsg.CommandConstant;
 import com.larffxx.synchronoustelegram.domain.dto.ServersConnectDTO;
 import com.larffxx.synchronoustelegram.domain.exception.command.TooManyOptionsException;
 import com.larffxx.synchronoustelegram.domain.mapper.Mapper;
@@ -9,7 +10,6 @@ import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
-import com.larffxx.synchronoustelegram.service.controller.Command;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,9 +34,9 @@ public class ConnectCommand implements Command {
             ServersConnectDTO serversConnectDTO = new ServersConnectDTO(commandContext.options().get(0), String.valueOf(chatID));
             serversConnectRepository.save(mapper.toEntity(serversConnectDTO));
 
-            textMessageService.send(chatID, "connected");
+            textMessageService.send(chatID, CommandConstant.SUCCESSFULLY_CONNECTED);
         } else {
-            textMessageService.send(chatID, "connected before");
+            textMessageService.send(chatID, CommandConstant.UNSUCCESSFULLY_CONNECTED);
         }
     }
 

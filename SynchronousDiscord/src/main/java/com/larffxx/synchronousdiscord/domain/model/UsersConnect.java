@@ -20,12 +20,6 @@ public class UsersConnect {
     @JoinColumn(name = "fk_servers_connect_id", referencedColumnName = "servers_connect_id")
     private ServersConnect serversConnect;
 
-    public UsersConnect(String discordName, String telegramName, String discordUserId, ServersConnect serversConnect) {
-        this.discordName = discordName;
-        this.telegramName = telegramName;
-        this.discordUserId = discordUserId;
-        this.serversConnect = serversConnect;
-    }
     public UsersConnect(Long id){
         this.id = id;
     }

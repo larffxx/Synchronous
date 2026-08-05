@@ -1,6 +1,7 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
 import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.constant.infmsg.CommandConstant;
 import com.larffxx.synchronoustelegram.domain.dto.UsersConnectDTO;
 import com.larffxx.synchronoustelegram.domain.exception.command.NoOptionsProvidedException;
 import com.larffxx.synchronoustelegram.domain.exception.command.TooManyOptionsException;
@@ -11,7 +12,6 @@ import com.larffxx.synchronoustelegram.domain.model.UsersConnect;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.infrastructure.repo.UsersConnectRepository;
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
-import com.larffxx.synchronoustelegram.service.controller.Command;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,18 +38,20 @@ public class RegisterCommand implements Command {
 
         Long chatID = commandContext.chatId();
         String discordName = commandContext.options().get(0);
-        String telegramName = commandContext.commandAuthorName();
-        if(!usersConnectRepository.existsByTelegramName(telegramName)){
-            Mapper<UsersConnect, UsersConnectDTO> mapper = new UsersConnectMapper();
-            UsersConnectDTO usersConnectDTO = new UsersConnectDTO(serversConnectRepository.findByTelegramChannel(commandContext.chatId().toString()).getId(),
-                    discordName, telegramName);
-            UsersConnect usersConnect = mapper.toEntity(usersConnectDTO);
+        String telegramName = commandContext.executedBy();
 
-            usersConnectRepository.save(usersConnect);
-            textMessageService.send(chatID, "registered");
-        }else {
-            textMessageService.send(chatID, "You have been registered before");
+        if(usersConnectRepository.existsByTelegramName(telegramName)){
+            textMessageService.send(chatID, CommandConstant.USER_UNSUCCESSFULLY_REGISTERED);
+            return;
         }
+
+        Mapper<UsersConnect, UsersConnectDTO> mapper = new UsersConnectMapper();
+        UsersConnectDTO usersConnectDTO = new UsersConnectDTO(serversConnectRepository.findByTelegramChannel(commandContext.chatId().toString()).getId(),
+                discordName, telegramName);
+        UsersConnect usersConnect = mapper.toEntity(usersConnectDTO);
+        usersConnectRepository.save(usersConnect);
+
+        textMessageService.send(chatID, CommandConstant.USER_SUCCESSFULLY_REGISTERED);
     }
 
     public String getCommand() {

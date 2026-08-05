@@ -1,6 +1,6 @@
 package com.larffxx.synchronoustelegram.service.registry;
 
-import com.larffxx.synchronoustelegram.service.controller.Command;
+import com.larffxx.synchronoustelegram.service.controller.slashcommand.Command;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

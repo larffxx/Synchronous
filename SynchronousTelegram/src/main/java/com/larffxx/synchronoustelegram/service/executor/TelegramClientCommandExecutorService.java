@@ -4,7 +4,7 @@ import com.larffxx.synchronoustelegram.domain.exception.execution.StringCommandE
 import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import com.larffxx.synchronoustelegram.infrastructure.CommandContextResolver;
-import com.larffxx.synchronoustelegram.service.controller.Command;
+import com.larffxx.synchronoustelegram.service.controller.slashcommand.Command;
 import com.larffxx.synchronoustelegram.domain.exception.TelegramException;
 import com.larffxx.synchronoustelegram.service.registry.CommandRegistry;
 import lombok.Getter;

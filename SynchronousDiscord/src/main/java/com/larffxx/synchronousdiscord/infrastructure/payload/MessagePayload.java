@@ -15,15 +15,15 @@ import java.util.List;
 public class MessagePayload {
     private Long guildId;
     private Long telegramChatId;
-    private String authorName;
+    private String discordUserName;
     private String message;
     private List<File> files;
     private MessageType messageType;
 
-    public MessagePayload(Long guildId, Long telegramChatId, String authorName, String message, List<File> files) {
+    public MessagePayload(Long guildId, Long telegramChatId, String discordUserName, String message, List<File> files) {
         this.guildId = guildId;
         this.telegramChatId = telegramChatId;
-        this.authorName = authorName;
+        this.discordUserName = discordUserName;
         this.message = message;
         this.files = files;
         this.messageType = MessageType.PHOTO_MESSAGE;

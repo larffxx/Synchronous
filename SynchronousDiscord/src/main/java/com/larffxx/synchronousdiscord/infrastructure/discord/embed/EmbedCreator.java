@@ -1,7 +1,7 @@
 package com.larffxx.synchronousdiscord.infrastructure.discord.embed;
 
-import net.dv8tion.jda.api.EmbedBuilder;
+import com.larffxx.synchronousdiscord.domain.context.EmbedContext;
 
 public interface EmbedCreator<T> {
-    EmbedBuilder buildEmbed(T t);
+    EmbedContext createEmbedContext(T t);
 }

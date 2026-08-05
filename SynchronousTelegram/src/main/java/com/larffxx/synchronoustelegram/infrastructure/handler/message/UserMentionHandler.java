@@ -26,7 +26,7 @@ public class UserMentionHandler {
         if(matcher.find()) {
            return formatMessageWithMention(messageContext.getMessage());
         }
-        return String.format("%s: %s", messageContext.getAuthor(), messageContext.getMessage());
+        return String.format("%s: %s", messageContext.getUser(), messageContext.getMessage());
     }
 
     private String formatMessageWithMention(String msg){

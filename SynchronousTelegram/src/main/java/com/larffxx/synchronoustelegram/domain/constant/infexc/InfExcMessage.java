@@ -7,7 +7,6 @@ public class InfExcMessage {
     public static String SENDING_TEXT_FROM_DISCORD_EXCEPTION = "Sending text from discord exception";
     public static String DOWNLOAD_IMAGE_EXCEPTION = "Download image exception";
     public static String CONVERSION_PHOTO_EXCEPTION = "Conversion photo exception: %s";
-    public static String TELEGRAM_CHANNEL_NAME_PARSING_EXCEPTION = "Telegram channel name parsing exception";
     public static String INVALID_COMMAND_EXCEPTION = "Invalid command";
     public static String TOO_MANY_OPTIONS_FOR_COMMAND_EXCEPTION = "Too many options for command";
     public static String NO_OPTIONS_FOR_COMMAND_EXCEPTION = "No options for command";

@@ -24,10 +24,4 @@ public class Profile {
     @ManyToOne
     @JoinColumn(name = "fk_user_id")
     private UsersConnect usersConnect;
-
-    public Profile(String name, UsersConnect usersConnect, ServersConnect serversConnect){
-        this.name = name;
-        this.usersConnect = usersConnect;
-        this.serversConnect = serversConnect;
-    }
 }

@@ -28,7 +28,7 @@ public class SinglePhotoMessageHandler {
         this.serversConnectRepository = serversConnectRepository;
     }
 
-    public MessagePayload onSinglePhotoReceived(Update update) {
+    public MessagePayload handlePhotoMessage(Update update) {
         UpdateToMessagePayloadMapper updateToMessagePayloadMapper = new UpdateToMessagePayloadMapper();
         Message message = update.getMessage();
         Long chatId = message.getChatId();

@@ -15,32 +15,24 @@ import java.util.List;
 public class MessagePayload{
     private Long chatId;
     private String guildId;
-    private String name;
+    private String telegramUserName;
     private String message;
     private File file;
     private List<File> files;
     private String messageType;
 
-    public MessagePayload(Long chatId, String name, String message, File file, String type) {
-        this.name = name;
-        this.file = file;
+    public MessagePayload(Long chatId, String guildId, String telegramUserName, String message, String type) {
+        this.guildId = guildId;
+        this.telegramUserName = telegramUserName;
         this.message = message;
         this.chatId = chatId;
         this.messageType = type;
     }
 
-    public MessagePayload(Long chatId, String guildId, String name, String message, String type) {
-        this.guildId = guildId;
-        this.name = name;
-        this.message = message;
-        this.chatId = chatId;
-        this.messageType = type;
-    }
-
-    public MessagePayload(Long chatId, String guildId, String username, String message, File photoFile, String messageType) {
+    public MessagePayload(Long chatId, String guildId, String telegramUserName, String message, File photoFile, String messageType) {
         this.chatId = chatId;
         this.guildId = guildId;
-        this.name = username;
+        this.telegramUserName = telegramUserName;
         this.message = message;
         this.file = photoFile;
         this.messageType = messageType;
@@ -48,7 +40,7 @@ public class MessagePayload{
 
 
     public String toString() {
-        return "Name: " + this.name + " Message: " + this.message;
+        return "Name: " + this.telegramUserName + " Message: " + this.message;
     }
 }
 

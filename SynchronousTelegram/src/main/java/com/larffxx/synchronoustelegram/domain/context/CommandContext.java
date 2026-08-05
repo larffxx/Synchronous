@@ -4,8 +4,9 @@ import java.util.List;
 
 public record CommandContext(
         Long chatId,
-        String commandAuthorName,
+        String executedBy,
         String commandName,
-        List<String> options
+        List<String> options,
+        List<String> response
 ) {
 }

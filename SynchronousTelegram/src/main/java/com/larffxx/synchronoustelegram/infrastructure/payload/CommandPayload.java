@@ -14,7 +14,7 @@ import java.util.List;
 public class CommandPayload{
     private String chatId;
     private String guildId;
-    private String name;
+    private String telegramUserName;
     private String command;
     private List<String> options;
 }

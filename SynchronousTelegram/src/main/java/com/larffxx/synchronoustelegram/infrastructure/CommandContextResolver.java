@@ -20,6 +20,7 @@ public class CommandContextResolver {
 
         String commandName;
         List<String> options;
+        List<String> response = new ArrayList<>();
         if (commandNameMatcher.matches()) {
             commandName = commandNameMatcher.group(1);
             options = commandNameMatcher.group(2) != null ? Arrays.asList(commandNameMatcher.group(2).split("\\s")) : new ArrayList<>();
@@ -27,6 +28,6 @@ public class CommandContextResolver {
             throw new InvalidCommandException(InfExcMessage.INVALID_COMMAND_EXCEPTION);
         }
 
-        return new CommandContext(update.getMessage().getChatId(),update.getMessage().getFrom().getUserName(), commandName, options);
+        return new CommandContext(update.getMessage().getChatId(),update.getMessage().getFrom().getUserName(), commandName, options, response);
     }
 }

@@ -1,9 +1,9 @@
 package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 
+import com.larffxx.synchronoustelegram.domain.constant.infmsg.CommandConstant;
 import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
-import com.larffxx.synchronoustelegram.service.controller.Command;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class PlayCommand implements Command {
 
     @Override
     public void execute(CommandContext commandContext){
-        textMessageService.send(commandContext.chatId(), "Music added");
+        textMessageService.send(commandContext.chatId(), CommandConstant.MUSIC_ADDED);
     }
 
     @Override

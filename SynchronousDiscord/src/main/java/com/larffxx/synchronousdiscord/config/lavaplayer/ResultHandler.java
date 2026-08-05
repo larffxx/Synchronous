@@ -3,6 +3,7 @@ package com.larffxx.synchronousdiscord.config.lavaplayer;
 import com.github.topi314.lavasrc.spotify.SpotifySourceManager;
 import com.github.topi314.lavasrc.yandexmusic.YandexMusicSourceManager;
 import com.larffxx.synchronousdiscord.config.bot.LavaplayerSecretsHolder;
+import com.larffxx.synchronousdiscord.domain.context.EmbedContext;
 import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import com.larffxx.synchronousdiscord.infrastructure.sender.embed.EmbedSender;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
@@ -19,6 +20,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,21 +53,27 @@ public class ResultHandler implements AudioLoadResultHandler {
     public void trackLoaded(AudioTrack track) {
         this.getMusicManager(eventContext.getTextChannel().getGuild()).getScheduler().queue(track);
         EmbedBuilder musicEB = new EmbedBuilder();
+        List<String> titles = new ArrayList<>();
+
         musicEB.setDescription("A new music has been added to queue.");
         musicEB.addField("Music", track.getInfo().title, false);
         musicEB.addField("Author", track.getInfo().author, false);
-        embedSender.send(musicEB);
+        titles.add(track.getInfo().title);
+
+        embedSender.send(new EmbedContext(musicEB, titles));
     }
 
     @Override
     public void playlistLoaded(AudioPlaylist playlist) {
         final List<AudioTrack> tracks = playlist.getTracks();
+        List<String> titles = new ArrayList<>();
         EmbedBuilder playlistEb = new EmbedBuilder();
         playlistEb.addField("Playlist", playlist.getName(), false);
         for (AudioTrack track : tracks) {
             getMusicManager(eventContext.getTextChannel().getGuild()).getScheduler().queue(track);
+            titles.add(track.getInfo().title);
         }
-        embedSender.send(playlistEb);
+        embedSender.send(new EmbedContext(playlistEb, titles));
     }
 
     @Override
@@ -76,7 +84,7 @@ public class ResultHandler implements AudioLoadResultHandler {
     @Override
     public void loadFailed(FriendlyException exception) {
         EmbedBuilder eb = new EmbedBuilder().setDescription("Smth went wrong");
-        embedSender.send(eb);
+        embedSender.send(new EmbedContext(eb, new ArrayList<>()));
         exception.printStackTrace();
     }
 

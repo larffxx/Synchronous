@@ -49,6 +49,6 @@ public class PhotoMessageHandler implements MessageHandler {
         if(message.getMediaGroupId() != null){
             return mediaGroupHandler.handleAlbum(update);
         }
-        return singlePhotoMessageHandler.onSinglePhotoReceived(update);
+        return singlePhotoMessageHandler.handlePhotoMessage(update);
     }
 }

@@ -2,6 +2,7 @@ package com.larffxx.synchronousdiscord.infrastructure.discord.embed;
 
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.config.lavaplayer.GuildMusicManager;
+import com.larffxx.synchronousdiscord.domain.context.EmbedContext;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.stereotype.Component;
@@ -13,28 +14,22 @@ import java.util.List;
 public class QueueEmbedCreator implements EmbedCreator<GuildMusicManager> {
 
     @Override
-    public EmbedBuilder buildEmbed(GuildMusicManager guildMusicManager) {
+    public EmbedContext createEmbedContext(GuildMusicManager guildMusicManager) {
         List<AudioTrack> queue = new ArrayList<>(guildMusicManager.getScheduler().getQueue());
+        List<String> titles = new ArrayList<>(guildMusicManager.getScheduler().getQueue()).stream().map(t -> t.getInfo().title).toList();
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
-        queueCheck(queue, embedBuilder);
+        createEmbedQueueList(queue, embedBuilder);
 
-        return embedBuilder;
+        return new EmbedContext(embedBuilder, titles);
     }
 
-    private void queueCheck(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
+    private void createEmbedQueueList(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
         if (queue.isEmpty()) {
-            emptyQueue(embedBuilder);
-        } else {
-            createQueue(queue, embedBuilder);
+            embedBuilder.setDescription(CommandConstants.QUEUE_UNSUCCESSFUL_MESSAGE);
+            return;
         }
-    }
 
-    private void emptyQueue(EmbedBuilder embedBuilder) {
-        embedBuilder.setDescription(CommandConstants.QUEUE_UNSUCCESSFUL_MESSAGE);
-    }
-
-    private void createQueue(List<AudioTrack> queue, EmbedBuilder embedBuilder) {
         int displayLimit = Math.min(queue.size(), 10);
 
         for (int i = 0; i < displayLimit; i++) {
