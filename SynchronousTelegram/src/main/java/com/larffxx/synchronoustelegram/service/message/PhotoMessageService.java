@@ -1,7 +1,6 @@
 package com.larffxx.synchronoustelegram.service.message;
 
 import com.larffxx.synchronoustelegram.domain.context.MessageContext;
-import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.infrastructure.sender.MediaSender;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PhotoMessageService implements MessageService {
     /**
-     * Receiver that provides the target chat for sending.
-     */
-    private final UpdateReceiver updateReceiver;
-    /**
      * Sender that delivers media payloads to Telegram.
      */
     private final MediaSender mediaSender;
@@ -23,11 +18,9 @@ public class PhotoMessageService implements MessageService {
     /**
      * Creates a photo message service with its dependencies.
      *
-     * @param updateReceiver receiver providing the target chat
      * @param mediaSender sender delivering media payloads
      */
-    public PhotoMessageService(UpdateReceiver updateReceiver, MediaSender mediaSender) {
-        this.updateReceiver = updateReceiver;
+    public PhotoMessageService(MediaSender mediaSender) {
         this.mediaSender = mediaSender;
     }
 
@@ -37,11 +30,10 @@ public class PhotoMessageService implements MessageService {
      * @param messageContext classified message context to send
      */
     public void send(MessageContext messageContext) {
-        boolean hasMessage = messageContext.getMessage() != null && !messageContext.getMessage().equals("null");
-        String caption = hasMessage ? messageContext.getMessage() : "";
+        String rawMessage = messageContext.getMessage();
+        boolean hasMessage = rawMessage != null && !rawMessage.isBlank() && !"null".equals(rawMessage);
+        String caption = hasMessage ? rawMessage : "";
         messageContext.setMessage(caption);
-
-        updateReceiver.setChatId(String.valueOf(messageContext.getTelegramChatId()));
 
         mediaSender.send(messageContext);
     }

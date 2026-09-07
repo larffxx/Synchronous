@@ -13,4 +13,13 @@ public class ConsumingException extends DiscordSynchronousException {
     public ConsumingException(String message) {
         super(message);
     }
+
+    /**
+     * Creates a new ConsumingException with a cause.
+     * @param message the message.
+     * @param cause the cause.
+     */
+    public ConsumingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

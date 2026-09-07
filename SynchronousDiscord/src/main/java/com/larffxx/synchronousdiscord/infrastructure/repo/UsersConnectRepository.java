@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Users Connect Repository contract.
  */
@@ -61,4 +64,10 @@ public interface UsersConnectRepository extends JpaRepository<UsersConnect, Long
      * @return the resulting boolean.
      */
     boolean existsByDiscordName(String discordName);
+    /**
+     * Finds all user connections for the given discord user ids.
+     * @param discordUserIds the discord user ids.
+     * @return the resulting user connections.
+     */
+    List<UsersConnect> findAllByDiscordUserIdIn(Collection<String> discordUserIds);
 }

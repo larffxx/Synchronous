@@ -11,4 +11,13 @@ public class CommandConsumingException extends ConsumingException {
     public CommandConsumingException(String message) {
         super(message);
     }
+
+    /**
+     * Creates a new CommandConsumingException with a cause.
+     * @param message the message.
+     * @param cause the cause.
+     */
+    public CommandConsumingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

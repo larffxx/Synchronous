@@ -2,7 +2,6 @@ package com.larffxx.synchronoustelegram.service.routeservice;
 
 import com.larffxx.synchronoustelegram.domain.context.MessageContext;
 
-import com.larffxx.synchronoustelegram.service.message.TextMessageService;
 import com.larffxx.synchronoustelegram.service.dispatcher.MessageDispatcherService;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,20 +18,14 @@ public class DiscordMessageRouteService {
      * Dispatcher that forwards messages to the matching handler.
      */
     private final MessageDispatcherService messageDispatcherService;
-    /**
-     * Service for sending text messages to Telegram chats.
-     */
-    private final TextMessageService textMessageService;
 
     /**
      * Creates a route service with its dependencies.
      *
      * @param messageDispatcherService dispatcher for incoming messages
-     * @param textMessageSender service for sending text messages
      */
-    public DiscordMessageRouteService(MessageDispatcherService messageDispatcherService, TextMessageService textMessageService) {
+    public DiscordMessageRouteService(MessageDispatcherService messageDispatcherService) {
         this.messageDispatcherService = messageDispatcherService;
-        this.textMessageService = textMessageService;
     }
 
     /**

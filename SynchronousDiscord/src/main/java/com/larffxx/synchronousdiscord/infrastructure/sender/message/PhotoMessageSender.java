@@ -1,9 +1,7 @@
 package com.larffxx.synchronousdiscord.infrastructure.sender.message;
 
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.SendersConstants;
-import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import com.larffxx.synchronousdiscord.domain.context.TelegramMessageContext;
-import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.sender.Sender;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,24 +19,6 @@ import java.io.File;
 @Getter
 @Setter
 public class PhotoMessageSender implements Sender<TelegramMessageContext> {
-    /**
-     * The event context.
-     */
-    private final EventContext eventContext;
-    /**
-     * The servers connect repository.
-     */
-    private final ServersConnectRepository serversConnectRepository;
-
-    /**
-     * Creates a new PhotoMessageSender.
-     * @param eventContext the event context.
-     * @param serversConnectRepository the servers connect repository.
-     */
-    public PhotoMessageSender(EventContext eventContext, ServersConnectRepository serversConnectRepository) {
-        this.serversConnectRepository = serversConnectRepository;
-        this.eventContext = eventContext;
-    }
 
     /**
      * Sends telegram message context.
@@ -57,9 +37,10 @@ public class PhotoMessageSender implements Sender<TelegramMessageContext> {
     private void sendFileMessage(TelegramMessageContext telegramMessageContext, TextChannel textChannel) {
         File inputFile = new File(telegramMessageContext.file());
 
+        String rawMessage = telegramMessageContext.message();
         String message = "";
-        if (!telegramMessageContext.message().equals("null")) {
-            message = telegramMessageContext.message();
+        if (rawMessage != null && !rawMessage.isBlank() && !"null".equals(rawMessage)) {
+            message = rawMessage;
         }
 
         textChannel

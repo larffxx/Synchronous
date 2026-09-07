@@ -32,8 +32,12 @@ public class TmpToJpgConverter {
 
         try {
             BufferedImage bufferedImage = ImageIO.read(inputFile);
+            if (bufferedImage == null) {
+                throw new PhotoConversionException(String.format(InfExcMessage.CONVERSION_PHOTO_EXCEPTION, inputFile));
+            }
 
             pngOutput = new java.io.File(PATH_TO_PACKAGE);
+            pngOutput.getParentFile().mkdirs();
 
             ImageIO.write(bufferedImage, "jpg", pngOutput);
         } catch (IOException e) {

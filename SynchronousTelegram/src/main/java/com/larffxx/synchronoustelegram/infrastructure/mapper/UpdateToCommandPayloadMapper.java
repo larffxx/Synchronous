@@ -22,7 +22,7 @@ public class UpdateToCommandPayloadMapper implements PayloadMapper<CommandPayloa
     @Override
     public CommandPayload mapToPayload(Update update, String guildId) {
         String[] parts = update.getMessage().getText().trim().split("\\s+");
-        String command = parts[0].replace("/", "");
+        String command = parts[0].startsWith("/") ? parts[0].substring(1) : parts[0];
         String chatId = update.getMessage().getChatId().toString();
         String name = update.getMessage().getFrom().getUserName();
 

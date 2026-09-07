@@ -11,4 +11,13 @@ public class SendingPhotoException extends ExecutionException {
          */
         super(message);
     }
+
+    /**
+     * Creates the exception with a detail message and a cause.
+     * @param message the detail message
+     * @param cause the cause
+     */
+    public SendingPhotoException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

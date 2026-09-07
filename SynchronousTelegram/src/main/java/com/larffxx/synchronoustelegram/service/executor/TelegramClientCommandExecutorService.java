@@ -58,7 +58,7 @@ public class TelegramClientCommandExecutorService {
         try {
             command.execute(commandContext);
         } catch (TelegramApiException e) {
-            throw new TelegramException(e.getMessage());
+            throw new TelegramException(e.getMessage(), e);
         }
     }
 
@@ -77,7 +77,7 @@ public class TelegramClientCommandExecutorService {
         try {
             command.execute(commandContext);
         } catch (TelegramApiException e) {
-            throw new StringCommandExecutingException(InfExcMessage.WHILE_EXECUTE_STRING_COMMAND_EXCEPTION);
+            throw new StringCommandExecutingException(InfExcMessage.WHILE_EXECUTE_STRING_COMMAND_EXCEPTION, e);
         }
     }
 }

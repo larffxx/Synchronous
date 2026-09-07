@@ -1,7 +1,6 @@
 package com.larffxx.synchronoustelegram.service.message;
 
 import com.larffxx.synchronoustelegram.domain.context.MessageContext;
-import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import com.larffxx.synchronoustelegram.infrastructure.sender.TextMessageSender;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -12,10 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 @Component
 public class TextMessageService implements MessageService {
     /**
-     * Receiver that provides the target chat for sending.
-     */
-    private final UpdateReceiver updateReceiver;
-    /**
      * Sender that delivers text payloads to Telegram.
      */
     private final TextMessageSender textMessageSender;
@@ -23,11 +18,9 @@ public class TextMessageService implements MessageService {
     /**
      * Creates a text message service with its dependencies.
      *
-     * @param updateReceiver receiver providing the target chat
      * @param textMessageSender sender delivering text payloads
      */
-    public TextMessageService(UpdateReceiver updateReceiver, TextMessageSender textMessageSender) {
-        this.updateReceiver = updateReceiver;
+    public TextMessageService(TextMessageSender textMessageSender) {
         this.textMessageSender = textMessageSender;
     }
 
@@ -38,8 +31,6 @@ public class TextMessageService implements MessageService {
      */
     @Override
     public void send(MessageContext messageContext) {
-        updateReceiver.setChatId(String.valueOf(messageContext.getTelegramChatId()));
-
         textMessageSender.send(messageContext);
     }
 

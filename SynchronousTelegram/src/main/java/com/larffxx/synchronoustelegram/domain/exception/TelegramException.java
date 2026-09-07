@@ -11,4 +11,13 @@ public class TelegramException extends RuntimeException {
          */
         super(message);
     }
+
+    /**
+     * Creates the exception with a detail message and a cause.
+     * @param message the detail message
+     * @param cause the cause
+     */
+    public TelegramException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

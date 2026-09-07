@@ -35,9 +35,8 @@ public class EventsListener implements EventListener {
      */
     @Override
     public void onEvent(GenericEvent event) {
-        if (eventRegistry.getCommand(event.getClass()) != null) {
-            Event ev = eventRegistry.getCommand(event.getClass());
-
+        Event ev = eventRegistry.getCommand(event.getClass());
+        if (ev != null) {
             ev.execute(event);
         }
     }

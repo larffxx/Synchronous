@@ -1,6 +1,8 @@
 package com.larffxx.synchronoustelegram.infrastructure.sender;
 
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.domain.context.MessageContext;
+import com.larffxx.synchronoustelegram.domain.exception.execution.SendingPhotoException;
 import com.larffxx.synchronoustelegram.infrastructure.receiver.UpdateReceiver;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
@@ -11,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.File;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,11 +41,15 @@ public class MediaSender implements Sender {
      * @param messageContext the synced message context with attached files
      */
     public void send(MessageContext messageContext){
+        List<File> files = messageContext.getFileList();
+        if (files == null || files.isEmpty()) {
+            throw new SendingPhotoException(InfExcMessage.SENDING_PHOTO_EXCEPTION);
+        }
 
-        if(messageContext.getFileList().size() >= 2){
+        if(files.size() >= 2){
             sendMedias(messageContext);
         }else {
-            for (File file : messageContext.getFileList()) {
+            for (File file : files) {
                 SendPhoto sendPhoto = SendPhoto.builder()
                         .chatId(messageContext.getTelegramChatId())
                         .photo(new InputFile(file))
@@ -53,7 +59,7 @@ public class MediaSender implements Sender {
                 try {
                     updateReceiver.getTelegramClient().execute(sendPhoto);
                 } catch (TelegramApiException e) {
-                    throw new RuntimeException(e);
+                    throw new SendingPhotoException(InfExcMessage.SENDING_PHOTO_EXCEPTION, e);
                 }
             }
         }
@@ -64,11 +70,15 @@ public class MediaSender implements Sender {
      * @param messageContext the synced message context with attached files
      */
     private void sendMedias(MessageContext messageContext){
-        List<InputMedia> mediaList = new LinkedList<>();
+        List<InputMedia> mediaList = new ArrayList<>();
 
+        boolean first = true;
         for (File file : messageContext.getFileList()) {
             InputMediaPhoto media = new InputMediaPhoto(new InputFile(file).getNewMediaFile(), file.getName());
-            media.setCaption(messageContext.getMessage());
+            if (first) {
+                media.setCaption(messageContext.getMessage());
+                first = false;
+            }
 
             mediaList.add(media);
         }
@@ -80,7 +90,7 @@ public class MediaSender implements Sender {
         try {
             updateReceiver.getTelegramClient().execute(sendMediaGroup);
         } catch (TelegramApiException e) {
-            throw new RuntimeException(e);
+            throw new SendingPhotoException(InfExcMessage.SENDING_PHOTO_EXCEPTION, e);
         }
     }
 }

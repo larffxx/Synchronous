@@ -2,7 +2,6 @@ package com.larffxx.synchronousdiscord.service.routeservice;
 
 import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
-import com.larffxx.synchronousdiscord.domain.exception.RouteServiceException;
 import com.larffxx.synchronousdiscord.service.executor.CommandExecutor;
 import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
@@ -42,10 +41,6 @@ public class TelegramCommandRouteService extends RouteService<TelegramCommandCon
      */
     public void send(TelegramCommandContext telegramCommandContext){
         getEventContext().setTextChannel(telegramCommandContext.textChannel());
-        try {
-            executor.execute(telegramCommandContext);
-        } catch (RouteServiceException e) {
-            throw new RouteServiceException(InfExcMessages.ROUTE_SERVICE_EXCEPTION);
-        }
+        executor.execute(telegramCommandContext);
     }
 }

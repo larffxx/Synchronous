@@ -41,8 +41,8 @@ public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
      */
     @Override
     public void execute(MessageReceivedEvent event) {
-        eventContext.setTextChannel(event.getChannel().asTextChannel());
         if (!event.getAuthor().isBot()) {
+            eventContext.setTextChannel(event.getChannel().asTextChannel());
             discordPayloadProducer.send(event);
         }
     }

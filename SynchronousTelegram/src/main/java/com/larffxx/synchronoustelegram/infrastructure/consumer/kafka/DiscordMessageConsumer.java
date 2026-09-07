@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.larffxx.synchronoustelegram.domain.context.MessageContext;
+import com.larffxx.synchronoustelegram.domain.exception.TelegramException;
 import com.larffxx.synchronoustelegram.infrastructure.mapper.ContextMapper;
 import com.larffxx.synchronoustelegram.infrastructure.mapper.JsonNodeToMessageContextMapper;
 import com.larffxx.synchronoustelegram.service.routeservice.DiscordMessageRouteService;
@@ -21,6 +22,10 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class DiscordMessageConsumer {
+    /**
+     * Shared thread-safe JSON parser.
+     */
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     /**
      * Service that routes Discord message contexts for delivery.
      */
@@ -42,14 +47,14 @@ public class DiscordMessageConsumer {
     @KafkaListener(topics = {"${dMTopic}"}, groupId = "${groupId}")
     public void listener(@Payload String message) {
         try {
-            JsonNode data = new ObjectMapper().readTree(message);
+            JsonNode data = OBJECT_MAPPER.readTree(message);
 
             ContextMapper<MessageContext> contextMapper = new JsonNodeToMessageContextMapper();
             MessageContext context = contextMapper.mapToContext(data);
 
             discordMessageRouteService.send(context);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new TelegramException(e.getMessage(), e);
         }
     }
 }

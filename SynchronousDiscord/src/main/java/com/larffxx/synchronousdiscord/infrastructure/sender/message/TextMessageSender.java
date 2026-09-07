@@ -23,9 +23,9 @@ import java.util.regex.Pattern;
 @Setter
 public class TextMessageSender implements Sender<TelegramMessageContext> {
     /**
-     * The username patter.
+     * The precompiled username pattern.
      */
-    private final String USERNAME_PATTER = "@([a-zA-Z0-9\\._\\-]{3,})";
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("@([a-zA-Z0-9\\._\\-]{3,})");
     /**
      * The event context.
      */
@@ -57,7 +57,7 @@ public class TextMessageSender implements Sender<TelegramMessageContext> {
      */
     @Override
     public void send(TelegramMessageContext telegramMessageContext) {
-        Matcher matcher = Pattern.compile(USERNAME_PATTER).matcher(telegramMessageContext.message());
+        Matcher matcher = USERNAME_PATTERN.matcher(telegramMessageContext.message());
         TextChannel textChannel = telegramMessageContext.textChannel();
 
         List<Member> memberList = textChannel.getMembers();

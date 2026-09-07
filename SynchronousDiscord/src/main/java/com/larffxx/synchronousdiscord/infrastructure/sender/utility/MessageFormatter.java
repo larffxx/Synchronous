@@ -16,36 +16,39 @@ public class MessageFormatter {
      * The users connect repository.
      */
     private final UsersConnectRepository usersConnectRepository;
-    /**
-     * The user in db checker.
-     */
-    private final UserInDBChecker userInDBChecker;
 
     /**
      * Creates a new MessageFormatter.
      * @param usersConnectRepository the users connect repository.
-     * @param userInDBChecker the user in db checker.
      */
-    public MessageFormatter(UsersConnectRepository usersConnectRepository, UserInDBChecker userInDBChecker) {
+    public MessageFormatter(UsersConnectRepository usersConnectRepository) {
         this.usersConnectRepository = usersConnectRepository;
-        this.userInDBChecker = userInDBChecker;
     }
 
     /**
-     * Formats message.
+     * Formats message, replacing every registered mention with a Discord mention.
      * @param message the message.
      * @param matcher the matcher.
      * @param memberList the member list.
-     * @return the resulting string.
+     * @return the resulting string, unchanged when nothing was replaced.
      */
     public String formatMessage(String message, Matcher matcher, List<Member> memberList) {
-        for (Member member : memberList) {
-            if (usersConnectRepository.existsByDiscordUserId(member.getUser().getId())) {
-                if (userInDBChecker.isUserInDB(matcher, member)) {
-                    return message.replace(matcher.group(), member.getUser().getAsMention());
+        StringBuffer result = new StringBuffer();
+        boolean replaced = false;
+        while (matcher.find()) {
+            String mentionName = matcher.group().replace("@", "");
+            String replacement = matcher.group();
+            for (Member member : memberList) {
+                if (usersConnectRepository.existsByDiscordUserId(member.getUser().getId())
+                        && mentionName.equals(usersConnectRepository.findByDiscordUserId(member.getId()).getTelegramName())) {
+                    replacement = member.getUser().getAsMention();
+                    replaced = true;
+                    break;
                 }
             }
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
         }
-        return "No user found";
+        matcher.appendTail(result);
+        return replaced ? result.toString() : message;
     }
 }

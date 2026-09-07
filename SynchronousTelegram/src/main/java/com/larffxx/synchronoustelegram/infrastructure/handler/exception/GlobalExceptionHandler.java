@@ -3,7 +3,6 @@ package com.larffxx.synchronoustelegram.infrastructure.handler.exception;
 import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.domain.exception.TelegramException;
 import com.larffxx.synchronoustelegram.domain.exception.command.CommandException;
-import com.larffxx.synchronoustelegram.domain.exception.command.ConnectCommandException;
 import com.larffxx.synchronoustelegram.domain.exception.data.DataException;
 import com.larffxx.synchronoustelegram.domain.exception.execution.ExecutionException;
 import com.larffxx.synchronoustelegram.domain.record.ErrorResponse;

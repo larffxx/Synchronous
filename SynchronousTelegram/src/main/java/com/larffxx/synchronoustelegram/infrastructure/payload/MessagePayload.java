@@ -85,6 +85,7 @@ public class MessagePayload{
      * Returns a short human readable summary of the payload.
      * @return payload summary with sender name and message
      */
+    @Override
     public String toString() {
         return "Name: " + this.telegramUserName + " Message: " + this.message;
     }

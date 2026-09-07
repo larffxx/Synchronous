@@ -43,7 +43,7 @@ public class PhotoDownloadService {
 
             return telegramClient.downloadFile(file);
         } catch (TelegramApiException e) {
-            throw new AttachmentsDownloadException(InfExcMessage.DOWNLOAD_IMAGE_EXCEPTION);
+            throw new AttachmentsDownloadException(InfExcMessage.DOWNLOAD_IMAGE_EXCEPTION, e);
         }
     }
 }

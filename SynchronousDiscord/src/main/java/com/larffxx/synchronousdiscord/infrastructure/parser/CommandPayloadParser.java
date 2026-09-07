@@ -56,7 +56,7 @@ public class CommandPayloadParser implements Parser<SlashCommandInteractionEvent
                 Objects.requireNonNull(serversConnectRepository.getConnectByDiscordGuild(guildID).getTelegramChannel()),
                 Objects.requireNonNull(event.getInteraction().getMember()).getEffectiveName(),
                 event.getName(),
-                new ArrayList<>(event.getOptions().stream().map(OptionMapping::getAsString).collect(Collectors.toList())),
+                event.getOptions().stream().map(OptionMapping::getAsString).collect(Collectors.toCollection(ArrayList::new)),
                 trackList
         );
     }

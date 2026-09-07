@@ -11,4 +11,13 @@ public class DiscordSynchronousException extends RuntimeException {
     public DiscordSynchronousException(String message) {
         super(message);
     }
+
+    /**
+     * Creates a new DiscordSynchronousException with a cause.
+     * @param message the message.
+     * @param cause the cause.
+     */
+    public DiscordSynchronousException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

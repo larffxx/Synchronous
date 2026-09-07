@@ -73,7 +73,7 @@ public class TelegramClientButtonExecutorService {
         try {
             button.execute(buttonContext);
         } catch (TelegramApiException e) {
-            throw new TelegramException(e.getMessage());
+            throw new TelegramException(e.getMessage(), e);
         }
         return buttonContext;
     }
@@ -92,7 +92,7 @@ public class TelegramClientButtonExecutorService {
                             .build()
             );
         } catch (TelegramApiException e) {
-            throw new TelegramException(e.getMessage());
+            throw new TelegramException(e.getMessage(), e);
         }
     }
 }

@@ -20,13 +20,19 @@ public class MessagePayloadParser implements Parser<MessageReceivedEvent, Messag
      * The servers connect repository.
      */
     private final ServersConnectRepository serversConnectRepository;
+    /**
+     * Downloads message attachments.
+     */
+    private final AttachmentDownloader attachmentDownloader;
 
     /**
      * Creates a new MessagePayloadParser.
      * @param serversConnectRepository the servers connect repository.
+     * @param attachmentDownloader the attachment downloader.
      */
-    public MessagePayloadParser(ServersConnectRepository serversConnectRepository) {
+    public MessagePayloadParser(ServersConnectRepository serversConnectRepository, AttachmentDownloader attachmentDownloader) {
         this.serversConnectRepository = serversConnectRepository;
+        this.attachmentDownloader = attachmentDownloader;
     }
 
     /**
@@ -36,7 +42,6 @@ public class MessagePayloadParser implements Parser<MessageReceivedEvent, Messag
      */
     @Override
     public MessagePayload parse(MessageReceivedEvent messageReceivedEvent) {
-        AttachmentDownloader attachmentDownloader = new AttachmentDownloader();
         Long guildID = Objects.requireNonNull(messageReceivedEvent.getGuild()).getIdLong();
         Long telegramChannelId = Long.valueOf(serversConnectRepository.getConnectByDiscordGuild(String.valueOf(guildID)).getTelegramChannel());
 

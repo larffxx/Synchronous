@@ -1,13 +1,17 @@
 package com.larffxx.synchronousdiscord.service.controller.slashcommand;
 
 import com.larffxx.synchronousdiscord.domain.context.TelegramCommandContext;
+import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
 import com.larffxx.synchronousdiscord.domain.constant.infmsg.CommandConstants;
 import com.larffxx.synchronousdiscord.domain.dto.UsersConnectDTO;
 import com.larffxx.synchronousdiscord.domain.mapper.Mapper;
 import com.larffxx.synchronousdiscord.domain.mapper.UsersConnectMapper;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
 import com.larffxx.synchronousdiscord.domain.model.UsersConnect;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronousdiscord.infrastructure.repo.UsersConnectRepository;
+import com.larffxx.synchronousdiscord.domain.exception.command.CommandException;
+import com.larffxx.synchronousdiscord.domain.exception.interaction.TelegramSlashInteractionException;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Service;
@@ -47,16 +51,18 @@ public class UserRegisterCommand implements Command {
     public void execute(SlashCommandInteractionEvent event) {
         Mapper<UsersConnect, UsersConnectDTO> mapper = new UsersConnectMapper();
         if (!event.getUser().isBot()) {
+            ServersConnect serversConnect = serversConnectRepository.getConnectByDiscordGuild(event.getGuild().getId());
+            if (serversConnect == null) {
+                throw new CommandException(InfExcMessages.NO_CONNECTION_BETWEEN_SERVERS);
+            }
             UsersConnectDTO dto = new UsersConnectDTO(event.getInteraction().getUser().getName(),
                     event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString(),
                     event.getInteraction().getUser().getId(),
-                    serversConnectRepository.getConnectByDiscordGuild(event.getGuild().getId()).getId()
+                    serversConnect.getId()
                     );
-            try {
-                if (usersConnectRepository.findByDiscordName(event.getInteraction().getUser().getName()).getDiscordName().equals(dto.getDiscordName())) {
-                    event.getHook().editOriginal(CommandConstants.USER_REGISTER_UNSUCCESSFUL_MESSAGE).queue();
-                }
-            } catch (NullPointerException e) {
+            if (usersConnectRepository.existsByDiscordName(event.getInteraction().getUser().getName())) {
+                event.getHook().editOriginal(CommandConstants.USER_REGISTER_UNSUCCESSFUL_MESSAGE).queue();
+            } else {
                 usersConnectRepository.save(mapper.toEntity(dto));
                 event.getHook().editOriginal(CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
             }
@@ -71,11 +77,15 @@ public class UserRegisterCommand implements Command {
     @Override
     public void execute(TelegramCommandContext telegramCommandContext) {
         Mapper<UsersConnect, UsersConnectDTO> mapper = new UsersConnectMapper();
-        UsersConnectDTO usersConnectDTO = mapper.toDTO(usersConnectRepository.findByTelegramName(telegramCommandContext.telegramUsername()));
+        UsersConnect usersConnect = usersConnectRepository.findByTelegramName(telegramCommandContext.telegramUsername());
+        if (usersConnect == null) {
+            throw new TelegramSlashInteractionException(InfExcMessages.NO_REGISTERED_USERS);
+        }
+        UsersConnectDTO usersConnectDTO = mapper.toDTO(usersConnect);
         Member discordUser = telegramCommandContext.guild()
                 .getMembersByName(usersConnectDTO.getDiscordName(), false)
                 .stream()
-                .findFirst().get();
+                .findFirst().orElseThrow(() -> new TelegramSlashInteractionException(InfExcMessages.NO_REGISTERED_USERS));
         usersConnectRepository.updateDiscordUserIdByTelegramName(discordUser.getId(), telegramCommandContext.telegramUsername());
         telegramCommandContext.textChannel().sendMessage(telegramCommandContext.telegramUsername() + " " +CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
     }

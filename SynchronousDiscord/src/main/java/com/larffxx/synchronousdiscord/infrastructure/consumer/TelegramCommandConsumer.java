@@ -21,6 +21,10 @@ import org.springframework.stereotype.Component;
 @Setter
 public class TelegramCommandConsumer {
     /**
+     * Shared thread-safe JSON parser.
+     */
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    /**
      * The telegram command route service.
      */
     private final TelegramCommandRouteService telegramCommandRouteService;
@@ -47,11 +51,11 @@ public class TelegramCommandConsumer {
     public void listener(@Payload String command) {
         JsonNode data;
         try {
-            data = new ObjectMapper().readTree(command);
+            data = OBJECT_MAPPER.readTree(command);
 
             telegramCommandRouteService.send(jsonNodeToTelegramCommandContextContextMapper.toContext(data));
         } catch (JsonProcessingException e) {
-            throw new CommandConsumingException(InfExcMessages.COMMAND_CONSUMING_EXCEPTION);
+            throw new CommandConsumingException(InfExcMessages.COMMAND_CONSUMING_EXCEPTION, e);
         }
     }
 }

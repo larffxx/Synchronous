@@ -12,7 +12,15 @@ public class MemberJoinEvent implements Event<GuildMemberJoinEvent> {
     /**
      * Delegate that processes a newly joined guild member.
      */
-    private Addable<GuildMemberJoinEvent> addable;
+    private final Addable<GuildMemberJoinEvent> addable;
+
+    /**
+     * Creates a handler delegating member joins to the given delegate.
+     * @param addable delegate that processes a newly joined guild member.
+     */
+    public MemberJoinEvent(Addable<GuildMemberJoinEvent> addable) {
+        this.addable = addable;
+    }
 
     /**
      * Passes the member join event to the configured delegate.

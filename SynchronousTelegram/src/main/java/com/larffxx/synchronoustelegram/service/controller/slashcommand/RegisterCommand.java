@@ -3,7 +3,9 @@ package com.larffxx.synchronoustelegram.service.controller.slashcommand;
 import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
 import com.larffxx.synchronoustelegram.domain.constant.infmsg.CommandConstant;
 import com.larffxx.synchronoustelegram.domain.dto.UsersConnectDTO;
+import com.larffxx.synchronoustelegram.domain.exception.command.InvalidCommandException;
 import com.larffxx.synchronoustelegram.domain.exception.command.NoOptionsProvidedException;
+import com.larffxx.synchronoustelegram.domain.model.ServersConnect;
 import com.larffxx.synchronoustelegram.domain.exception.command.TooManyOptionsException;
 import com.larffxx.synchronoustelegram.domain.context.CommandContext;
 import com.larffxx.synchronoustelegram.domain.mapper.Mapper;
@@ -72,7 +74,11 @@ public class RegisterCommand implements Command {
         }
 
         Mapper<UsersConnect, UsersConnectDTO> mapper = new UsersConnectMapper();
-        UsersConnectDTO usersConnectDTO = new UsersConnectDTO(serversConnectRepository.findByTelegramChannel(commandContext.chatId().toString()).getId(),
+        ServersConnect serversConnect = serversConnectRepository.findByTelegramChannel(commandContext.chatId().toString());
+        if (serversConnect == null) {
+            throw new InvalidCommandException(InfExcMessage.INVALID_COMMAND_EXCEPTION);
+        }
+        UsersConnectDTO usersConnectDTO = new UsersConnectDTO(serversConnect.getId(),
                 discordName, telegramName);
         UsersConnect usersConnect = mapper.toEntity(usersConnectDTO);
         usersConnectRepository.save(usersConnect);

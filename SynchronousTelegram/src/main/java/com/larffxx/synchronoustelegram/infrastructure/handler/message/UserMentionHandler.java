@@ -1,6 +1,7 @@
 package com.larffxx.synchronoustelegram.infrastructure.handler.message;
 
 import com.larffxx.synchronoustelegram.domain.context.MessageContext;
+import com.larffxx.synchronoustelegram.domain.model.Profile;
 import com.larffxx.synchronoustelegram.infrastructure.repo.GuildProfileRepository;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,9 +19,9 @@ import java.util.regex.Pattern;
 @Component
 public class UserMentionHandler {
     /**
-     * Matcher for the most recent mention search performed on a message.
+     * Precompiled username mention pattern.
      */
-    private Matcher matcher;
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("@([a-zA-Z0-9._\\-]{3,})");
     /**
      * Repository used to look up registered profiles by Discord name.
      */
@@ -40,31 +41,22 @@ public class UserMentionHandler {
      * @return the formatted message text
      */
     public String convertMentionsToTelegramNames(MessageContext messageContext) {
-        setMatcher(messageContext.getMessage());
-
-        if(matcher.find()) {
-           return formatMessageWithMention(messageContext.getMessage());
+        Matcher matcher = USERNAME_PATTERN.matcher(messageContext.getMessage());
+        StringBuffer result = new StringBuffer();
+        boolean replaced = false;
+        while (matcher.find()) {
+            String discordName = matcher.group().replace("@", "");
+            Profile profile = guildProfileRepository.getByName(discordName);
+            String replacement = matcher.group();
+            if (profile != null && profile.getUsersConnect() != null
+                    && profile.getUsersConnect().getTelegramName() != null) {
+                replacement = "@" + profile.getUsersConnect().getTelegramName();
+                replaced = true;
+            }
+            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement));
         }
-        return String.format("%s: %s", messageContext.getUser(), messageContext.getMessage());
-    }
-
-    /**
-     * Replaces the found mention with the linked Telegram name.
-     * @param msg the original message text
-     * @return the message text with the mention replaced
-     */
-    private String formatMessageWithMention(String msg){
-        String discordName = matcher.group().replace("@","");
-        return msg.replace(matcher.group(),
-                "@" + guildProfileRepository.getByName(discordName).getUsersConnect().getTelegramName());
-    }
-
-    /**
-     * Compiles the mention pattern and matches it against the given message.
-     * @param msg the message text to search
-     */
-    private void setMatcher(String msg){
-        String USERNAME_PATTER = "@([a-zA-Z0-9._\\-]{3,})";
-        matcher = Pattern.compile(USERNAME_PATTER).matcher(msg);
+        matcher.appendTail(result);
+        String text = replaced ? result.toString() : messageContext.getMessage();
+        return String.format("%s: %s", messageContext.getUser(), text);
     }
 }

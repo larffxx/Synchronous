@@ -14,6 +14,10 @@ public class InfExcMessage {
      */
     public static String RECEIVING_PHOTO_FROM_MEDIA_GROUP_EXCEPTION = "Receiving photo exception %s";
     /**
+     * Message for failures while sending a photo to Telegram.
+     */
+    public static String SENDING_PHOTO_EXCEPTION = "Sending photo exception";
+    /**
      * Message for failures while sending text to Telegram.
      */
     public static String SENDING_TEXT_TO_TELEGRAM_EXCEPTION = "Sending text to telegram exception";

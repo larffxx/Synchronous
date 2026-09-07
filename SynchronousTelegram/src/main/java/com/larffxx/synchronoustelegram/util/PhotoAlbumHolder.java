@@ -3,7 +3,11 @@ package com.larffxx.synchronoustelegram.util;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Accumulates photo sizes of Telegram media groups in memory.
@@ -13,7 +17,7 @@ public class PhotoAlbumHolder {
     /**
      * Buffered photo sizes keyed by media group identifier.
      */
-    private final Map<String, List<List<PhotoSize>>> albumPhotos = new HashMap<>();
+    private final Map<String, List<List<PhotoSize>>> albumPhotos = new ConcurrentHashMap<>();
 
     /**
      * Buffers the given photos and returns the latest one of the group.
@@ -35,8 +39,7 @@ public class PhotoAlbumHolder {
      */
     private void collectAlbumPhotos(String mediaGroupId, List<PhotoSize> photos){
         if(mediaGroupId != null && !mediaGroupId.isEmpty()){
-            albumPhotos.putIfAbsent(mediaGroupId, new ArrayList<>());
-            albumPhotos.get(mediaGroupId).add(photos);
+            albumPhotos.computeIfAbsent(mediaGroupId, id -> new ArrayList<>()).add(photos);
         }
     }
 
@@ -59,9 +62,12 @@ public class PhotoAlbumHolder {
     }
 
     /**
-     * Clears all buffered album photos.
+     * Drops the buffered photos of the given media group.
+     * @param mediaGroupId media group identifier to evict
      */
-    public void clearAllAlbumPhotos(){
-        albumPhotos.clear();
+    public void removeAlbumPhotos(String mediaGroupId){
+        if (mediaGroupId != null) {
+            albumPhotos.remove(mediaGroupId);
+        }
     }
 }

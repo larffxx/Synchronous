@@ -1,5 +1,8 @@
 package com.larffxx.synchronoustelegram.infrastructure.handler.filehandler;
 
+import com.larffxx.synchronoustelegram.domain.constant.infexc.InfExcMessage;
+import com.larffxx.synchronoustelegram.domain.exception.command.InvalidCommandException;
+import com.larffxx.synchronoustelegram.domain.model.ServersConnect;
 import com.larffxx.synchronoustelegram.infrastructure.mapper.UpdateToMessagePayloadMapper;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.service.utility.PhotoDownloadService;
@@ -56,7 +59,11 @@ public class SinglePhotoMessageHandler {
         UpdateToMessagePayloadMapper updateToMessagePayloadMapper = new UpdateToMessagePayloadMapper();
         Message message = update.getMessage();
         Long chatId = message.getChatId();
-        String guildId = serversConnectRepository.findByTelegramChannel(String.valueOf(chatId)).getDiscordGuild();
+        ServersConnect serversConnect = serversConnectRepository.findByTelegramChannel(String.valueOf(chatId));
+        if (serversConnect == null) {
+            throw new InvalidCommandException(InfExcMessage.INVALID_COMMAND_EXCEPTION);
+        }
+        String guildId = serversConnect.getDiscordGuild();
         String caption = message.getCaption();
         String getFileId = message.getPhoto().get(update.getMessage().getPhoto().size() - 1).getFileId();
 

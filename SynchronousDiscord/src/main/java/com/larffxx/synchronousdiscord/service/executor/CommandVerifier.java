@@ -16,6 +16,8 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -37,6 +39,14 @@ public class CommandVerifier {
      * Shared context holding the current channel and options.
      */
     private final EventContext eventContext;
+    /**
+     * Declared slash command options by command id, avoiding a REST call per interaction.
+     */
+    private final Map<String, List<Command.Option>> commandOptionsCache = new ConcurrentHashMap<>();
+    /**
+     * Guild slash commands by guild id, avoiding a REST call per Telegram command.
+     */
+    private final Map<Long, List<Command>> guildCommandsCache = new ConcurrentHashMap<>();
 
     /**
      * Creates a verifier for slash command invocations.
@@ -58,7 +68,8 @@ public class CommandVerifier {
      * @throws VerifyException when required option values are missing or invalid
      */
     public void verifyCommand(SlashCommandInteractionEvent t) throws VerifyException {
-        List<Command.Option> commandOptions = t.getGuild().retrieveCommandById(t.getCommandId()).complete().getOptions();
+        List<Command.Option> commandOptions = commandOptionsCache.computeIfAbsent(t.getCommandId(),
+                commandId -> t.getGuild().retrieveCommandById(commandId).complete().getOptions());
         List<OptionMapping> options = t.getInteraction().getOptions();
 
         if (commandOptions.size() > t.getOptions().size()) {
@@ -68,14 +79,13 @@ public class CommandVerifier {
         eventContext.setMessageChannel(t.getMessageChannel());
         eventContext.setOptionMappings(options);
 
-        for (OptionMapping option : options) {
-            for (Command.Option providedOption : commandOptions) {
-                if (option != null && providedOption != null && !option.getType().equals(providedOption.getType())) {
-                    throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
-                }
+        for (int i = 0; i < options.size(); i++) {
+            OptionMapping option = options.get(i);
+            if (i >= commandOptions.size() || !option.getType().equals(commandOptions.get(i).getType())) {
+                throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
             }
 
-            if (option != null && option.getType().equals(OptionType.INTEGER) && option.getAsInt() < 0) {
+            if (option.getType().equals(OptionType.INTEGER) && option.getAsInt() < 0) {
                 throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
             }
         }
@@ -88,7 +98,9 @@ public class CommandVerifier {
      * @throws VerifyException when the provided option values are invalid
      */
     public void verifyCommand(TelegramCommandContext telegramCommandContext) throws VerifyException {
-        Command discordCommand = telegramCommandContext.guild().retrieveCommands().complete().stream()
+        Command discordCommand = guildCommandsCache
+                .computeIfAbsent(telegramCommandContext.guild().getIdLong(),
+                        guildId -> telegramCommandContext.guild().retrieveCommands().complete()).stream()
                 .filter(command -> command.getName().equals(telegramCommandContext.command()))
                 .findFirst().get();
 
@@ -112,22 +124,21 @@ public class CommandVerifier {
      * @throws VerifyException when a value has the wrong type or is negative
      */
     private static void verifyMappedValues(List<Command.Option> options, List<String> providedOptions) throws VerifyException {
-        for (Command.Option option : options) {
-            for (String providedOption : providedOptions) {
-                switch (option.getType()) {
-                    case STRING: break;
-                    case INTEGER:
-                        long number;
-                        try {
-                            number = Long.parseLong(providedOption);
-                            if (number < 0) throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
-                        } catch (NumberFormatException e) {
-                            throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
-                        }
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected value: " + option.getType());
-                }
+        for (int i = 0; i < providedOptions.size(); i++) {
+            String providedOption = providedOptions.get(i);
+            switch (options.get(i).getType()) {
+                case STRING: break;
+                case INTEGER:
+                    long number;
+                    try {
+                        number = Long.parseLong(providedOption);
+                        if (number < 0) throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+                    } catch (NumberFormatException e) {
+                        throw new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED);
+                    }
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + options.get(i).getType());
             }
         }
     }

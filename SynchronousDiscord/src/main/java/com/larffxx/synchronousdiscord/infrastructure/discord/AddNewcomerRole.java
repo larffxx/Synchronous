@@ -37,7 +37,9 @@ public class AddNewcomerRole implements Addable<GuildMemberJoinEvent>{
         Member member = e.getMember();
         guild = e.getGuild();
 
-        createRoleIfNotExist();
+        if (guild.getRolesByName("Newcomer", true).isEmpty()) {
+            createRoleIfNotExist();
+        }
         role = guild.getRolesByName("Newcomer", true).get(0);
 
         guild.addRoleToMember(member.getUser(), role).queue();
@@ -78,6 +80,8 @@ public class AddNewcomerRole implements Addable<GuildMemberJoinEvent>{
      * Creates text channel if not exists.
      */
     private void createTextChannelIfNotExists() {
-        guild.createTextChannel("Newcomers").queue();
+        if (guild.getTextChannelsByName("Newcomers", true).isEmpty()) {
+            guild.createTextChannel("Newcomers").queue();
+        }
     }
 }

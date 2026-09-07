@@ -1,8 +1,8 @@
 package com.larffxx.synchronousdiscord.infrastructure.discord;
 
-import com.larffxx.synchronousdiscord.domain.constant.infexc.InfExcMessages;
-import com.larffxx.synchronousdiscord.domain.exception.DownloadAttachmentException;
 import net.dv8tion.jda.api.entities.Message;
+
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Attachment Downloader class.
  */
+@Component
 public class AttachmentDownloader {
 
     /**
@@ -22,16 +23,11 @@ public class AttachmentDownloader {
         List<File> files = new ArrayList<>();
 
         attachments.forEach(attachment -> {
-            File file;
-            try {
-                file = attachment.getProxy().downloadToFile(new File(Paths.get(System.getProperty("user.home"),
-                                "Documents", "tempphotos", "photo" + attachment.getFileName()).toUri()))
-                        .join();
+            File file = attachment.getProxy().downloadToFile(new File(Paths.get(System.getProperty("user.home"),
+                            "Documents", "tempphotos", "photo" + attachment.getFileName()).toUri()))
+                    .join();
 
-                files.add(file);
-            } catch (DownloadAttachmentException e) {
-                throw new DownloadAttachmentException(InfExcMessages.DOWNLOAD_ATTACHMENT_EXCEPTION);
-            }
+            files.add(file);
         });
 
         return files;

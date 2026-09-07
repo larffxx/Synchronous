@@ -21,7 +21,7 @@ public class UsersConnectMapper implements Mapper<UsersConnect,UsersConnectDTO> 
         dto.setDiscordName(usersConnect.getDiscordName());
         dto.setTelegramName(usersConnect.getTelegramName());
         dto.setDiscordUserId(usersConnect.getDiscordUserId());
-        dto.setServersConnectId(usersConnect.getId());
+        dto.setServersConnectId(usersConnect.getServersConnect() != null ? usersConnect.getServersConnect().getId() : null);
 
         return dto;
     }

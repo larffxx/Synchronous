@@ -58,7 +58,11 @@ public class TelegramKafkaCommandProducer {
         PayloadMapper<CommandPayload> mapper = new UpdateToCommandPayloadMapper();
 
         String chatId = update.getMessage().getChatId().toString();
-        String guildId = serversConnectRepository.findByTelegramChannel(chatId).getDiscordGuild();
+        ServersConnect serversConnect = serversConnectRepository.findByTelegramChannel(chatId);
+        if (serversConnect == null) {
+            return;
+        }
+        String guildId = serversConnect.getDiscordGuild();
         CommandPayload commandPayload = mapper.mapToPayload(update, guildId);
         Message message = MessageBuilder.withPayload(commandPayload).setHeader("kafka_topic", topic).build();
 

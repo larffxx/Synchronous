@@ -1,5 +1,7 @@
 package com.larffxx.synchronoustelegram.infrastructure.handler.filehandler;
 
+import com.larffxx.synchronoustelegram.domain.exception.command.InvalidCommandException;
+import com.larffxx.synchronoustelegram.domain.model.ServersConnect;
 import com.larffxx.synchronoustelegram.infrastructure.mapper.UpdateToMessagePayloadMapper;
 import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectRepository;
 import com.larffxx.synchronoustelegram.util.PhotoAlbumHolder;
@@ -69,7 +71,11 @@ public class MediaGroupHandler {
 
         Message message = update.getMessage();
         Long chatId = message.getChatId();
-        String guildId = serversConnectRepository.findByTelegramChannel(String.valueOf(chatId)).getDiscordGuild();
+        ServersConnect serversConnect = serversConnectRepository.findByTelegramChannel(String.valueOf(chatId));
+        if (serversConnect == null) {
+            throw new InvalidCommandException(InfExcMessage.INVALID_COMMAND_EXCEPTION);
+        }
+        String guildId = serversConnect.getDiscordGuild();
         String caption = message.getCaption();
         String mediaGroupId = message.getMediaGroupId();
         List<PhotoSize> photos = message.getPhoto();
@@ -82,7 +88,7 @@ public class MediaGroupHandler {
         File photoFile = tmpToJpgConverter.tmpConvertToJpg(photoDownloadService.downloadPhoto(lastDownloadedPhotoFromAlbum.get().getFileId()), Long.valueOf(message.getMessageId()));
 
         MessagePayload messagePayload = updateToMessagePayloadMapper.mapToPayload(update, guildId, photoFile);
-        photoAlbumHolder.clearAllAlbumPhotos();
+        photoAlbumHolder.removeAlbumPhotos(mediaGroupId);
 
         if(caption != null){
             messagePayload.setMessage(caption);

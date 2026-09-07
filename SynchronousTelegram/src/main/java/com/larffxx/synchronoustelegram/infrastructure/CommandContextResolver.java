@@ -19,14 +19,17 @@ import java.util.regex.Pattern;
 @Component
 public class CommandContextResolver {
     /**
+     * Precompiled slash command pattern.
+     */
+    private static final Pattern COMMAND_NAME_PATTERN = Pattern.compile("^/([a-zA-Z]+)(?:\\s+(.+))?$");
+    /**
      * Parses the message text of the given update into a command context.
      * @param update the Telegram update holding the command text
      * @return command context with the parsed command name and options
      * @throws InvalidCommandException if the text does not match the command pattern
      */
     public CommandContext resolveCommandContext(Update update){
-        Pattern commandNamePattern = Pattern.compile("^/([a-zA-Z]+)(?:\\s+(.+))?$");
-        Matcher commandNameMatcher = commandNamePattern.matcher(update.getMessage().getText());
+        Matcher commandNameMatcher = COMMAND_NAME_PATTERN.matcher(update.getMessage().getText());
 
         String commandName;
         List<String> options;

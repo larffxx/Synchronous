@@ -65,6 +65,9 @@ public class TextMessageHandler implements MessageHandler {
     public void handle(Update update) {
         Long chatId = update.getMessage().getChatId();
         String text = update.getMessage().getText();
+        if (text == null) {
+            return;
+        }
         if (text.startsWith("/")) {
             pendingOptionService.cancel(chatId);
             clientCommandExecutor.execute(update);

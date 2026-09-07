@@ -23,6 +23,10 @@ import org.springframework.stereotype.Component;
 @Setter
 public class DiscordCommandConsumer {
     /**
+     * Shared thread-safe JSON parser.
+     */
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    /**
      * Service that routes Discord command contexts for execution.
      */
     private final DiscordCommandRouteService discordCommandRouteService;
@@ -43,14 +47,14 @@ public class DiscordCommandConsumer {
     @KafkaListener(topics = {"${dCTopic}"}, groupId = "${groupId}")
     public void listener(@Payload String command){
         try {
-            JsonNode data = new ObjectMapper().readTree(command);
+            JsonNode data = OBJECT_MAPPER.readTree(command);
 
             ContextMapper<CommandContext> contextMapper = new JsonNodeToCommandContextMapper();
             CommandContext context = contextMapper.mapToContext(data);
 
             discordCommandRouteService.send(context);
         } catch (JsonProcessingException e) {
-            throw new TelegramException(e.getMessage());
+            throw new TelegramException(e.getMessage(), e);
         }
     }
 }
