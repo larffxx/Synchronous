@@ -10,8 +10,17 @@ import com.larffxx.synchronoustelegram.util.URIFromJsonParser;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Maps a Kafka JSON node to a message context.
+ * Reads chat, guild, sender, text, and type fields and loads attached files when present.
+ */
 public class JsonNodeToMessageContextMapper implements ContextMapper<MessageContext> {
 
+    /**
+     * Converts the given JSON node into a message context, loading attached files when present.
+     * @param jsonNode the JSON node to convert
+     * @return the mapped message context
+     */
     @Override
     public MessageContext mapToContext(JsonNode jsonNode) {
         Long guildID = jsonNode.get(MapperConstant.GUILD_ID).asLong();

@@ -13,14 +13,29 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Command Payload Parser class.
+ */
 @Component
 public class CommandPayloadParser implements Parser<SlashCommandInteractionEvent, CommandPayload>{
+    /**
+     * The servers connect repository.
+     */
     private final ServersConnectRepository serversConnectRepository;
 
+    /**
+     * Creates a new CommandPayloadParser.
+     * @param serversConnectRepository the servers connect repository.
+     */
     public CommandPayloadParser(ServersConnectRepository serversConnectRepository) {
         this.serversConnectRepository = serversConnectRepository;
     }
 
+    /**
+     * Parses event into command payload.
+     * @param event the event.
+     * @return the resulting command payload.
+     */
     @Override
     public CommandPayload parse(SlashCommandInteractionEvent event) {
         String guildID = Objects.requireNonNull(event.getGuild()).getId();

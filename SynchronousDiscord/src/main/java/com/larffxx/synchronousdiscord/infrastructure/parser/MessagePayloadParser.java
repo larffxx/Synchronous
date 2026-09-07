@@ -11,14 +11,29 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Message Payload Parser class.
+ */
 @Component
 public class MessagePayloadParser implements Parser<MessageReceivedEvent, MessagePayload> {
+    /**
+     * The servers connect repository.
+     */
     private final ServersConnectRepository serversConnectRepository;
 
+    /**
+     * Creates a new MessagePayloadParser.
+     * @param serversConnectRepository the servers connect repository.
+     */
     public MessagePayloadParser(ServersConnectRepository serversConnectRepository) {
         this.serversConnectRepository = serversConnectRepository;
     }
 
+    /**
+     * Parses message received event into message payload.
+     * @param messageReceivedEvent the message received event.
+     * @return the resulting message payload.
+     */
     @Override
     public MessagePayload parse(MessageReceivedEvent messageReceivedEvent) {
         AttachmentDownloader attachmentDownloader = new AttachmentDownloader();

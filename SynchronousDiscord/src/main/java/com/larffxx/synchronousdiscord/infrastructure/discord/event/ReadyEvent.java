@@ -8,21 +8,23 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.springframework.stereotype.Component;
 
+/**
+ * Registers slash commands on every guild once JDA is ready.
+ */
 @Component
 @Getter
 @Setter
 public class ReadyEvent implements Event<net.dv8tion.jda.api.events.session.ReadyEvent> {
 
+    /**
+     * Registers the bot slash commands for all known guilds.
+     *
+     * @param event JDA ready event
+     */
     @Override
     public void execute(net.dv8tion.jda.api.events.session.ReadyEvent event) {
         for (Guild guild : event.getJDA().getGuilds()) {
             guild.updateCommands().addCommands(
-                    Commands.slash("play", "play music").addOption(OptionType.STRING, "link", "track url"),
-                    Commands.slash("queue", "queue tracks"),
-                    Commands.slash("skip", "skip track"),
-                    Commands.slash("stop", "stop track"),
-                    Commands.slash("shuffle", "shuffle playlist"),
-                    Commands.slash("loop", "loop track"),
                     Commands.slash("register", "register your telegram").addOption(OptionType.STRING, "telegram", "Enter your Telegram UserName"),
                     Commands.slash("connect", "Connect your servers")
                             .addOption(OptionType.STRING, "telegram", "Enter your telegram channel name"),
@@ -32,6 +34,11 @@ public class ReadyEvent implements Event<net.dv8tion.jda.api.events.session.Read
         }
     }
 
+    /**
+     * Returns the JDA ready event class.
+     *
+     * @return JDA ready event class
+     */
     @Override
     public Class getEvent() {
         return net.dv8tion.jda.api.events.session.ReadyEvent.class;

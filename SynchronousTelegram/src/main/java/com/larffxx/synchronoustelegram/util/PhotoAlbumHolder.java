@@ -5,15 +5,34 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 
 import java.util.*;
 
+/**
+ * Accumulates photo sizes of Telegram media groups in memory.
+ */
 @Component
 public class PhotoAlbumHolder {
+    /**
+     * Buffered photo sizes keyed by media group identifier.
+     */
     private final Map<String, List<List<PhotoSize>>> albumPhotos = new HashMap<>();
 
+    /**
+     * Buffers the given photos and returns the latest one of the group.
+     *
+     * @param mediaGroupId media group identifier or null for single photos
+     * @param photos photo sizes from the current update
+     * @return latest photo of the group or empty if none is buffered
+     */
     public Optional<PhotoSize> getPhoto(String mediaGroupId, List<PhotoSize> photos) {
         collectAlbumPhotos(mediaGroupId, photos);
         return getLastPhotoFromAlbum(mediaGroupId);
     }
 
+    /**
+     * Appends the given photos to the buffer of the media group.
+     *
+     * @param mediaGroupId media group identifier or null for single photos
+     * @param photos photo sizes to buffer
+     */
     private void collectAlbumPhotos(String mediaGroupId, List<PhotoSize> photos){
         if(mediaGroupId != null && !mediaGroupId.isEmpty()){
             albumPhotos.putIfAbsent(mediaGroupId, new ArrayList<>());
@@ -21,6 +40,12 @@ public class PhotoAlbumHolder {
         }
     }
 
+    /**
+     * Returns the last buffered photo of the given media group.
+     *
+     * @param mediaGroupId media group identifier to read
+     * @return last photo of the group or empty if none is buffered
+     */
     private Optional<PhotoSize> getLastPhotoFromAlbum(String mediaGroupId) {
         List<List<PhotoSize>> photosList = albumPhotos.get(mediaGroupId);
 
@@ -33,6 +58,9 @@ public class PhotoAlbumHolder {
         return Optional.empty();
     }
 
+    /**
+     * Clears all buffered album photos.
+     */
     public void clearAllAlbumPhotos(){
         albumPhotos.clear();
     }

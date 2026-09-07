@@ -4,28 +4,51 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+/**
+ * Holds slash command name constants.
+ */
 @Component
 @Getter
 @Setter
 public class CommandConstants {
+    /**
+     * TELEGRAM CHAT ID constant.
+     */
     public static final String TELEGRAM_CHAT_ID = "chatId";
+    /**
+     * DISCORD TEXT CHANNEL constant.
+     */
     public static final String DISCORD_TEXT_CHANNEL = "telegram";
+    /**
+     * COMMAND VALUE constant.
+     */
     public static final String COMMAND_VALUE = "command";
+    /**
+     * COMMAND OPTIONS constant.
+     */
     public static final String COMMAND_OPTIONS = "options";
+    /**
+     * TELEGRAM CHANNEL NAME FROM OPTIONS constant.
+     */
     public static final String TELEGRAM_CHANNEL_NAME_FROM_OPTIONS = "telegram";
+    /**
+     * CONNECT SUCCESS MESSAGE constant.
+     */
     public static final String CONNECT_SUCCESS_MESSAGE = "Servers connected successfully!";
+    /**
+     * NAME FROM TELEGRAM constant.
+     */
     public static final String NAME_FROM_TELEGRAM = "name";
-    public static final String LOOP_SUCCESS_MESSAGE = "Loop";
-    public static final String LOOP_UNSUCCESSFUL_MESSAGE = "No music";
-    public static final String PLAY_LINK_FROM_DISCORD = "link";
-    public static final String PLAY_LINK_FROM_TELEGRAM = "options";
-    public static final String PLAY_SUCCESS_MESSAGE = "Track was added";
-    public static final String QUEUE_SUCCESS_MESSAGE = "Current Queue:";
-    public static final String QUEUE_UNSUCCESSFUL_MESSAGE = "Queue is empty";
+    /**
+     * USER REGISTER SUCCESS MESSAGE constant.
+     */
     public static final String USER_REGISTER_SUCCESS_MESSAGE = "Successfully registered";
+    /**
+     * USER REGISTER UNSUCCESSFUL MESSAGE constant.
+     */
     public static final String USER_REGISTER_UNSUCCESSFUL_MESSAGE = "You have been registered before";
-    public static final String SKIP_SUCCESS_MESSAGE = "Skipped";
-    public static final String STOP_SUCCESS_MESSAGE = "Stopped";
-    public static final String SHUFFLE_SUCCESS_MESSAGE = "Shuffled";
+    /**
+     * DELETE SUCCESS MESSAGE constant.
+     */
     public static final String DELETE_SUCCESS_MESSAGE = "Successfully deleted %s messages";
 }

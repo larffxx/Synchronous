@@ -7,8 +7,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Maps a Telegram command update to a command payload.
+ * Splits the message text into the command name and its options.
+ */
 public class UpdateToCommandPayloadMapper implements PayloadMapper<CommandPayload> {
 
+    /**
+     * Converts the given update into a command payload.
+     * @param update the Telegram update holding the command
+     * @param guildId the Discord guild linked to the chat
+     * @return the mapped command payload
+     */
     @Override
     public CommandPayload mapToPayload(Update update, String guildId) {
         String[] parts = update.getMessage().getText().trim().split("\\s+");

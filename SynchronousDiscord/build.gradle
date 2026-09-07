@@ -35,15 +35,6 @@ dependencies {
     implementation 'org.apache.kafka:kafka-streams'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'dev.arbjerg:lavaplayer:2.2.6'
-    implementation("dev.lavalink.youtube:common:1.16.0")
-    implementation "com.github.topi314.lavasrc:lavasrc:4.8.1"
-    implementation "com.github.topi314.lavasrc:lavasrc-protocol:4.8.1"
-    implementation "io.netty:netty-buffer:4.1.130.Final"
-    implementation "moe.kyokobot.libdave:adapter-jda:0.1.2"
-    implementation("moe.kyokobot.libdave:impl-jni:0.1.2")
-    runtimeOnly "moe.kyokobot.libdave:natives-darwin:0.1.2"
-    implementation("com.google.guava:guava:31.0.1-jre")
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'

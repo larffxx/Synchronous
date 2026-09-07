@@ -9,8 +9,15 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Attachment Downloader class.
+ */
 public class AttachmentDownloader {
 
+    /**
+     * Downloads attachments.
+     * @param attachments the attachments.
+     */
     public List<File> downloadAttachments(List<Message.Attachment> attachments) {
         List<File> files = new ArrayList<>();
 

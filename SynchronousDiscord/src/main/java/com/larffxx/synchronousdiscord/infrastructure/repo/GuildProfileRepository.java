@@ -8,11 +8,24 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Guild Profile Repository contract.
+ */
 @Repository
 public interface GuildProfileRepository extends JpaRepository<Profile, Long> {
 
+    /**
+     * Checks whether exists by users connect.
+     * @param usersConnect the users connect.
+     * @return the resulting boolean.
+     */
     boolean existsByUsersConnect(UsersConnect usersConnect);
 
+    /**
+     * Updates by users connect.
+     * @param name the name.
+     * @param usersConnect the users connect.
+     */
     @Transactional
     @Modifying
     @Query("update Profile u set u.name = ?1 where u.usersConnect = ?2")

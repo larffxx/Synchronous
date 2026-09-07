@@ -14,23 +14,46 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 
+/**
+ * Photo Message Sender class.
+ */
 @Component
 @Getter
 @Setter
 public class PhotoMessageSender implements Sender<TelegramMessageContext> {
+    /**
+     * The event context.
+     */
     private final EventContext eventContext;
+    /**
+     * The servers connect repository.
+     */
     private final ServersConnectRepository serversConnectRepository;
 
+    /**
+     * Creates a new PhotoMessageSender.
+     * @param eventContext the event context.
+     * @param serversConnectRepository the servers connect repository.
+     */
     public PhotoMessageSender(EventContext eventContext, ServersConnectRepository serversConnectRepository) {
         this.serversConnectRepository = serversConnectRepository;
         this.eventContext = eventContext;
     }
 
+    /**
+     * Sends telegram message context.
+     * @param telegramMessageContext the telegram message context.
+     */
     @Override
     public void send(TelegramMessageContext telegramMessageContext) {
         sendFileMessage(telegramMessageContext, telegramMessageContext.textChannel());
     }
 
+    /**
+     * Sends file message.
+     * @param telegramMessageContext the telegram message context.
+     * @param textChannel the text channel.
+     */
     private void sendFileMessage(TelegramMessageContext telegramMessageContext, TextChannel textChannel) {
         File inputFile = new File(telegramMessageContext.file());
 
@@ -45,6 +68,10 @@ public class PhotoMessageSender implements Sender<TelegramMessageContext> {
                 .setEmbeds(new EmbedBuilder().setImage(SendersConstants.PHOTO_ATTACHMENT).build()).queue();
     }
 
+    /**
+     * Returns sender.
+     * @return the resulting string.
+     */
     @Override
     public String getSender() {
         return "PHOTO_MESSAGE";

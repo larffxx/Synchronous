@@ -15,16 +15,39 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Refreshes stored guild profiles when a guild member is updated.
+ */
 @Component
 @Getter
 @Setter
 public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent> {
+    /**
+     * Repository for Discord to Telegram server connections.
+     */
     private final ServersConnectRepository serversConnectRepository;
+    /**
+     * Repository for Discord to Telegram user connections.
+     */
     private final UsersConnectRepository usersConnectRepository;
+    /**
+     * Service that creates or updates stored guild profiles.
+     */
     private final GuildProfileUpdaterService guildProfileUpdaterService;
+    /**
+     * Resolver that builds a member context from a guild member.
+     */
     private final MemberContextResolver memberContextResolver;
 
 
+    /**
+     * Creates a handler for guild member update events.
+     *
+     * @param serversConnectRepository repository for server connections
+     * @param usersConnectRepository repository for user connections
+     * @param guildProfileUpdaterService service for profile updates
+     * @param memberContextResolver resolver for member contexts
+     */
     public GuildMemberUpdateEvent(ServersConnectRepository serversConnectRepository, UsersConnectRepository usersConnectRepository, GuildProfileUpdaterService guildProfileUpdaterService, MemberContextResolver memberContextResolver) {
         this.usersConnectRepository = usersConnectRepository;
         this.serversConnectRepository = serversConnectRepository;
@@ -32,6 +55,11 @@ public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.
         this.memberContextResolver = memberContextResolver;
     }
 
+    /**
+     * Collects registered members and refreshes their stored profiles.
+     *
+     * @param event guild member update event from JDA
+     */
     @Override
     public void execute(net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent event) {
         Guild guild = event.getGuild();
@@ -55,6 +83,11 @@ public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.
         }
     }
 
+    /**
+     * Returns the JDA guild member update event class.
+     *
+     * @return guild member update event class
+     */
     @Override
     public Class getEvent() {
         return net.dv8tion.jda.api.events.guild.member.GuildMemberUpdateEvent.class;

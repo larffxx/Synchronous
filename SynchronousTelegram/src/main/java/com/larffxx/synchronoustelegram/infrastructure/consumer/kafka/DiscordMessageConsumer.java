@@ -13,16 +13,32 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+/**
+ * Kafka consumer for message contexts coming from Discord.
+ * Parses each record into a message context and routes it for delivery.
+ */
 @Component
 @Getter
 @Setter
 public class DiscordMessageConsumer {
+    /**
+     * Service that routes Discord message contexts for delivery.
+     */
     private final DiscordMessageRouteService discordMessageRouteService;
 
+    /**
+     * Creates the consumer with its route service.
+     * @param discordMessageRouteService service routing message contexts
+     */
     public DiscordMessageConsumer(DiscordMessageRouteService discordMessageRouteService) {
         this.discordMessageRouteService = discordMessageRouteService;
     }
 
+    /**
+     * Listens to the Discord message topic and routes each received message.
+     * @param message the raw message JSON payload
+     * @throws RuntimeException if the payload cannot be parsed
+     */
     @KafkaListener(topics = {"${dMTopic}"}, groupId = "${groupId}")
     public void listener(@Payload String message) {
         try {

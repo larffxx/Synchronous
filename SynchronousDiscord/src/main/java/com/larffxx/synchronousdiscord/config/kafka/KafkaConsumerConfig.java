@@ -16,12 +16,22 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Kafka Consumer Config class.
+ */
 @Configuration
 public class KafkaConsumerConfig {
 
+    /**
+     * The bootstrap servers.
+     */
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
+    /**
+     * Consumer Config.
+     * @return the resulting object.
+     */
     public Map<String, Object> consumerConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
@@ -31,16 +41,29 @@ public class KafkaConsumerConfig {
         return props;
     }
 
+    /**
+     * Creates message payload consumer factory bean.
+     * @return the resulting message payload.
+     */
     @Bean
     public ConsumerFactory<String, MessagePayload> messagePayloadConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
+    /**
+     * Creates command payload consumer factory bean.
+     * @return the resulting command payload.
+     */
     @Bean
     public ConsumerFactory<String, CommandPayload> commandPayloadConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfig());
     }
 
+    /**
+     * Creates concurrent message listener container kafka listener container factory bean.
+     * @param commandPayloadConsumerFactory the command payload consumer factory.
+     * @return the resulting command payload.
+     */
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, CommandPayload>> concurrentMessageListenerContainerKafkaListenerContainerFactory(ConsumerFactory<String, CommandPayload> commandPayloadConsumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, CommandPayload> factory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -48,6 +71,11 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
+    /**
+     * Creates message listener container kafka listener container factory bean.
+     * @param messagePayloadConsumerFactory the message payload consumer factory.
+     * @return the resulting message payload.
+     */
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MessagePayload>> messageListenerContainerKafkaListenerContainerFactory(ConsumerFactory<String, MessagePayload> messagePayloadConsumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, MessagePayload> factory = new ConcurrentKafkaListenerContainerFactory<>();

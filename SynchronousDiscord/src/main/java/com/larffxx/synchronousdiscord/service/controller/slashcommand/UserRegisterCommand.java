@@ -12,17 +12,37 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import org.springframework.stereotype.Service;
 
+/**
+ * Registers a Discord user with their Telegram name.
+ */
 @Service
 public class UserRegisterCommand implements Command {
+    /**
+     * Repository for Discord to Telegram user connections.
+     */
     private final UsersConnectRepository usersConnectRepository;
+    /**
+     * Repository for Discord to Telegram server connections.
+     */
     private final ServersConnectRepository serversConnectRepository;
 
+    /**
+     * Creates a user registration command.
+     *
+     * @param usersConnectRepository repository for user connections
+     * @param serversConnectRepository repository for server connections
+     */
     public UserRegisterCommand(UsersConnectRepository usersConnectRepository, ServersConnectRepository serversConnectRepository) {
         this.usersConnectRepository = usersConnectRepository;
         this.serversConnectRepository = serversConnectRepository;
     }
 
 
+    /**
+     * Registers the Discord user from a slash command interaction.
+     *
+     * @param event Discord slash command interaction event
+     */
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         Mapper<UsersConnect, UsersConnectDTO> mapper = new UsersConnectMapper();
@@ -43,6 +63,11 @@ public class UserRegisterCommand implements Command {
         }
     }
 
+    /**
+     * Links a Telegram user to their Discord member record.
+     *
+     * @param telegramCommandContext Telegram command context with the Telegram username
+     */
     @Override
     public void execute(TelegramCommandContext telegramCommandContext) {
         Mapper<UsersConnect, UsersConnectDTO> mapper = new UsersConnectMapper();
@@ -55,6 +80,11 @@ public class UserRegisterCommand implements Command {
         telegramCommandContext.textChannel().sendMessage(telegramCommandContext.telegramUsername() + " " +CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
     }
 
+    /**
+     * Returns the register command name.
+     *
+     * @return register command name
+     */
     @Override
     public String getCommand() {
         return "register";

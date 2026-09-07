@@ -14,18 +14,44 @@ import com.larffxx.synchronoustelegram.infrastructure.repo.UsersConnectRepositor
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Slash command that registers a Telegram user against a Discord name.
+ */
 @Service
 public class RegisterCommand implements Command {
+    /**
+     * Service for sending text replies to Telegram chats.
+     */
     private final TextMessageService textMessageService;
+    /**
+     * Repository for user connection records.
+     */
     private final UsersConnectRepository usersConnectRepository;
+    /**
+     * Repository for server connection records.
+     */
     private final ServersConnectRepository serversConnectRepository;
 
+    /**
+     * Creates a register command with its dependencies.
+     *
+     * @param textMessageService service for sending text replies
+     * @param usersConnectRepository repository for user connections
+     * @param serversConnectRepository repository for server connections
+     */
     public RegisterCommand(TextMessageService textMessageService, UsersConnectRepository usersConnectRepository, ServersConnectRepository serversConnectRepository) {
         this.textMessageService = textMessageService;
         this.usersConnectRepository = usersConnectRepository;
         this.serversConnectRepository = serversConnectRepository;
     }
 
+    /**
+     * Registers the invoking user with the Discord name from the options.
+     *
+     * @param commandContext parsed command invocation context
+     * @throws NoOptionsProvidedException if no Discord name is provided
+     * @throws TooManyOptionsException if more than two options are provided
+     */
     @Override
     public void execute(CommandContext commandContext) {
         if (commandContext.options().isEmpty()) {
@@ -54,6 +80,11 @@ public class RegisterCommand implements Command {
         textMessageService.send(chatID, CommandConstant.USER_SUCCESSFULLY_REGISTERED);
     }
 
+    /**
+     * Returns the command name.
+     *
+     * @return command name without leading slash
+     */
     public String getCommand() {
         return "register";
     }

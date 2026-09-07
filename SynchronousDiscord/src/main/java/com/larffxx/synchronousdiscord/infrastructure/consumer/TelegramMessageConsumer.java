@@ -13,19 +13,36 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * Telegram Message Consumer class.
+ */
 @Component
 @Getter
 @Setter
 public class TelegramMessageConsumer {
+    /**
+     * The telegram message route service.
+     */
     private final TelegramMessageRouteService telegramMessageRouteService;
+    /**
+     * The json node to telegram message context mapper.
+     */
     private final JsonNodeToTelegramMessageContextContextMapper jsonNodeToTelegramMessageContextMapper;
 
+    /**
+     * Creates a new TelegramMessageConsumer.
+     * @param telegramMessageRouteService the telegram message route service.
+     * @param jsonNodeToTelegramMessageContextMapper the json node to telegram message context mapper.
+     */
     public TelegramMessageConsumer(TelegramMessageRouteService telegramMessageRouteService, JsonNodeToTelegramMessageContextContextMapper jsonNodeToTelegramMessageContextMapper) {
         this.telegramMessageRouteService = telegramMessageRouteService;
         this.jsonNodeToTelegramMessageContextMapper = jsonNodeToTelegramMessageContextMapper;
     }
 
+    /**
+     * Listens for incoming Kafka messages.
+     * @param message the message.
+     */
     @KafkaListener(topics = "${tMTopic}", groupId = "${groupId}")
     public void listener(@Payload String message) {
         JsonNode data;

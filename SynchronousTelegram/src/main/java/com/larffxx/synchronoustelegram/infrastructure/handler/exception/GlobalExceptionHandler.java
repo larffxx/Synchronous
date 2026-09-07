@@ -12,8 +12,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Global REST exception handler for the Telegram module.
+ * Translates domain exceptions into error responses with HTTP 500 status.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * Handles generic Telegram failures.
+     * @param e the thrown exception
+     * @return error response with HTTP 500 status
+     */
     @ExceptionHandler
     public ResponseEntity<?> handleGenericException(TelegramException e) {
         return ResponseEntity
@@ -23,6 +32,11 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    /**
+     * Handles command parsing and handling failures.
+     * @param e the thrown exception
+     * @return error response with HTTP 500 status
+     */
     @ExceptionHandler
     public ResponseEntity<?> handleCommandException(CommandException e) {
         return ResponseEntity
@@ -32,6 +46,11 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    /**
+     * Handles data loading and conversion failures.
+     * @param e the thrown exception
+     * @return error response with HTTP 500 status
+     */
     @ExceptionHandler
     public ResponseEntity<?> handleDataException(DataException e) {
         return ResponseEntity
@@ -41,6 +60,11 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    /**
+     * Handles failures while executing Telegram operations.
+     * @param e the thrown exception
+     * @return error response with HTTP 500 status
+     */
     @ExceptionHandler
     public ResponseEntity<?> handleExecutionException(ExecutionException e) {
         return ResponseEntity

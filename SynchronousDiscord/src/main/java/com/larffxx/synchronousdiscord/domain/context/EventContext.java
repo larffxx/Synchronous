@@ -10,13 +10,27 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
+/**
+ * Event Context class.
+ */
 @Component
 @Getter
 @Setter
 public class EventContext {
+    /**
+     * The jda.
+     */
     private JDA jda;
+    /**
+     * The text channel.
+     */
     private TextChannel textChannel;
+    /**
+     * The message channel.
+     */
     private MessageChannel messageChannel;
+    /**
+     * The option mappings.
+     */
     private List<OptionMapping> optionMappings;
 }

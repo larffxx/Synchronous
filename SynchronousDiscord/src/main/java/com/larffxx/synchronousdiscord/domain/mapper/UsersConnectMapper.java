@@ -5,8 +5,16 @@ import com.larffxx.synchronousdiscord.domain.model.UsersConnect;
 import com.larffxx.synchronousdiscord.domain.dto.UsersConnectDTO;
 import org.springframework.stereotype.Component;
 
+/**
+ * Users Connect Mapper class.
+ */
 @Component
 public class UsersConnectMapper implements Mapper<UsersConnect,UsersConnectDTO> {
+    /**
+     * Converts entity to DTO.
+     * @param usersConnect the users connect.
+     * @return the resulting users connect dto.
+     */
     public UsersConnectDTO toDTO(UsersConnect usersConnect) {
         UsersConnectDTO dto = new UsersConnectDTO();
 
@@ -18,6 +26,11 @@ public class UsersConnectMapper implements Mapper<UsersConnect,UsersConnectDTO> 
         return dto;
     }
 
+    /**
+     * Converts DTO to entity.
+     * @param dto the dto.
+     * @return the resulting users connect.
+     */
     public UsersConnect toEntity(UsersConnectDTO dto) {
         UsersConnect entity = new UsersConnect();
 

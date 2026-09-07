@@ -1,6 +1,5 @@
 package com.larffxx.synchronousdiscord.infrastructure.consumer;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,19 +13,36 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * Telegram Command Consumer class.
+ */
 @Component
 @Getter
 @Setter
 public class TelegramCommandConsumer {
+    /**
+     * The telegram command route service.
+     */
     private final TelegramCommandRouteService telegramCommandRouteService;
+    /**
+     * The json node to telegram command context context mapper.
+     */
     private final JsonNodeToTelegramCommandContextContextMapper jsonNodeToTelegramCommandContextContextMapper;
 
+    /**
+     * Creates a new TelegramCommandConsumer.
+     * @param telegramCommandRouteService the telegram command route service.
+     * @param jsonNodeToTelegramCommandContextContextMapper the json node to telegram command context context mapper.
+     */
     public TelegramCommandConsumer(TelegramCommandRouteService telegramCommandRouteService, JsonNodeToTelegramCommandContextContextMapper jsonNodeToTelegramCommandContextContextMapper) {
         this.telegramCommandRouteService = telegramCommandRouteService;
         this.jsonNodeToTelegramCommandContextContextMapper = jsonNodeToTelegramCommandContextContextMapper;
     }
 
+    /**
+     * Listens for incoming Kafka messages.
+     * @param command the command.
+     */
     @KafkaListener(topics = "${tCTopic}", groupId = "${groupId}")
     public void listener(@Payload String command) {
         JsonNode data;

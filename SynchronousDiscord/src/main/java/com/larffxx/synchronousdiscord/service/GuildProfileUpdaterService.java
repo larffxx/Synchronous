@@ -14,20 +14,44 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Creates or updates stored guild profiles from member contexts.
+ */
 @Component
 @Getter
 @Setter
 public class GuildProfileUpdaterService {
+    /**
+     * Repository for stored guild profiles.
+     */
     private final GuildProfileRepository guildProfileRepository;
+    /**
+     * Repository for Discord to Telegram server connections.
+     */
     private final ServersConnectRepository serversConnectRepository;
+    /**
+     * Repository for Discord to Telegram user connections.
+     */
     private final UsersConnectRepository usersConnectRepository;
 
+    /**
+     * Creates a guild profile updater service.
+     *
+     * @param guildProfileRepository repository for guild profiles
+     * @param serversConnectRepository repository for server connections
+     * @param usersConnectRepository repository for user connections
+     */
     public GuildProfileUpdaterService(GuildProfileRepository guildProfileRepository, ServersConnectRepository serversConnectRepository, UsersConnectRepository usersConnectRepository) {
         this.guildProfileRepository = guildProfileRepository;
         this.serversConnectRepository = serversConnectRepository;
         this.usersConnectRepository = usersConnectRepository;
     }
 
+    /**
+     * Creates or updates a stored profile for every given member.
+     *
+     * @param memberContext member contexts to persist
+     */
     public void update(List<MemberContext> memberContext){
         for(MemberContext member : memberContext){
             if(!guildProfileRepository.existsByUsersConnect(usersConnectRepository.findByDiscordName(member.username()))){
@@ -38,6 +62,12 @@ public class GuildProfileUpdaterService {
         }
     }
 
+    /**
+     * Creates and saves a new profile for the given member.
+     *
+     * @param memberContext member context to create a profile from
+     * @throws RuntimeException when the user or server connection does not exist
+     */
     private void createProfile(MemberContext memberContext){
         Mapper<Profile, ProfileDTO> profileMapper = new ProfileMapper();
         boolean usersConnectExists = usersConnectRepository.existsByDiscordName(memberContext.username());
@@ -58,6 +88,11 @@ public class GuildProfileUpdaterService {
 
     }
 
+    /**
+     * Updates the stored profile and user connection for the given member.
+     *
+     * @param memberContext member context with the latest member data
+     */
     private void updateProfile(MemberContext memberContext){
         usersConnectRepository.updateByDiscordId(memberContext.username(), memberContext.id());
         guildProfileRepository.updateByUsersConnect(memberContext.guildName(), usersConnectRepository.findByDiscordUserId(memberContext.id()));

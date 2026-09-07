@@ -12,16 +12,37 @@ import com.larffxx.synchronoustelegram.infrastructure.repo.ServersConnectReposit
 import com.larffxx.synchronoustelegram.service.message.TextMessageService;
 import org.springframework.stereotype.Service;
 
+/**
+ * Slash command that connects a Telegram chat to a Discord channel.
+ */
 @Service
 public class ConnectCommand implements Command {
+    /**
+     * Service for sending text replies to Telegram chats.
+     */
     private final TextMessageService textMessageService;
+    /**
+     * Repository for server connection records.
+     */
     private final ServersConnectRepository serversConnectRepository;
 
+    /**
+     * Creates a connect command with its dependencies.
+     *
+     * @param textMessageService service for sending text replies
+     * @param serversConnectRepository repository for server connections
+     */
     public ConnectCommand(TextMessageService textMessageService, ServersConnectRepository serversConnectRepository) {
         this.textMessageService = textMessageService;
         this.serversConnectRepository = serversConnectRepository;
     }
 
+    /**
+     * Connects the chat from the context to the given Discord channel.
+     *
+     * @param commandContext parsed command invocation context
+     * @throws TooManyOptionsException if more than one option is provided
+     */
     @Override
     public void execute(CommandContext commandContext) {
         Mapper<ServersConnect, ServersConnectDTO> mapper = new ServersConnectMapper();
@@ -41,6 +62,11 @@ public class ConnectCommand implements Command {
     }
 
 
+    /**
+     * Returns the command name.
+     *
+     * @return command name without leading slash
+     */
     @Override
     public String getCommand() {
         return "connect";

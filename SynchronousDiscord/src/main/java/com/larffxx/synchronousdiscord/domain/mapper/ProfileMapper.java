@@ -6,8 +6,16 @@ import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
 import com.larffxx.synchronousdiscord.domain.model.UsersConnect;
 import org.springframework.stereotype.Component;
 
+/**
+ * Profile Mapper class.
+ */
 @Component
 public class ProfileMapper implements Mapper<Profile,ProfileDTO> {
+    /**
+     * Converts entity to DTO.
+     * @param profile the profile.
+     * @return the resulting profile dto.
+     */
     public ProfileDTO toDTO(Profile profile) {
         ProfileDTO dto = new ProfileDTO();
 
@@ -17,6 +25,11 @@ public class ProfileMapper implements Mapper<Profile,ProfileDTO> {
 
         return dto;
     }
+    /**
+     * Converts DTO to entity.
+     * @param dto the dto.
+     * @return the resulting profile.
+     */
     public Profile toEntity(ProfileDTO dto) {
         Profile profile = new Profile();
 

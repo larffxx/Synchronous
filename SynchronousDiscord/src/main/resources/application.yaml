@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: SynchronousDiscord
+
+  datasource:
+    url: jdbc:postgresql://localhost:5454/Synchronous
+    username: larffxx
+    password: larffxx
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+  h2:
+    console:
+      enabled: true
+
+  kafka:
+    bootstrap-servers: localhost:29092
+    consumer:
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+
+server:
+  port: 0
+
+token: ${DISCORD_TOKEN}
+
+dMTopic: Discord
+dCTopic: DiscordCommand
+tMTopic: Telegram
+tCTopic: TelegramCommand
+groupId: synchronous
