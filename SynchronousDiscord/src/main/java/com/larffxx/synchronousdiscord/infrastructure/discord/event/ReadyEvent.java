@@ -25,6 +25,11 @@ public class ReadyEvent implements Event<net.dv8tion.jda.api.events.session.Read
     public void execute(net.dv8tion.jda.api.events.session.ReadyEvent event) {
         for (Guild guild : event.getJDA().getGuilds()) {
             guild.updateCommands().addCommands(
+                    Commands.slash("cool", "Give coolness to a member")
+                            .addOption(OptionType.USER, "user", "Member to rate", true)
+                            .addOption(OptionType.INTEGER, "amount", "Points from 1 to 10"),
+                    Commands.slash("coolness", "Show coolness as text")
+                            .addOption(OptionType.USER, "user", "Member to check"),
                     Commands.slash("register", "register your telegram").addOption(OptionType.STRING, "telegram", "Enter your Telegram UserName"),
                     Commands.slash("connect", "Connect your servers")
                             .addOption(OptionType.STRING, "telegram", "Enter your telegram channel name"),

@@ -2,6 +2,7 @@ package com.larffxx.synchronousdiscord.infrastructure.discord.event;
 
 import com.larffxx.synchronousdiscord.infrastructure.producer.DiscordPayloadProducer;
 import com.larffxx.synchronousdiscord.domain.context.EventContext;
+import com.larffxx.synchronousdiscord.service.CoolnessService;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -22,16 +23,22 @@ public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
      * Shared context holding the current text channel.
      */
     private final EventContext eventContext;
+    /**
+     * Service scoring chat messages for coolness.
+     */
+    private final CoolnessService coolnessService;
 
     /**
      * Creates a handler for received Discord messages.
      *
      * @param discordPayloadProducer producer for outgoing payloads
      * @param eventContext shared event context
+     * @param coolnessService service scoring chat messages
      */
-    public MessageReceiveEvent(DiscordPayloadProducer discordPayloadProducer, EventContext eventContext) {
+    public MessageReceiveEvent(DiscordPayloadProducer discordPayloadProducer, EventContext eventContext, CoolnessService coolnessService) {
         this.discordPayloadProducer = discordPayloadProducer;
         this.eventContext = eventContext;
+        this.coolnessService = coolnessService;
     }
 
     /**
@@ -43,6 +50,7 @@ public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
     public void execute(MessageReceivedEvent event) {
         if (!event.getAuthor().isBot()) {
             eventContext.setTextChannel(event.getChannel().asTextChannel());
+            coolnessService.handleMessage(event);
             discordPayloadProducer.send(event);
         }
     }

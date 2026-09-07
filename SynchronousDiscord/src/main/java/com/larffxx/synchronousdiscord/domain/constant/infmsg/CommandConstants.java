@@ -47,6 +47,14 @@ public class CommandConstants {
      * USER REGISTER UNSUCCESSFUL MESSAGE constant.
      */
     public static final String USER_REGISTER_UNSUCCESSFUL_MESSAGE = "You have been registered before";
+    public static final String COOL_USER_OPTION = "user";
+    public static final String COOL_AMOUNT_OPTION = "amount";
+    public static final String COOLNESS_ADDED = "%s coolness: %d";
+    public static final String COOLNESS_SHOW = "%s coolness: %d";
+    public static final String COOLNESS_UNREGISTERED = "User is not registered";
+    public static final String COOLNESS_INVALID_AMOUNT = "Amount must be between 1 and 10";
+    public static final String COOLNESS_SELECT_MEMBER = "Select a server member";
+    public static final String COOLNESS_USAGE = "Usage: /cool <discord name> [amount]";
     /**
      * DELETE SUCCESS MESSAGE constant.
      */

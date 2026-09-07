@@ -31,6 +31,11 @@ public class UsersConnect {
     private String discordName, telegramName, discordUserId;
 
     /**
+     * Coolness rating of the user, from 0 to 100.
+     */
+    private int coolness;
+
+    /**
      * Server link this user link belongs to.
      */
     @ManyToOne

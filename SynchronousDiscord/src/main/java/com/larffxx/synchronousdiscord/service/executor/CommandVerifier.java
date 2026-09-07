@@ -72,7 +72,8 @@ public class CommandVerifier {
                 commandId -> t.getGuild().retrieveCommandById(commandId).complete().getOptions());
         List<OptionMapping> options = t.getInteraction().getOptions();
 
-        if (commandOptions.size() > t.getOptions().size()) {
+        long requiredOptions = commandOptions.stream().filter(Command.Option::isRequired).count();
+        if (requiredOptions > t.getOptions().size()) {
             throw new VerifyException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
         }
 

@@ -26,6 +26,10 @@ public class UsersConnect {
      */
     private String discordName, telegramName, discordUserId;
     /**
+     * The coolness rating, from 0 to 100.
+     */
+    private int coolness;
+    /**
      * The servers connect.
      */
     @ManyToOne
