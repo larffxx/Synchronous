@@ -40,7 +40,7 @@ public class CoolnessCommand implements Command {
             return;
         }
         try {
-            int total = coolnessService.getCoolness(target.getId());
+            int total = coolnessService.getCoolness(target);
             event.getHook().editOriginal(formatTotal(target.getEffectiveName(), total)).queue();
         } catch (CommandException e) {
             event.getHook().editOriginal(e.getMessage()).queue();
@@ -65,7 +65,7 @@ public class CoolnessCommand implements Command {
                     textChannel.sendMessage(CommandConstants.COOLNESS_UNREGISTERED).queue();
                     return;
                 }
-                total = coolnessService.getCoolness(target.getId());
+                total = coolnessService.getCoolness(target);
                 name = target.getEffectiveName();
             } else {
                 total = coolnessService.getCoolnessByTelegramName(telegramCommandContext.telegramUsername());

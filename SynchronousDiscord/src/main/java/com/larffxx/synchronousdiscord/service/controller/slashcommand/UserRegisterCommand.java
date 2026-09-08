@@ -55,17 +55,27 @@ public class UserRegisterCommand implements Command {
             if (serversConnect == null) {
                 throw new CommandException(InfExcMessages.NO_CONNECTION_BETWEEN_SERVERS);
             }
-            UsersConnectDTO dto = new UsersConnectDTO(event.getInteraction().getUser().getName(),
+            String username = event.getInteraction().getUser().getName();
+            String userId = event.getInteraction().getUser().getId();
+            UsersConnect existing = usersConnectRepository.findByDiscordUserId(userId);
+            if (existing == null) {
+                existing = usersConnectRepository.findByDiscordName(username);
+            }
+            if (existing != null && existing.getTelegramName() != null) {
+                event.getHook().editOriginal(CommandConstants.USER_REGISTER_UNSUCCESSFUL_MESSAGE).queue();
+                return;
+            }
+            UsersConnectDTO dto = new UsersConnectDTO(username,
                     event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString(),
-                    event.getInteraction().getUser().getId(),
+                    userId,
                     serversConnect.getId()
                     );
-            if (usersConnectRepository.existsByDiscordName(event.getInteraction().getUser().getName())) {
-                event.getHook().editOriginal(CommandConstants.USER_REGISTER_UNSUCCESSFUL_MESSAGE).queue();
-            } else {
-                usersConnectRepository.save(mapper.toEntity(dto));
-                event.getHook().editOriginal(CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
+            UsersConnect entity = mapper.toEntity(dto);
+            if (existing != null) {
+                entity.setId(existing.getId());
             }
+            usersConnectRepository.save(entity);
+            event.getHook().editOriginal(CommandConstants.USER_REGISTER_SUCCESS_MESSAGE).queue();
         }
     }
 
