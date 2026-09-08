@@ -37,3 +37,12 @@ dCTopic: DiscordCommand
 tMTopic: Telegram
 tCTopic: TelegramCommand
 groupId: synchronous
+
+coolness:
+  mode: ${COOLNESS_MODE:opencode}
+  opencodeBin: ${COOLNESS_OPENCODE_BIN:opencode}
+  opencodeModel: ${COOLNESS_OPENCODE_MODEL:opencode/big-pickle}
+  apiUrl: ${COOLNESS_API_URL:https://opencode.ai/zen/v1}
+  apiModel: ${COOLNESS_API_MODEL:big-pickle}
+  apiKey: ${COOLNESS_API_KEY:${OPENCODE_ZEN_API_KEY:}}
+  apiTimeoutSeconds: ${COOLNESS_API_TIMEOUT_SECONDS:60}
