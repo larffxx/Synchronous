@@ -17,7 +17,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -49,17 +51,22 @@ public class ModelCoolnessScorer {
      */
     private static final int MAX_PROMPT_CONTENT = 500;
     /**
-     * Dota ranks from worst to best, used as the model score scale.
+     * Longest whole context block sent to the model.
+     */
+    private static final int MAX_PROMPT_CONTEXT = 1200;
+    /**
+     * Dota ranks from worst to best, kept as a fallback scale when the model
+     * answers with a rank word instead of a 1-10 number.
      */
     private static final String[][] RANK_NAMES = {
-            {"herald", "геральд"},
-            {"guardian", "страж"},
-            {"crusader", "крестоносец"},
-            {"archon", "архонт"},
-            {"legend", "легенда"},
-            {"ancient", "властелин"},
-            {"divine", "божество"},
-            {"immortal", "титан"},
+            {"herald", "геральд", "херальд", "хералд"},
+            {"guardian", "страж", "гардиан", "гвардиан"},
+            {"crusader", "крестоносец", "крусадер"},
+            {"archon", "архонт", "архон"},
+            {"legend", "легенда", "ледженд"},
+            {"ancient", "властелин", "древний", "эншент", "эйншент"},
+            {"divine", "божество", "дивайн"},
+            {"immortal", "титан", "иммортал", "имморт"},
     };
     /**
      * Words of gratitude and support.
@@ -153,19 +160,20 @@ public class ModelCoolnessScorer {
      * @param content message text
      * @param hasAttachments whether the message has attachments
      * @param discordUserId author id for duplicate detection
+     * @param context recent channel messages, oldest first, without the current one
      * @return score with the model comment
      */
-    public Score score(String content, boolean hasAttachments, String discordUserId) {
+    public Score score(String content, boolean hasAttachments, String discordUserId, List<String> context) {
         String previous = lastMessageByUser.put(discordUserId, content);
         if (!content.isBlank() && content.equals(previous)) {
-            return new Score(-3, "Я это уже слышал. Дежавю слабака. Ранг: Herald. Совет: не повторяйся.");
+            return new Score(-3, "Я это уже слышал. Дежавю слабака. Оценка: 1/10. Совет: не повторяйся.");
         }
         long startedAt = System.nanoTime();
         try {
             if ("http".equalsIgnoreCase(mode)) {
-                return callModel(content, hasAttachments);
+                return callModel(content, hasAttachments, context);
             }
-            return callOpenCodeCli(content, hasAttachments);
+            return callOpenCodeCli(content, hasAttachments, context);
         } catch (Exception e) {
             long elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startedAt);
             log.warn("Model scoring failed after {}ms, using lexicon fallback: {}",
@@ -175,71 +183,149 @@ public class ModelCoolnessScorer {
     }
 
     /**
-     * Builds the scoring prompt for one message.
+     * Builds the scoring prompt for one message with recent chat context.
      * @param content message text
      * @param hasAttachments whether the message has attachments
+     * @param context recent channel messages, oldest first, without the current one
      * @return prompt asking for a score and a short comment
      */
-    private String buildPrompt(String content, boolean hasAttachments) {
+    private String buildPrompt(String content, boolean hasAttachments, List<String> context) {
         String fragment = content.length() > MAX_PROMPT_CONTENT
                 ? content.substring(0, MAX_PROMPT_CONTENT)
                 : content;
+        String contextBlock = buildContextBlock(context);
         return "Ты — Гуль из чата. Дединсайд-дотер, фанат Tokyo Ghoul. "
-                + "Считаешь себя выше всех в чате и не скрываешь этого. "
-                + "Оцениваешь КАЖДОЕ сообщение по крутости. Отвечаешь цинично, высокомерно, с дота-сленгом. "
-                + "Не хвалишь просто так — похвалу надо заслужить. Не выходишь из роли. "
+                + "Дерзкий и высокомерный снаружи, но по-своему справедливый: удачную шутку, дельную мысль, "
+                + "помощь и живое участие замечаешь и ценишь, хоть и сквозь зубы. "
+                + "Оцениваешь КАЖДОЕ сообщение по крутости. Отвечаешь цинично, с дота-сленгом. "
+                + "Не выходишь из роли. "
                 + (hasAttachments ? "К сообщению приложены файлы. " : "")
-                + "Ответь строго в формате: РАНГ | РАЗБОР. Ранг — один из Herald, Guardian, Crusader, Archon, "
-                + "Legend, Ancient, Divine, Immortal. "
+                + contextBlock
+                + "Оценивай сообщение В КОНТЕКСТЕ переписки: короткая реакция на смешное или меткий ответ "
+                + "в споре — это тоже круто, а не пустяк. "
+                + "Шкала щедрая: 1-2 — только токсичность, спам и нытьё; 3-4 — скука и пустота; "
+                + "5 — нейтрально; 6-7 — обычное живое сообщение (так бывает чаще всего); "
+                + "8-9 — реально круто; 10 — легенда чата. "
+                + "Ответь строго в формате: ОЦЕНКА | РАЗБОР. Оценка — целое число от 1 до 10. "
                 + "Разбор — пара циничных предложений свысока плюс надменный совет в конце. "
                 + "Без рассуждений и вступлений — только одна строка в заданном формате. "
-                + "Пример: Guardian | Очередной смертный купил клавиатуру. Думает, железо решит. "
+                + "Пример: 7 | Очередной смертный купил клавиатуру. Думает, железо решит. "
                 + "Маску надень, может, поможет. Хотя вряд ли. "
                 + "Текст: \"" + fragment + "\"";
     }
 
     /**
-     * Extracts the Dota rank and the review from model output,
-     * mapping the rank onto the internal -5..8 delta scale.
-     * @param output raw model output
-     * @return score with the model review, review falls back to a tier phrase
-     * @throws IllegalStateException when the output has no rank or score
+     * Formats recent chat messages as a prompt context block.
+     * @param context recent channel messages, oldest first, may be null or empty
+     * @return context lines for the prompt, or a no-context note
      */
-    private Score parseAnswer(String output) {
-        String text = output == null ? "" : output;
-        Matcher verdict = Pattern.compile("(?m)^\\s*([A-Za-zА-Яа-яЁё0-9-]+)\\s*\\|\\s*(.+?)\\s*$").matcher(text);
-        String head = null;
-        String comment = "";
-        while (verdict.find()) {
-            head = verdict.group(1);
-            comment = verdict.group(2);
+    private String buildContextBlock(List<String> context) {
+        if (context == null || context.isEmpty()) {
+            return "Предыдущих сообщений в этом чате нет — судишь вслепую. ";
         }
-        int delta;
-        if (head != null) {
-            int rankIdx = rankIndex(head);
-            if (rankIdx >= 0) {
-                delta = Math.round(rankIdx * 13f / (RANK_NAMES.length - 1)) - 5;
-            } else if (head.matches("-?\\d+")) {
-                delta = tenPointToDelta(Integer.parseInt(head));
-            } else {
-                throw new IllegalStateException("No rank in model answer");
+        List<String> lines = new ArrayList<>();
+        int budget = MAX_PROMPT_CONTEXT;
+        for (int i = context.size() - 1; i >= 0 && budget > 0; i--) {
+            String line = context.get(i);
+            if (line == null || line.isBlank()) {
+                continue;
             }
-        } else if (text.strip().matches("-?\\d+")) {
-            delta = tenPointToDelta(Integer.parseInt(text.strip()));
-            comment = "";
-        } else {
-            throw new IllegalStateException("No score in model answer");
+            String clean = line.replaceAll("\\s+", " ").trim();
+            if (clean.length() > budget) {
+                clean = clean.substring(0, budget);
+            }
+            budget -= clean.length();
+            lines.add(0, clean);
         }
-        delta = Math.min(MAX_MESSAGE_DELTA, Math.max(MIN_MESSAGE_DELTA, delta));
-        comment = cleanComment(comment);
-        if (comment.isBlank()) {
-            comment = defaultComment(delta);
+        if (lines.isEmpty()) {
+            return "Предыдущих сообщений в этом чате нет — судишь вслепую. ";
         }
-        return new Score(delta, comment);
+        return "Контекст чата (свежее — в конце): " + String.join(" // ", lines) + ". ";
     }
 
     /**
-     * Returns the rank position for an English or Russian rank name.
+     * Extracts the 1-10 score and the review from model output,
+     * mapping the score onto the internal -5..8 delta scale.
+     * Takes the first line with a numeric score; a legacy Dota rank is
+     * still accepted as a fallback. Tolerates markdown bold, numbered
+     * lists and an "Оценка:" prefix, so trailing model chatter with a
+     * pipe character cannot hijack the verdict.
+     * @param output raw model output
+     * @return score with the model review, review falls back to a tier phrase
+     * @throws IllegalStateException when the output has no score,
+     *         with a truncated snippet of the output for diagnostics
+     */
+    private Score parseAnswer(String output) {
+        String text = output == null ? "" : output;
+        String unknownHead = null;
+        Integer numericDelta = null;
+        String numericComment = "";
+        Integer rankDelta = null;
+        String rankComment = "";
+        for (String rawLine : text.split("\\R")) {
+            String line = rawLine.trim()
+                    .replaceAll("^[\\s*#>\\-–—]+", "")
+                    .replaceAll("^\\d+[.)\\]:]+\\s*", "")
+                    .replaceAll("\\*", "")
+                    .replaceFirst("(?iu)^(оценка|score|ранг|rank|вердикт|verdict)\\s*[:：]\\s*", "")
+                    .trim();
+            if (line.isEmpty()) {
+                continue;
+            }
+            int pipe = line.indexOf('|');
+            if (pipe < 0) {
+                if (line.matches("-?\\d+") && numericDelta == null) {
+                    numericDelta = tenPointToDelta(Integer.parseInt(line));
+                    numericComment = "";
+                }
+                continue;
+            }
+            String token = line.substring(0, pipe).trim().replaceAll("[\"'«»]+", "").trim();
+            if (token.contains(" ")) {
+                token = token.substring(0, token.indexOf(' '));
+            }
+            token = token.replaceAll("[^\\p{L}0-9-]+", "");
+            String comment = line.substring(pipe + 1).trim();
+            if (token.isEmpty()) {
+                continue;
+            }
+            if (token.matches("-?\\d+")) {
+                if (numericDelta == null) {
+                    numericDelta = tenPointToDelta(Integer.parseInt(token));
+                    numericComment = comment;
+                }
+                continue;
+            }
+            int rankIdx = rankIndex(token);
+            if (rankIdx >= 0) {
+                if (rankDelta == null) {
+                    rankDelta = Math.round(rankIdx * 13f / (RANK_NAMES.length - 1)) - 5;
+                    rankComment = comment;
+                }
+            } else if (unknownHead == null) {
+                unknownHead = token;
+            }
+        }
+        Integer delta = numericDelta != null ? numericDelta : rankDelta;
+        String comment = numericDelta != null ? numericComment : rankComment;
+        if (delta == null && text.strip().matches("-?\\d+")) {
+            delta = tenPointToDelta(Integer.parseInt(text.strip()));
+            comment = "";
+        }
+        if (delta != null) {
+            int clamped = Math.min(MAX_MESSAGE_DELTA, Math.max(MIN_MESSAGE_DELTA, delta));
+            String clean = cleanComment(comment);
+            return new Score(clamped, clean.isBlank() ? defaultComment(clamped) : clean);
+        }
+        if (unknownHead != null) {
+            throw new IllegalStateException("No score in model answer (" + unknownHead + "): " + truncate(text));
+        }
+        throw new IllegalStateException("No score in model answer: " + truncate(text));
+    }
+
+    /**
+     * Returns the rank position for an English or Russian rank name,
+     * including common transliterations the model may produce.
      * @param rank rank word from the model answer
      * @return position from 0 (Herald) to 7 (Immortal), or -1 when unknown
      */
@@ -255,7 +341,7 @@ public class ModelCoolnessScorer {
     }
 
     /**
-     * Maps a legacy 1-10 score onto the internal -5..8 delta scale.
+     * Maps a 1-10 score onto the internal -5..8 delta scale.
      * @param tenPoint score between 1 and 10
      * @return delta between -5 and 8
      */
@@ -290,18 +376,18 @@ public class ModelCoolnessScorer {
      */
     private String defaultComment(int delta) {
         if (delta >= 5) {
-            return "Ладно, почти не стыдно. Ранг: Divine. Совет: не зазнавайся, смертный.";
+            return "Ладно, почти не стыдно. Оценка: 9/10. Совет: не зазнавайся, смертный.";
         }
         if (delta > 0) {
-            return "Терпимо. Для низшей ступени сойдёт. Ранг: Archon. Совет: старайся лучше, стая смотрит.";
+            return "Терпимо. Для низшей ступени сойдёт. Оценка: 7/10. Совет: старайся лучше, стая смотрит.";
         }
         if (delta == 0) {
-            return "Пыль. Ни вкуса, ни запаха. Ранг: Crusader. Совет: го некст.";
+            return "Пыль. Ни вкуса, ни запаха. Оценка: 5/10. Совет: го некст.";
         }
         if (delta >= -2) {
-            return "Жалкое зрелище. Даже гули такое не едят. Ранг: Guardian. Совет: скройся и подумай.";
+            return "Жалкое зрелище. Даже гули такое не едят. Оценка: 3/10. Совет: скройся и подумай.";
         }
-        return "Мусор. Маску снимаю только чтобы зевнуть. Ранг: Herald. Совет: исчезни.";
+        return "Мусор. Маску снимаю только чтобы зевнуть. Оценка: 1/10. Совет: исчезни.";
     }
 
     /**
@@ -310,13 +396,14 @@ public class ModelCoolnessScorer {
      * shells out to {@code opencode run} exactly like an OpenCode session.
      * @param content message text
      * @param hasAttachments whether the message has attachments
+     * @param context recent channel messages, oldest first, without the current one
      * @return model score with the model comment
      * @throws Exception when the CLI fails, times out, or answers with no number
      */
-    private Score callOpenCodeCli(String content, boolean hasAttachments) throws Exception {
+    private Score callOpenCodeCli(String content, boolean hasAttachments, List<String> context) throws Exception {
         cliPermits.acquire();
         try {
-            ProcessBuilder builder = new ProcessBuilder(opencodeBin, "run", "--model", opencodeModel, buildPrompt(content, hasAttachments))
+            ProcessBuilder builder = new ProcessBuilder(opencodeBin, "run", "--model", opencodeModel, buildPrompt(content, hasAttachments, context))
                     .redirectErrorStream(true)
                     .redirectInput(new File("/dev/null"));
             long startedAt = System.nanoTime();
@@ -356,11 +443,12 @@ public class ModelCoolnessScorer {
      * Asks the model for a 1-10 score with a short review.
      * @param content message text
      * @param hasAttachments whether the message has attachments
+     * @param context recent channel messages, oldest first, without the current one
      * @return model score with the model comment
      * @throws Exception when the request fails or the answer has no number
      */
-    private Score callModel(String content, boolean hasAttachments) throws Exception {
-        String prompt = buildPrompt(content, hasAttachments);
+    private Score callModel(String content, boolean hasAttachments, List<String> context) throws Exception {
+        String prompt = buildPrompt(content, hasAttachments, context);
 
         ObjectNode message = objectMapper.createObjectNode();
         message.put("role", "user");

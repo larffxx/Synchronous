@@ -11,6 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -29,6 +33,10 @@ public class CoolnessService {
      */
     public static final int MAX_COOLNESS = 100;
     /**
+     * Minimum coolness rating, losers sink below zero.
+     */
+    public static final int MIN_COOLNESS = -100;
+    /**
      * Coolness points per nickname star.
      */
     public static final int COOLNESS_PER_STAR = 20;
@@ -36,6 +44,14 @@ public class CoolnessService {
      * Maximum nickname stars.
      */
     public static final int MAX_STARS = 5;
+    /**
+     * Recent messages per channel kept as scoring context.
+     */
+    private static final int CONTEXT_SIZE = 6;
+    /**
+     * Longest context message fragment kept for scoring.
+     */
+    private static final int MAX_CONTEXT_CONTENT = 200;
 
     private final UsersConnectRepository usersConnectRepository;
     /**
@@ -56,6 +72,10 @@ public class CoolnessService {
      * Last applied star count per Discord user id, to avoid redundant nickname updates.
      */
     private final Map<String, Integer> appliedStarsByMember = new ConcurrentHashMap<>();
+    /**
+     * Rolling message context per channel id, newest last, for model scoring.
+     */
+    private final Map<String, Deque<String>> recentByChannel = new ConcurrentHashMap<>();
 
     /**
      * Creates a coolness service.
@@ -100,7 +120,7 @@ public class CoolnessService {
      */
     public int addCoolness(Member member, int delta) {
         UsersConnect usersConnect = findOrCreate(member.getId(), member.getUser().getName());
-        int total = Math.min(MAX_COOLNESS, Math.max(0, usersConnect.getCoolness() + delta));
+        int total = Math.min(MAX_COOLNESS, Math.max(MIN_COOLNESS, usersConnect.getCoolness() + delta));
         usersConnect.setCoolness(total);
         usersConnectRepository.save(usersConnect);
         updateNickname(member, total);
@@ -127,12 +147,13 @@ public class CoolnessService {
         String messageId = event.getMessageId();
         var channel = event.getChannel();
         channel.sendTyping().queue(null, err -> log.debug("Typing indicator failed: {}", err.getMessage()));
+        List<String> context = rememberAndContext(channel.getId(), displayName, content);
         scoringPool.execute(() -> {
             try {
-                ModelCoolnessScorer.Score result = scorer.score(content, hasAttachments, userId);
+                ModelCoolnessScorer.Score result = scorer.score(content, hasAttachments, userId, context);
                 int delta = result.delta();
                 UsersConnect usersConnect = findOrCreate(userId, userName);
-                int total = Math.min(MAX_COOLNESS, Math.max(0, usersConnect.getCoolness() + delta));
+                int total = Math.min(MAX_COOLNESS, Math.max(MIN_COOLNESS, usersConnect.getCoolness() + delta));
                 usersConnect.setCoolness(total);
                 usersConnectRepository.save(usersConnect);
                 updateNickname(member, total);
@@ -168,6 +189,29 @@ public class CoolnessService {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    /**
+     * Snapshots recent channel messages for scoring, then remembers the current one.
+     * @param channelId Discord channel id
+     * @param displayName author display name
+     * @param content message text
+     * @return previous messages, oldest first, without the current one
+     */
+    private List<String> rememberAndContext(String channelId, String displayName, String content) {
+        Deque<String> recent = recentByChannel.computeIfAbsent(channelId, id -> new ArrayDeque<>());
+        List<String> context;
+        String fragment = content.length() > MAX_CONTEXT_CONTENT
+                ? content.substring(0, MAX_CONTEXT_CONTENT) + "…"
+                : content;
+        synchronized (recent) {
+            context = new ArrayList<>(recent);
+            recent.addLast(displayName + ": " + fragment);
+            while (recent.size() > CONTEXT_SIZE) {
+                recent.pollFirst();
+            }
+        }
+        return context;
     }
 
     /**
