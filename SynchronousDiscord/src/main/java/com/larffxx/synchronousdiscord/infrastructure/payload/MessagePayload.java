@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -40,6 +41,22 @@ public class MessagePayload {
      * The message type.
      */
     private MessageType messageType;
+    /**
+     * Stable Discord message identifier.
+     */
+    private String messageId;
+    /**
+     * Discord channel identifier.
+     */
+    private String channelId;
+    /**
+     * Human-readable Discord channel name.
+     */
+    private String channelName;
+    /**
+     * Timestamp assigned by Discord when the message was created.
+     */
+    private Instant sentAt;
 
     /**
      * Creates a new MessagePayload.
@@ -57,4 +74,5 @@ public class MessagePayload {
         this.files = files;
         this.messageType = MessageType.PHOTO_MESSAGE;
     }
+
 }

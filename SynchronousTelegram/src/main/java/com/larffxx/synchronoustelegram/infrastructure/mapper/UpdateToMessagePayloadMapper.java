@@ -5,6 +5,7 @@ import com.larffxx.synchronoustelegram.infrastructure.payload.MessagePayload;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.File;
+import java.time.Instant;
 
 /**
  * Maps a Telegram update to a message payload.
@@ -31,16 +32,28 @@ public class UpdateToMessagePayloadMapper implements PayloadMapper<MessagePayloa
      * @return the mapped message payload
      */
     public MessagePayload mapToPayload(Update update, String guildId, File photoFile) {
-        Long chatId = update.getMessage().getChatId();
-        String username = update.getMessage().getFrom().getUserName();
-        String message = update.getMessage().getText();
+        var telegramMessage = update.getMessage();
+        Long chatId = telegramMessage.getChatId();
+        String username = telegramMessage.getFrom() == null
+                ? "Unknown user"
+                : telegramMessage.getFrom().getUserName();
+        String message = telegramMessage.getText() != null
+                ? telegramMessage.getText()
+                : telegramMessage.getCaption();
+        String chatName = telegramMessage.getChat().getTitle() != null
+                ? telegramMessage.getChat().getTitle()
+                : telegramMessage.getChat().getUserName();
+        String messageId = String.valueOf(telegramMessage.getMessageId());
+        Instant sentAt = telegramMessage.getDate() == null
+                ? Instant.now()
+                : Instant.ofEpochSecond(telegramMessage.getDate());
 
         if (photoFile != null) {
             return new MessagePayload(chatId, guildId, username, message, photoFile,
-                    String.valueOf(MessageType.PHOTO_MESSAGE));
+                    String.valueOf(MessageType.PHOTO_MESSAGE), messageId, chatName, sentAt);
         }
 
         return new MessagePayload(chatId, guildId, username, message,
-                String.valueOf(MessageType.TEXT_MESSAGE));
+                null, String.valueOf(MessageType.TEXT_MESSAGE), messageId, chatName, sentAt);
     }
 }

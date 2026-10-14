@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat — Synchronous</title>
+    <link rel="stylesheet" href="/css/chat.css">
+    <script src="/js/chat.js" defer></script>
+</head>
+<body class="chat-page">
+<header class="chat-header">
+    <a class="chat-brand" href="/">Synchronous</a>
+    <div>
+        <p class="eyebrow">Unified inbox</p>
+        <h1>Telegram + Discord</h1>
+        <p class="subtitle">A read-only timeline of messages from your connected chats.</p>
+    </div>
+    <div class="connection-status" id="connection-status" data-state="connecting">
+        <span class="status-dot"></span>
+        <span id="connection-label">Connecting</span>
+    </div>
+</header>
+
+<main class="chat-layout">
+    <aside class="filters" aria-label="Message filters">
+        <div>
+            <p class="eyebrow">Filters</p>
+            <h2>Find a conversation</h2>
+        </div>
+
+        <label for="platform-filter">Platform</label>
+        <select id="platform-filter">
+            <option value="ALL">All platforms</option>
+            <option value="TELEGRAM">Telegram</option>
+            <option value="DISCORD">Discord</option>
+        </select>
+
+        <label for="conversation-filter">Conversation</label>
+        <input id="conversation-filter" type="search" placeholder="Name or ID">
+
+        <button class="primary-button" id="apply-filters" type="button">Apply filters</button>
+        <a class="back-link" href="/">Back to home</a>
+    </aside>
+
+    <section class="message-panel" aria-label="Unified messages">
+        <div class="panel-heading">
+            <div>
+                <p class="eyebrow">Live feed</p>
+                <h2>Recent messages</h2>
+            </div>
+            <span class="read-only-badge">Read only</span>
+        </div>
+
+        <div class="message-list" id="message-list" aria-live="polite" aria-busy="true"></div>
+        <div class="auth-panel" id="auth-panel" hidden>
+            <h3>Chat access required</h3>
+            <p>Enter the configured access token to view this message history.</p>
+            <div class="auth-controls">
+                <input id="access-token" type="password" autocomplete="current-password" placeholder="Access token">
+                <button class="primary-button" id="unlock-chat" type="button">Unlock</button>
+            </div>
+        </div>
+        <div class="empty-state" id="empty-state" hidden>
+            <h3>No messages yet</h3>
+            <p>Messages received after the bridge starts will appear here.</p>
+        </div>
+        <div class="error-state" id="error-state" hidden role="alert"></div>
+        <button class="load-more" id="load-more" type="button">Load older messages</button>
+    </section>
+</main>
+
+<div class="media-modal" id="media-modal" hidden role="dialog" aria-modal="true" aria-label="Image preview">
+    <button class="media-modal-close" id="media-modal-close" type="button" aria-label="Close image preview">×</button>
+    <img id="media-modal-image" alt="Expanded message image">
+</div>
+</body>
+</html>

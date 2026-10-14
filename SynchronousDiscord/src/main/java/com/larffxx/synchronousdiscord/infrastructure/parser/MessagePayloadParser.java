@@ -51,6 +51,10 @@ public class MessagePayloadParser implements Parser<MessageReceivedEvent, Messag
         Long telegramChannelId = Long.valueOf(connection.getTelegramChannel());
 
         List<File> attachments = attachmentDownloader.downloadAttachments(messageReceivedEvent.getMessage().getAttachments());
+        String messageId = messageReceivedEvent.getMessage().getId();
+        String channelId = messageReceivedEvent.getChannel().getId();
+        String channelName = messageReceivedEvent.getChannel().getName();
+        var sentAt = messageReceivedEvent.getMessage().getTimeCreated().toInstant();
 
         if(!attachments.isEmpty()) {
             return new MessagePayload(
@@ -58,7 +62,12 @@ public class MessagePayloadParser implements Parser<MessageReceivedEvent, Messag
                     telegramChannelId,
                     messageReceivedEvent.getMessage().getAuthor().getEffectiveName(),
                     Objects.requireNonNull(messageReceivedEvent.getMessage().getContentDisplay()),
-                    attachments
+                    attachments,
+                    MessageType.PHOTO_MESSAGE,
+                    messageId,
+                    channelId,
+                    channelName,
+                    sentAt
             );
         }
 
@@ -67,7 +76,12 @@ public class MessagePayloadParser implements Parser<MessageReceivedEvent, Messag
                 telegramChannelId,
                 Objects.requireNonNull(messageReceivedEvent.getMessage().getAuthor().getEffectiveName()),
                 Objects.requireNonNull(messageReceivedEvent.getMessage().getContentDisplay()),
-                attachments, MessageType.TEXT_MESSAGE
+                attachments,
+                MessageType.TEXT_MESSAGE,
+                messageId,
+                channelId,
+                channelName,
+                sentAt
         );
     }
 }

@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest(MainController.class)
+@WebMvcTest({MainController.class, ChatController.class})
 class MainControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -25,5 +25,8 @@ class MainControllerTest {
         mockMvc.perform(get("/premium"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("pages/premium"));
+        mockMvc.perform(get("/chat"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("pages/chat"));
     }
 }

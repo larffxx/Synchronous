@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -45,6 +46,18 @@ public class MessagePayload{
      * Type of the message, either text or photo.
      */
     private String messageType;
+    /**
+     * Stable Telegram message identifier.
+     */
+    private String messageId;
+    /**
+     * Human-readable Telegram chat title or username.
+     */
+    private String chatName;
+    /**
+     * Timestamp assigned by Telegram when the message was created.
+     */
+    private Instant sentAt;
 
     /**
      * Creates a text message payload without files.
@@ -78,6 +91,33 @@ public class MessagePayload{
         this.message = message;
         this.file = photoFile;
         this.messageType = messageType;
+    }
+
+    /**
+     * Creates a message payload with source metadata for downstream consumers.
+     * The additional fields are additive and preserve the existing bridge payload.
+     * @param chatId the Telegram chat identifier
+     * @param guildId the linked Discord guild identifier
+     * @param telegramUserName the Telegram user name
+     * @param message the message text
+     * @param photoFile the optional photo file
+     * @param messageType the message type
+     * @param messageId the Telegram message id
+     * @param chatName the Telegram chat name
+     * @param sentAt the source message timestamp
+     */
+    public MessagePayload(Long chatId, String guildId, String telegramUserName, String message,
+                          File photoFile, String messageType, String messageId,
+                          String chatName, Instant sentAt) {
+        this.chatId = chatId;
+        this.guildId = guildId;
+        this.telegramUserName = telegramUserName;
+        this.message = message;
+        this.file = photoFile;
+        this.messageType = messageType;
+        this.messageId = messageId;
+        this.chatName = chatName;
+        this.sentAt = sentAt;
     }
 
 
