@@ -54,10 +54,19 @@ cd IdeaProjects/Synchronous/SynchronousTelegram && ./gradlew bootRun
 cd IdeaProjects/Synchronous/SynchronousWeb && ./gradlew bootRun
 ```
 
-**4. Связка чатов:**
-- В Discord: `/register <telegramChatName>` — связать сервер с Telegram-чатом
-- `/connect <telegramUserName>` — связать пользователей
-- Дальше сообщения синхронизируются между чатами
+**4. Связка чатов и пользователей:**
+
+Сначала свяжи Telegram-чат с Discord-сервером командой `/connect` на одной из платформ:
+
+- В Telegram: `/connect <discordGuildId>` — связать текущий Telegram-чат с Discord-сервером
+- В Discord: `/connect <telegramChatId>` — связать текущий Discord-сервер с Telegram-чатом
+
+После этого свяжи пользователей между платформами командой `/register`:
+
+- В Telegram: `/register <discordUserName>` — связать текущего Telegram-пользователя с именем пользователя Discord
+- В Discord: `/register <telegramUserName>` — связать текущего Discord-пользователя с именем пользователя Telegram
+
+После создания обеих связей сообщения синхронизируются между чатами.
 
 **5. Меню команд Telegram:**
 - `/menu` показывает доступные команды в виде кликабельных inline-кнопок
