@@ -22,4 +22,18 @@ public interface ServersConnectRepository extends JpaRepository<ServersConnect, 
      * @return true when a link exists
      */
     boolean existsByTelegramChannel(String telegramChatName);
+
+    /**
+     * Finds a connection by Discord guild identifier.
+     * @param discordGuild Discord guild identifier
+     * @return matching connection or null
+     */
+    ServersConnect findByDiscordGuild(String discordGuild);
+
+    /**
+     * Checks whether a Discord guild is already linked.
+     * @param discordGuild Discord guild identifier
+     * @return true when a link exists
+     */
+    boolean existsByDiscordGuild(String discordGuild);
 }

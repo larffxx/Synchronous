@@ -21,7 +21,11 @@ public class ServersConnect {
     @Column(name = "servers_connect_id")
     private Long id;
 
-    private String discordGuild,telegramChannel;
+    @Column(nullable = false, unique = true)
+    private String discordGuild;
+
+    @Column(nullable = false, unique = true)
+    private String telegramChannel;
 
     /**
      * Creates a new ServersConnect.

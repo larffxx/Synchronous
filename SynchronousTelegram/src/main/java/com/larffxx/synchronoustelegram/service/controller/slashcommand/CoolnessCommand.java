@@ -42,15 +42,8 @@ public class CoolnessCommand implements Command {
             displayName = commandContext.executedBy();
         }
         if (target == null) {
-            target = new UsersConnect();
-            if (!commandContext.options().isEmpty()) {
-                target.setDiscordName(displayName);
-            } else {
-                target.setTelegramName(displayName);
-            }
-            target.setCoolness(0);
-            target = usersConnectRepository.save(target);
-            displayName = target.getDiscordName() != null ? target.getDiscordName() : commandContext.executedBy();
+            textMessageService.send(commandContext.chatId(), CommandConstant.USER_NOT_REGISTERED);
+            return;
         }
         int total = target.getCoolness();
         int stars = Math.min(5, total / 20);

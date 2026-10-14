@@ -13,6 +13,7 @@ public class CommandConstant {
      * Reply sent when the servers were already connected.
      */
     public final static String UNSUCCESSFULLY_CONNECTED = "Servers connected before";
+    public final static String CONNECTION_CONFLICT = "This Discord server or Telegram chat is already connected.";
     /**
      * Reply sent when a user is registered successfully.
      */

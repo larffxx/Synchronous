@@ -56,7 +56,7 @@ public class CoolnessCommand implements Command {
         List<String> options = telegramCommandContext.options();
         TextChannel textChannel = telegramCommandContext.textChannel();
         try {
-            int total;
+        Integer total;
             String name;
             if (!options.isEmpty()) {
                 Member target = telegramCommandContext.guild().getMembersByName(options.get(0), true)
@@ -69,6 +69,10 @@ public class CoolnessCommand implements Command {
                 name = target.getEffectiveName();
             } else {
                 total = coolnessService.getCoolnessByTelegramName(telegramCommandContext.telegramUsername());
+                if (total == null) {
+                    textChannel.sendMessage(CommandConstants.COOLNESS_UNREGISTERED).queue();
+                    return;
+                }
                 name = telegramCommandContext.telegramUsername();
             }
             textChannel.sendMessage(formatTotal(name, total)).queue();

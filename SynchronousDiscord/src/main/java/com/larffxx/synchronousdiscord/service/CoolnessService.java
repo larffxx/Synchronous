@@ -17,8 +17,10 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -63,15 +65,26 @@ public class CoolnessService {
      * Sized above single-model latency so a burst of messages scores in parallel
      * instead of queueing behind one slow call.
      */
-    private final ExecutorService scoringPool = Executors.newFixedThreadPool(8, task -> {
-        Thread thread = new Thread(task, "coolness-scorer");
-        thread.setDaemon(true);
-        return thread;
-    });
+    private final ExecutorService scoringPool = new ThreadPoolExecutor(
+            8,
+            8,
+            0L,
+            TimeUnit.MILLISECONDS,
+            new ArrayBlockingQueue<>(256),
+            task -> {
+                Thread thread = new Thread(task, "coolness-scorer");
+                thread.setDaemon(true);
+                return thread;
+            },
+            new ThreadPoolExecutor.AbortPolicy());
     /**
      * Last applied star count per Discord user id, to avoid redundant nickname updates.
      */
     private final Map<String, Integer> appliedStarsByMember = new ConcurrentHashMap<>();
+    /**
+     * Per-user locks protecting rating read-modify-write operations.
+     */
+    private final Map<String, Object> ratingLocks = new ConcurrentHashMap<>();
     /**
      * Rolling message context per channel id, newest last, for model scoring.
      */
@@ -93,7 +106,9 @@ public class CoolnessService {
      * @return coolness rating
      */
     public int getCoolness(Member member) {
-        return findOrCreate(member.getId(), member.getUser().getName()).getCoolness();
+        synchronized (lockFor(member.getId())) {
+            return findOrCreate(member.getId(), member.getUser().getName()).getCoolness();
+        }
     }
 
     /**
@@ -101,15 +116,9 @@ public class CoolnessService {
      * @param telegramName Telegram name
      * @return coolness rating
      */
-    public int getCoolnessByTelegramName(String telegramName) {
+    public Integer getCoolnessByTelegramName(String telegramName) {
         UsersConnect usersConnect = usersConnectRepository.findByTelegramName(telegramName);
-        if (usersConnect == null) {
-            usersConnect = new UsersConnect();
-            usersConnect.setTelegramName(telegramName);
-            usersConnect.setCoolness(0);
-            usersConnect = usersConnectRepository.save(usersConnect);
-        }
-        return usersConnect.getCoolness();
+        return usersConnect == null ? null : usersConnect.getCoolness();
     }
 
     /**
@@ -119,10 +128,13 @@ public class CoolnessService {
      * @return new total rating
      */
     public int addCoolness(Member member, int delta) {
-        UsersConnect usersConnect = findOrCreate(member.getId(), member.getUser().getName());
-        int total = Math.min(MAX_COOLNESS, Math.max(MIN_COOLNESS, usersConnect.getCoolness() + delta));
-        usersConnect.setCoolness(total);
-        usersConnectRepository.save(usersConnect);
+        int total;
+        synchronized (lockFor(member.getId())) {
+            UsersConnect usersConnect = findOrCreate(member.getId(), member.getUser().getName());
+            total = Math.min(MAX_COOLNESS, Math.max(MIN_COOLNESS, usersConnect.getCoolness() + delta));
+            usersConnect.setCoolness(total);
+            usersConnectRepository.save(usersConnect);
+        }
         updateNickname(member, total);
         return total;
     }
@@ -148,34 +160,41 @@ public class CoolnessService {
         var channel = event.getChannel();
         channel.sendTyping().queue(null, err -> log.debug("Typing indicator failed: {}", err.getMessage()));
         List<String> context = rememberAndContext(channel.getId(), displayName, content);
-        scoringPool.execute(() -> {
-            try {
-                ModelCoolnessScorer.Score result = scorer.score(content, hasAttachments, userId, context);
-                int delta = result.delta();
-                UsersConnect usersConnect = findOrCreate(userId, userName);
-                int total = Math.min(MAX_COOLNESS, Math.max(MIN_COOLNESS, usersConnect.getCoolness() + delta));
-                usersConnect.setCoolness(total);
-                usersConnectRepository.save(usersConnect);
-                updateNickname(member, total);
-                String opinion = formatOpinion(displayName, delta, total, result.comment());
+        try {
+            scoringPool.execute(() -> {
                 try {
-                    channel.sendMessage(opinion)
-                            .setMessageReference(messageId)
-                            .queue(
-                                    v -> log.info("Coolness opinion sent for {}: delta={}, total={}", userId, delta, total),
-                                    err -> {
-                                        log.warn("Reply with coolness opinion failed, sending plain: {}", err.getMessage());
-                                        channel.sendMessage(opinion).queue(
-                                                ok -> log.info("Coolness opinion sent plain for {}", userId),
-                                                e2 -> log.warn("Could not send coolness opinion: {}", e2.getMessage()));
-                                    });
+                    ModelCoolnessScorer.Score result = scorer.score(content, hasAttachments, userId, context);
+                    int delta = result.delta();
+                    int total;
+                    synchronized (lockFor(userId)) {
+                        UsersConnect usersConnect = findOrCreate(userId, userName);
+                        total = Math.min(MAX_COOLNESS, Math.max(MIN_COOLNESS, usersConnect.getCoolness() + delta));
+                        usersConnect.setCoolness(total);
+                        usersConnectRepository.save(usersConnect);
+                    }
+                    updateNickname(member, total);
+                    String opinion = formatOpinion(displayName, delta, total, result.comment());
+                    try {
+                        channel.sendMessage(opinion)
+                                .setMessageReference(messageId)
+                                .queue(
+                                        v -> log.info("Coolness opinion sent for {}: delta={}, total={}", userId, delta, total),
+                                        err -> {
+                                            log.warn("Reply with coolness opinion failed, sending plain: {}", err.getMessage());
+                                            channel.sendMessage(opinion).queue(
+                                                    ok -> log.info("Coolness opinion sent plain for {}", userId),
+                                                    e2 -> log.warn("Could not send coolness opinion: {}", e2.getMessage()));
+                                        });
+                    } catch (Exception e) {
+                        log.warn("Could not send coolness opinion: {}", e.getMessage());
+                    }
                 } catch (Exception e) {
-                    log.warn("Could not send coolness opinion: {}", e.getMessage());
+                    log.warn("Coolness scoring failed: {}", e.getMessage());
                 }
-            } catch (Exception e) {
-                log.warn("Coolness scoring failed: {}", e.getMessage());
-            }
-        });
+            });
+        } catch (RejectedExecutionException e) {
+            log.warn("Coolness scoring queue is full; skipping message {}", messageId);
+        }
     }
 
     /**
@@ -230,6 +249,15 @@ public class CoolnessService {
             usersConnect = usersConnectRepository.save(usersConnect);
         }
         return usersConnect;
+    }
+
+    /**
+     * Returns the stable lock object for one Discord user.
+     * @param discordUserId Discord user identifier
+     * @return per-user lock
+     */
+    private Object lockFor(String discordUserId) {
+        return ratingLocks.computeIfAbsent(discordUserId, ignored -> new Object());
     }
 
     /**

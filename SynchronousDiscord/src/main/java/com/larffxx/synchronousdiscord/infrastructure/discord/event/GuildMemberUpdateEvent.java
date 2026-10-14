@@ -79,13 +79,16 @@ public class GuildMemberUpdateEvent implements Event<net.dv8tion.jda.api.events.
                     .toList();
 
             if(members.isEmpty()){
-                guild.getTextChannelsByName("telegram", true).get(0).sendMessage(InfExcMessages.NO_REGISTERED_USERS).queue();
+                guild.getTextChannelsByName("telegram", true).stream().findFirst()
+                        .ifPresent(channel -> channel.sendMessage(InfExcMessages.NO_REGISTERED_USERS).queue());
+                return;
             }
 
             guildProfileUpdaterService.update(members);
 
         }else {
-            guild.getTextChannels().get(0).sendMessage(InfExcMessages.SERVER_IS_NOT_CONNECTED_TO_TELEGRAM).queue();
+            guild.getTextChannels().stream().findFirst()
+                    .ifPresent(channel -> channel.sendMessage(InfExcMessages.SERVER_IS_NOT_CONNECTED_TO_TELEGRAM).queue());
         }
     }
 

@@ -35,6 +35,7 @@ public class CommandConstants {
      * CONNECT SUCCESS MESSAGE constant.
      */
     public static final String CONNECT_SUCCESS_MESSAGE = "Servers connected successfully!";
+    public static final String CONNECT_ALREADY_EXISTS_MESSAGE = "This Discord server or Telegram chat is already connected.";
     /**
      * NAME FROM TELEGRAM constant.
      */

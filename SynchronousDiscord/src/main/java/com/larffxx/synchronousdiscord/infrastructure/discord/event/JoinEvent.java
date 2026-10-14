@@ -20,9 +20,9 @@ public class JoinEvent implements Event<GuildJoinEvent> {
      */
     @Override
     public void execute(GuildJoinEvent event) {
-        event.getGuild().getTextChannels().get(0)
-                .sendMessage("Hello, i'm here, connect yours telegram using /connect + telegram text channel name, and create text channel with 'telegram' name\n" +
-                        "Register your telegram using /register + telegram name").queue();
+        event.getGuild().getTextChannels().stream().findFirst().ifPresent(channel ->
+                channel.sendMessage("Hello, i'm here, connect yours telegram using /connect + telegram text channel name, and create text channel with 'telegram' name\n" +
+                        "Register your telegram using /register + telegram name").queue());
     }
 
     /**

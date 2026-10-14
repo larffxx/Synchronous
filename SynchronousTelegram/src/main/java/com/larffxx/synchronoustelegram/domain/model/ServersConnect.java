@@ -25,7 +25,11 @@ public class ServersConnect {
     /**
      * Identifiers of the linked Discord guild and Telegram channel.
      */
-    private String discordGuild,telegramChannel;
+    @Column(nullable = false, unique = true)
+    private String discordGuild;
+
+    @Column(nullable = false, unique = true)
+    private String telegramChannel;
 
     /**
      * Creates a server link reference with the given identifier.

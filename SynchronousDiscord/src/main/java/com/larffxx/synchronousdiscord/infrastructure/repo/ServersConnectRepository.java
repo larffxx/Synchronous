@@ -29,4 +29,11 @@ public interface ServersConnectRepository extends JpaRepository<ServersConnect, 
      * @return the resulting boolean.
      */
     boolean existsByDiscordGuild(String discordGuild);
+
+    /**
+     * Checks whether a Telegram channel is already connected.
+     * @param telegramChannel Telegram channel identifier
+     * @return true when a connection exists
+     */
+    boolean existsByTelegramChannel(String telegramChannel);
 }

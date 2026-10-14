@@ -4,7 +4,7 @@
 
 # Что нужно для развёртки
 
-- **Java 17** — обязательно. На Java 25/26 сборка падает (старый Lombok). Проверка: `java -version`
+- **Java 17** — обязательно для текущего Lombok/JDA стека. Gradle toolchain использует Java 17 даже если системная Java новее. Проверка: `java -version`
 - **Docker** — только для инфраструктуры (Postgres + Kafka), сами боты запускаются через Gradle
 - **Discord-бот**: приложение в [Discord Developer Portal](https://discord.com/developers/applications/), бот добавлен на сервер с правами читать/писать сообщения и менять ники
 - **Telegram-бот**: токен от [@BotFather](https://t.me/BotFather), бот добавлен в чат
@@ -22,7 +22,20 @@
 | `COOLNESS_API_URL` / `COOLNESS_API_MODEL` / `COOLNESS_API_KEY` | только для `http` | Параметры внешнего API |
 | `COOLNESS_API_TIMEOUT_SECONDS` | нет (`60`) | Таймаут одного скоринга |
 
-Postgres и Kafka захардкожены: Postgres `localhost:5454/Synchronous` (логин/пароль `larffxx`), Kafka `localhost:29092`.
+Postgres и Kafka больше не содержат credentials в репозитории. По умолчанию приложение использует Postgres `localhost:5454/Synchronous` и Kafka `localhost:29092`, а логин и пароль берутся из `DB_USERNAME` и `DB_PASSWORD`.
+
+Перед первым запуском создай локальный файл конфигурации и экспортируй переменные:
+
+```sh
+cp config/postgres-config.env.example config/postgres-config.env
+set -a
+. config/postgres-config.env
+export DB_USERNAME="$POSTGRES_USER"
+export DB_PASSWORD="$POSTGRES_PASSWORD"
+set +a
+```
+
+`config/postgres-config.env` игнорируется Git и не должен попадать в коммиты. Для production задай `JPA_DDL_AUTO=validate` и используй отдельные миграции схемы.
 
 # Запуск
 
@@ -33,17 +46,19 @@ docker compose up db kafka kafka-init
 ```
 Сервис `kafka-init` обязателен — автосоздание топиков выключено (`KAFKA_AUTO_CREATE_TOPICS_ENABLE=false`), без него топиков не будет. Kafka готова примерно через 10 секунд после старта (healthcheck).
 
-**2. Сборка (в каждом модуле свой wrapper):**
+**2. Сборка:**
 ```sh
 cd IdeaProjects/Synchronous/SynchronousDiscord && ./gradlew build
 cd IdeaProjects/Synchronous/SynchronousTelegram && ./gradlew build
+cd IdeaProjects/Synchronous/SynchronousWeb && ./gradlew build
 ```
-Если `Permission denied` — запускать через `sh gradlew ...`. Если ругается на Lombok — проверить, что `JAVA_HOME` указывает на Java 17.
+Если Gradle ругается на Java — проверь, что `JAVA_HOME` указывает на Java 17.
 
 **3. Старт ботов (каждый в своём терминале):**
 ```sh
 cd IdeaProjects/Synchronous/SynchronousDiscord && ./gradlew bootRun
 cd IdeaProjects/Synchronous/SynchronousTelegram && ./gradlew bootRun
+cd IdeaProjects/Synchronous/SynchronousWeb && ./gradlew bootRun
 ```
 
 **4. Связка чатов:**
@@ -52,4 +67,4 @@ cd IdeaProjects/Synchronous/SynchronousTelegram && ./gradlew bootRun
 - Дальше сообщения синхронизируются, а бот отвечает мнением о крутости на каждое сообщение и копит рейтинг (видны звёзды в никах, команды `/cool`, `/coolness`)
 
 # P.S.
-Проект в разработке. `Dockerfile` в корне — stale-шаблон, не использовать (сборка только через `gradlew` модулей).
+Проект в разработке. Сборка выполняется отдельным Gradle wrapper каждого модуля; Docker Compose используется только для Postgres и Kafka.

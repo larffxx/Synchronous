@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainController {
     @GetMapping("/")
     public String main(){
-        return "main";
+        return "pages/main";
     }
 
     @GetMapping("/invite")
     public String invite(){
-        return "invite";
+        return "pages/invite";
     }
 
     @GetMapping("/premium")
     public String premium(){
-        return "premium";
+        return "pages/premium";
     }
 }

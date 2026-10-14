@@ -55,14 +55,21 @@ public class ConnectCommand implements Command {
             throw new TooManyOptionsException(InfExcMessage.TOO_MANY_OPTIONS_FOR_COMMAND_EXCEPTION);
         }
         Long chatID = commandContext.chatId();
+        String telegramChannel = String.valueOf(chatID);
+        String discordGuild = commandContext.options().get(0);
+        ServersConnect existingChat = serversConnectRepository.findByTelegramChannel(telegramChannel);
+        ServersConnect existingGuild = serversConnectRepository.findByDiscordGuild(discordGuild);
 
-        if (!serversConnectRepository.existsByTelegramChannel(String.valueOf(commandContext.chatId()))) {
-            ServersConnectDTO serversConnectDTO = new ServersConnectDTO(commandContext.options().get(0), String.valueOf(chatID));
-            serversConnectRepository.save(mapper.toEntity(serversConnectDTO));
-
+        boolean conflictingChat = existingChat != null && !discordGuild.equals(existingChat.getDiscordGuild());
+        boolean conflictingGuild = existingGuild != null && !telegramChannel.equals(existingGuild.getTelegramChannel());
+        if (conflictingChat || conflictingGuild) {
+            textMessageService.send(chatID, CommandConstant.CONNECTION_CONFLICT);
+        } else if (existingChat != null) {
             textMessageService.send(chatID, CommandConstant.SUCCESSFULLY_CONNECTED);
         } else {
-            textMessageService.send(chatID, CommandConstant.UNSUCCESSFULLY_CONNECTED);
+            ServersConnectDTO serversConnectDTO = new ServersConnectDTO(discordGuild, telegramChannel);
+            serversConnectRepository.save(mapper.toEntity(serversConnectDTO));
+            textMessageService.send(chatID, CommandConstant.SUCCESSFULLY_CONNECTED);
         }
     }
 

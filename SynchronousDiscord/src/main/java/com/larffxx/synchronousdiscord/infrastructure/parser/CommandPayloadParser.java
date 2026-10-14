@@ -2,6 +2,7 @@ package com.larffxx.synchronousdiscord.infrastructure.parser;
 
 import com.larffxx.synchronousdiscord.infrastructure.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -39,6 +40,10 @@ public class CommandPayloadParser implements Parser<SlashCommandInteractionEvent
     @Override
     public CommandPayload parse(SlashCommandInteractionEvent event) {
         String guildID = Objects.requireNonNull(event.getGuild()).getId();
+        ServersConnect connection = serversConnectRepository.getConnectByDiscordGuild(guildID);
+        if (connection == null) {
+            throw new IllegalStateException("Discord guild is not connected to Telegram: " + guildID);
+        }
         Message message = event.getHook().retrieveOriginal().complete();
         List<String> trackList;
 
@@ -53,7 +58,7 @@ public class CommandPayloadParser implements Parser<SlashCommandInteractionEvent
         }
         return new CommandPayload(
                 guildID,
-                Objects.requireNonNull(serversConnectRepository.getConnectByDiscordGuild(guildID).getTelegramChannel()),
+                Objects.requireNonNull(connection.getTelegramChannel()),
                 Objects.requireNonNull(event.getInteraction().getMember()).getEffectiveName(),
                 event.getName(),
                 event.getOptions().stream().map(OptionMapping::getAsString).collect(Collectors.toCollection(ArrayList::new)),

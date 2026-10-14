@@ -3,29 +3,19 @@ spring:
     name: SynchronousTelegram
 
   datasource:
-    url: jdbc:postgresql://localhost:5454/Synchronous
-    username: larffxx
-    password: larffxx
+    url: ${DB_URL:jdbc:postgresql://localhost:5454/Synchronous}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
-      ddl-auto: update
-
-  h2:
-    console:
-      enabled: true
+      ddl-auto: ${JPA_DDL_AUTO:update}
 
   kafka:
-    bootstrap-servers: localhost:29092
-    consumer:
-      properties:
-        spring:
-          json:
-            trusted:
-              packages: "*"
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
 
 server:
   port: 0

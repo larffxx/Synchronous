@@ -4,6 +4,7 @@ import com.larffxx.synchronousdiscord.infrastructure.payload.MessagePayload;
 import com.larffxx.synchronousdiscord.infrastructure.discord.AttachmentDownloader;
 import com.larffxx.synchronousdiscord.infrastructure.payload.MessageType;
 import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
+import com.larffxx.synchronousdiscord.domain.model.ServersConnect;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +44,11 @@ public class MessagePayloadParser implements Parser<MessageReceivedEvent, Messag
     @Override
     public MessagePayload parse(MessageReceivedEvent messageReceivedEvent) {
         Long guildID = Objects.requireNonNull(messageReceivedEvent.getGuild()).getIdLong();
-        Long telegramChannelId = Long.valueOf(serversConnectRepository.getConnectByDiscordGuild(String.valueOf(guildID)).getTelegramChannel());
+        ServersConnect connection = serversConnectRepository.getConnectByDiscordGuild(String.valueOf(guildID));
+        if (connection == null) {
+            throw new IllegalStateException("Discord guild is not connected to Telegram: " + guildID);
+        }
+        Long telegramChannelId = Long.valueOf(connection.getTelegramChannel());
 
         List<File> attachments = attachmentDownloader.downloadAttachments(messageReceivedEvent.getMessage().getAttachments());
 

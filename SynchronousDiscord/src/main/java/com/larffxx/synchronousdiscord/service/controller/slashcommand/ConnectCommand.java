@@ -53,9 +53,28 @@ public class ConnectCommand implements Command{
      */
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        String guildId = event.getGuild().getId();
+        String telegramChannel = event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString();
+        ServersConnect existingGuild = serversConnectRepository.getConnectByDiscordGuild(guildId);
+        ServersConnect existingTelegram = serversConnectRepository.getConnectByTelegramChannel(telegramChannel);
+
+        boolean conflictingGuild = existingGuild != null
+                && !telegramChannel.equals(existingGuild.getTelegramChannel());
+        boolean conflictingTelegram = existingTelegram != null
+                && !guildId.equals(existingTelegram.getDiscordGuild());
+        if (conflictingGuild || conflictingTelegram) {
+            event.getHook().editOriginal(CommandConstants.CONNECT_ALREADY_EXISTS_MESSAGE).queue();
+            return;
+        }
+
+        if (existingGuild != null) {
+            event.getHook().editOriginal(CommandConstants.CONNECT_SUCCESS_MESSAGE).queue();
+            return;
+        }
+
         ServersConnectDTO dto = new ServersConnectDTO(
-                event.getGuild().getId(),
-                event.getOption(CommandConstants.TELEGRAM_CHANNEL_NAME_FROM_OPTIONS).getAsString()
+                guildId,
+                telegramChannel
         );
 
         ServersConnect serversConnect = serversConnectMapper.toEntity(dto);

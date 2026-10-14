@@ -3,6 +3,7 @@ package com.larffxx.synchronousdiscord.infrastructure.discord.event;
 import com.larffxx.synchronousdiscord.infrastructure.producer.DiscordPayloadProducer;
 import com.larffxx.synchronousdiscord.domain.context.EventContext;
 import com.larffxx.synchronousdiscord.service.CoolnessService;
+import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -27,6 +28,10 @@ public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
      * Service scoring chat messages for coolness.
      */
     private final CoolnessService coolnessService;
+    /**
+     * Repository used to determine whether message scoring is enabled for a guild.
+     */
+    private final ServersConnectRepository serversConnectRepository;
 
     /**
      * Creates a handler for received Discord messages.
@@ -35,10 +40,11 @@ public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
      * @param eventContext shared event context
      * @param coolnessService service scoring chat messages
      */
-    public MessageReceiveEvent(DiscordPayloadProducer discordPayloadProducer, EventContext eventContext, CoolnessService coolnessService) {
+    public MessageReceiveEvent(DiscordPayloadProducer discordPayloadProducer, EventContext eventContext, CoolnessService coolnessService, ServersConnectRepository serversConnectRepository) {
         this.discordPayloadProducer = discordPayloadProducer;
         this.eventContext = eventContext;
         this.coolnessService = coolnessService;
+        this.serversConnectRepository = serversConnectRepository;
     }
 
     /**
@@ -49,6 +55,9 @@ public class MessageReceiveEvent implements Event<MessageReceivedEvent> {
     @Override
     public void execute(MessageReceivedEvent event) {
         if (!event.getAuthor().isBot()) {
+            if (event.getGuild() == null || !serversConnectRepository.existsByDiscordGuild(event.getGuild().getId())) {
+                return;
+            }
             eventContext.setTextChannel(event.getChannel().asTextChannel());
             coolnessService.handleMessage(event);
             discordPayloadProducer.send(event);

@@ -60,7 +60,7 @@ public class RegisterCommand implements Command {
             throw new NoOptionsProvidedException(InfExcMessage.NO_OPTIONS_FOR_COMMAND_EXCEPTION);
         }
 
-        if (commandContext.options().size() > 2) {
+        if (commandContext.options().size() > 1) {
             throw new TooManyOptionsException(InfExcMessage.TOO_MANY_OPTIONS_FOR_COMMAND_EXCEPTION);
         }
 

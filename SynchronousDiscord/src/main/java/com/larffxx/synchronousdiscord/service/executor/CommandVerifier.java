@@ -103,12 +103,15 @@ public class CommandVerifier {
                 .computeIfAbsent(telegramCommandContext.guild().getIdLong(),
                         guildId -> telegramCommandContext.guild().retrieveCommands().complete()).stream()
                 .filter(command -> command.getName().equals(telegramCommandContext.command()))
-                .findFirst().get();
+                .findFirst()
+                .orElseThrow(() -> new VerifyException(InfExcMessages.REQUIRED_VALUE_NOT_PROVIDED));
 
         List<Command.Option> commandOptions = discordCommand.getOptions();
 
 
-        if (telegramCommandContext.options().size() > commandOptions.size()) {
+        long requiredOptions = commandOptions.stream().filter(Command.Option::isRequired).count();
+        if (telegramCommandContext.options().size() < requiredOptions
+                || telegramCommandContext.options().size() > commandOptions.size()) {
             throw new VerifyException(InfExcMessages.VALUES_NOT_PROVIDED_ERROR);
         }
 

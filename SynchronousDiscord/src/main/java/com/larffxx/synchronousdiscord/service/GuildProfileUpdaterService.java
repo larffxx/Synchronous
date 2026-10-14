@@ -58,7 +58,7 @@ public class GuildProfileUpdaterService {
     @Transactional
     public void update(List<MemberContext> memberContext){
         for(MemberContext member : memberContext){
-            UsersConnect usersConnect = usersConnectRepository.findByDiscordName(member.username());
+            UsersConnect usersConnect = usersConnectRepository.findByDiscordUserId(member.id());
             if(usersConnect == null || !guildProfileRepository.existsByUsersConnect(usersConnect)){
                 createProfile(member, usersConnect);
             }else {

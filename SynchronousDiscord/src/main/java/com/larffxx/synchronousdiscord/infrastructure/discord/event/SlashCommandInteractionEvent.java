@@ -51,10 +51,10 @@ public class SlashCommandInteractionEvent implements Event<net.dv8tion.jda.api.e
         eventContext.setTextChannel(event.getChannel().asTextChannel());
         try {
             commandExecutor.execute(event);
+            discordPayloadProducer.send(event);
         } catch (DiscordSlashInteractionException e) {
-            event.reply(e.getMessage()).queue();
+            event.getHook().editOriginal(e.getMessage()).queue();
         }
-        discordPayloadProducer.send(event);
     }
 
     /**

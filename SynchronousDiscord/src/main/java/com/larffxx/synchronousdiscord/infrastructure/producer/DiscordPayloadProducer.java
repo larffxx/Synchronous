@@ -4,6 +4,7 @@ import com.larffxx.synchronousdiscord.infrastructure.parser.CommandPayloadParser
 import com.larffxx.synchronousdiscord.infrastructure.parser.MessagePayloadParser;
 import com.larffxx.synchronousdiscord.infrastructure.payload.CommandPayload;
 import com.larffxx.synchronousdiscord.infrastructure.payload.MessagePayload;
+import com.larffxx.synchronousdiscord.infrastructure.repo.ServersConnectRepository;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -48,6 +49,10 @@ public class DiscordPayloadProducer {
      * The message payload parser.
      */
     private final MessagePayloadParser messagePayloadParser;
+    /**
+     * Repository used to skip forwarding from unconnected guilds.
+     */
+    private final ServersConnectRepository serversConnectRepository;
 
     /**
      * Creates a new DiscordPayloadProducer.
@@ -56,11 +61,12 @@ public class DiscordPayloadProducer {
      * @param commandPayloadParser the command payload parser.
      * @param messagePayloadParser the message payload parser.
      */
-    public DiscordPayloadProducer(KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate, CommandPayloadParser commandPayloadParser, MessagePayloadParser messagePayloadParser) {
+    public DiscordPayloadProducer(KafkaTemplate<String, CommandPayload> commandPayloadKafkaTemplate, KafkaTemplate<String, MessagePayload> messagePayloadKafkaTemplate, CommandPayloadParser commandPayloadParser, MessagePayloadParser messagePayloadParser, ServersConnectRepository serversConnectRepository) {
         this.commandPayloadKafkaTemplate = commandPayloadKafkaTemplate;
         this.messagePayloadKafkaTemplate = messagePayloadKafkaTemplate;
         this.commandPayloadParser = commandPayloadParser;
         this.messagePayloadParser = messagePayloadParser;
+        this.serversConnectRepository = serversConnectRepository;
     }
 
     /**
@@ -68,6 +74,9 @@ public class DiscordPayloadProducer {
      * @param event the event.
      */
     public void send(SlashCommandInteractionEvent event) {
+        if (event.getGuild() == null || !serversConnectRepository.existsByDiscordGuild(event.getGuild().getId())) {
+            return;
+        }
         CommandPayload commandPayload = commandPayloadParser.parse(event);
 
         produceKafkaMessage(commandPayload, cTopic, commandPayloadKafkaTemplate);
@@ -78,6 +87,9 @@ public class DiscordPayloadProducer {
      * @param event the event.
      */
     public void send(MessageReceivedEvent event) {
+        if (event.getGuild() == null || !serversConnectRepository.existsByDiscordGuild(event.getGuild().getId())) {
+            return;
+        }
         MessagePayload messagePayload = messagePayloadParser.parse(event);
 
         produceKafkaMessage(messagePayload,mTopic,messagePayloadKafkaTemplate);
